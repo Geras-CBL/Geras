@@ -10,19 +10,19 @@ const seniorBottomBarLayout = () => {
       <Tabs.Screen
         name="History"
         options={{
-          title: "Vouchers History",
+          headerShown: false,
         }}
       />
       <Tabs.Screen
         name="HomePage"
         options={{
-          title: "Home",
+          headerShown: false,
         }}
       />
       <Tabs.Screen
         name="Vouchers"
         options={{
-          title: "Vouchers",
+          headerShown: false,
         }}
       />
     </Tabs>

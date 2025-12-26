@@ -4,12 +4,9 @@ import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
 import { Rubik_400Regular, Rubik_700Bold } from "@expo-google-fonts/rubik";
+import { StatusBar } from "expo-status-bar";
 
 SplashScreen.preventAutoHideAsync();
-
-export const unstable_settings = {
-  anchor: "(tabs)",
-};
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -29,8 +26,18 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack>
-      <Stack.Screen name="navigation" options={{ headerShown: false }} />
-    </Stack>
+    <>
+      <StatusBar style="dark" />
+      <Stack
+        initialRouteName="screens/index" 
+        screenOptions={{
+          animation: "fade",
+        }}
+      >
+        <Stack.Screen name="screens/index" options={{ headerShown: false }} />
+        <Stack.Screen name="navigation" options={{ headerShown: false }} />
+        {/* fazer o ecrã do not found aqui 404 */}
+      </Stack>
+    </>
   );
 }
