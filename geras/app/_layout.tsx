@@ -1,21 +1,36 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
-import MyTabs from './navigation/seniorBottomBar';
 import "../global.css";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useFonts } from "expo-font";
+import { useEffect } from "react";
+import { Rubik_400Regular, Rubik_700Bold } from "@expo-google-fonts/rubik";
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
+SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
-  anchor: '(tabs)',
+  anchor: "(tabs)",
 };
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const [loaded] = useFonts({
+    Rubik: Rubik_400Regular,
+    "Rubik-Bold": Rubik_700Bold,
+    MonoTrustDisplay: require("../assets/fonts/MomoTrustDisplay-Regular.ttf"),
+  });
+
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
+
+  if (!loaded) {
+    return null;
+  }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <MyTabs />
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Stack>
+      <Stack.Screen name="navigation" options={{ headerShown: false }} />
+    </Stack>
   );
 }
