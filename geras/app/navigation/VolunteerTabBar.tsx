@@ -89,7 +89,7 @@ export function VolunteerTabBar({
 
   return (
     <View
-      className="absolute bottom-12 left-24 right-24 bg-transparent shadow-lg shadow-black/10"
+      className="absolute bottom-10 left-24 right-24 bg-transparent shadow-lg shadow-black/10"
       onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
     >
       <View className="absolute top-0 bottom-0 left-0 right-0">
