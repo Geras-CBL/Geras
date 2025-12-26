@@ -3,17 +3,20 @@ import { VolunteerTabBar } from "./VolunteerTabBar";
 
 const seniorBottomBarLayout = () => {
   return (
-    <Tabs tabBar={(props) => <VolunteerTabBar {...props} />}>
-      <Tabs.Screen
-        name="HomePage"
-        options={{
-          title: "Home",
-        }}
-      />
+    <Tabs
+      initialRouteName="HomePage"
+      tabBar={(props) => <VolunteerTabBar {...props} />}
+    >
       <Tabs.Screen
         name="History"
         options={{
           title: "Vouchers History",
+        }}
+      />
+      <Tabs.Screen
+        name="HomePage"
+        options={{
+          title: "Home",
         }}
       />
       <Tabs.Screen
