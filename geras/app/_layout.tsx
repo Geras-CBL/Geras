@@ -1,14 +1,17 @@
-import "../global.css";
-import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { useFonts } from "expo-font";
-import { useEffect } from "react";
 import { Rubik_400Regular, Rubik_700Bold } from "@expo-google-fonts/rubik";
+import { useFonts } from "expo-font";
+import { Stack, useRouter } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
+import { ImageBackground } from "react-native";
+import "../global.css";
+import { VolunteerHeader } from "./navigation/volunteer/VolunteerHeader";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const router = useRouter();
   const [loaded] = useFonts({
     Rubik: Rubik_400Regular,
     "Rubik-Bold": Rubik_700Bold,
@@ -26,18 +29,56 @@ export default function RootLayout() {
   }
 
   return (
-    <>
+    <ImageBackground
+      source={require("../assets/images/background.png")}
+      style={{ flex: 1 }}
+      resizeMode="cover"
+    >
       <StatusBar style="dark" />
       <Stack
-        initialRouteName="index" 
+        initialRouteName="index"
         screenOptions={{
           animation: "fade",
+          contentStyle: { backgroundColor: "" },
         }}
       >
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="navigation/senior" options={{ headerShown: false }} />
-        {/* fazer o ecrã do not found aqui 404 */}
+        <Stack.Screen name="senior/HomePage" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="navigation/volunteer"
+          options={{
+            headerShown: true,
+            headerTransparent: true,
+            header: () => (
+              <VolunteerHeader
+                leftIconName="arrow-back"
+                rightIconName="notifications"
+                onLeftPress={() => {
+                  router.back();
+                }}
+                onRightPress={() => router.push("../shared/Notifications")}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="navigation/caretaker"
+          options={{
+            headerShown: true,
+            headerTransparent: true,
+            header: () => (
+              <VolunteerHeader
+                leftIconName="arrow-back"
+                rightIconName="notifications"
+                onLeftPress={() => {
+                  router.back();
+                }}
+                onRightPress={() => router.push("../shared/Notifications")}
+              />
+            ),
+          }}
+        />
       </Stack>
-    </>
+    </ImageBackground>
   );
 }

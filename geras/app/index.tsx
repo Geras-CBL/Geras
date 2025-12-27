@@ -10,13 +10,13 @@ export default function Index() {
         </TouchableOpacity>
       </Link>
 
-      <Link href="/navigation/volunteer/HomePage" asChild>
+      <Link href="/navigation/caretaker/HomePage" asChild>
         <TouchableOpacity className="w-[70%] bg-[#9FBFA0] p-5 rounded-full items-center shadow-md active:opacity-80">
           <Text className="text-white text-2xl font-bold">Cuidador</Text>
         </TouchableOpacity>
       </Link>
 
-      <Link href="/navigation/volunteer/HomePage" asChild>
+      <Link href="/navigation/senior/HomePage" asChild>
         <TouchableOpacity className="w-[70%] bg-[#9FBFA0] p-5 rounded-full items-center shadow-md active:opacity-80">
           <Text className="text-white text-2xl font-bold">Sénior</Text>
         </TouchableOpacity>
