@@ -8,6 +8,7 @@ import Animated, {
   useAnimatedProps,
   useAnimatedStyle,
   withSpring,
+  withTiming,
 } from "react-native-reanimated";
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
@@ -24,39 +25,55 @@ const CORNER_RADIUS = 36;
 const CURVE_WIDTH = 88;
 const CURVE_DEPTH = 34;
 
+// This defines the specific tabs you want to show (in the order you want them)
+const VISIBLE_TABS = ["RequestsHistory", "HomePage", "Vouchers"];
+
 export function VolunteerTabBar({
   state,
   descriptors,
   navigation,
 }: Readonly<BottomTabBarProps>) {
   const [width, setWidth] = useState(0);
-  const tabWidth = width > 0 ? width / state.routes.length : 0;
+
+  // Filter the raw state.routes to only include our 3 visible tabs
+  const visibleRoutes = state.routes.filter((route) =>
+    VISIBLE_TABS.includes(route.name)
+  );
+
+  // If the user is on a hidden page (like "MapRequests"), this will be -1
+  const currentRoute = state.routes[state.index];
+  const activeIndex = visibleRoutes.findIndex(
+    (r) => r.name === currentRoute.name
+  );
+
+  // Calculate width based on visible items (3) instead of all items (7+)
+  const tabWidth = width > 0 ? width / visibleRoutes.length : 0;
   const translateX = useSharedValue(0);
 
+  // New: Control visibility of the bubble (hide it if we are on a hidden page)
+  const isBubbleVisible = activeIndex !== -1;
+
   useEffect(() => {
-    if (width > 0) {
-      translateX.value = withSpring(state.index * tabWidth, {
+    if (width > 0 && activeIndex !== -1) {
+      translateX.value = withSpring(activeIndex * tabWidth, {
         stiffness: 300,
         damping: 30,
         mass: 1,
       });
     }
-  }, [state.index, width, tabWidth, translateX]);
+  }, [activeIndex, width, tabWidth, translateX]);
 
   const animatedPathProps = useAnimatedProps(() => {
-    const center = translateX.value + tabWidth / 2;
+    const currentPos = width > 0 ? translateX.value : 0;
+    const center = currentPos + tabWidth / 2;
 
-    // 1. Calculate IDEAL start/end
     const idealStart = center - CURVE_WIDTH / 2;
     const idealEnd = center + CURVE_WIDTH / 2;
 
-    // 2. Safe clamping (With the smaller corner radius, this triggers less often)
     const drawStart = Math.max(CORNER_RADIUS, idealStart);
     const drawEnd = Math.min(width - CORNER_RADIUS, idealEnd);
 
-    // 3. Control points
-    // We adjust c1/c4 slightly based on drawStart to prevent 'kinking' if it does hit the edge
-    const c1 = drawStart + 15; 
+    const c1 = drawStart + 15;
     const c2 = center - 30;
     const c3 = center + 30;
     const c4 = drawEnd - 15;
@@ -84,6 +101,7 @@ export function VolunteerTabBar({
   const circleStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateX: translateX.value }],
+      opacity: withTiming(isBubbleVisible ? 1 : 0),
     };
   });
 
@@ -107,37 +125,36 @@ export function VolunteerTabBar({
         <Animated.View
           style={[
             {
-              position: 'absolute',
+              position: "absolute",
               top: -24,
               width: CIRCLE_SIZE,
               height: CIRCLE_SIZE,
               borderRadius: CIRCLE_SIZE / 2,
-              backgroundColor: '#1E5128',
-              justifyContent: 'center',
-              alignItems: 'center',
-              shadowColor: '#000',
+              backgroundColor: "#1E5128",
+              justifyContent: "center",
+              alignItems: "center",
+              shadowColor: "#000",
               shadowOpacity: 0.2,
               shadowRadius: 4,
               shadowOffset: { width: 0, height: 2 },
-              left: tabWidth / 2 - (CIRCLE_SIZE / 2),
+              left: tabWidth / 2 - CIRCLE_SIZE / 2,
             },
             circleStyle,
           ]}
         >
-          <IconRenderer
-            routeName={state.routes[state.index].name}
-            color={COLORS.activeIcon}
-            size={32}
-          />
+          {isBubbleVisible && (
+            <IconRenderer
+              routeName={visibleRoutes[activeIndex].name}
+              color={COLORS.activeIcon}
+              size={32}
+            />
+          )}
         </Animated.View>
       )}
 
-      <View 
-        className="flex-row" 
-        style={{ height: BAR_HEIGHT }}
-      >
-        {state.routes.map((route, index) => {
-          const isFocused = state.index === index;
+      <View className="flex-row" style={{ height: BAR_HEIGHT }}>
+        {visibleRoutes.map((route, index) => {
+          const isFocused = activeIndex === index;
 
           const onPress = () => {
             const event = navigation.emit({
@@ -188,7 +205,7 @@ function IconRenderer({
     case "HomePage":
       iconName = "home";
       break;
-    case "History":
+    case "RequestsHistory":
       iconName = "alarm-on";
       break;
     case "Vouchers":

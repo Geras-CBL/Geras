@@ -29,13 +29,13 @@ export default function RootLayout() {
     <>
       <StatusBar style="dark" />
       <Stack
-        initialRouteName="screens/index" 
+        initialRouteName="index" 
         screenOptions={{
           animation: "fade",
         }}
       >
-        <Stack.Screen name="screens/index" options={{ headerShown: false }} />
-        <Stack.Screen name="navigation" options={{ headerShown: false }} />
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="navigation/senior" options={{ headerShown: false }} />
         {/* fazer o ecrã do not found aqui 404 */}
       </Stack>
     </>
