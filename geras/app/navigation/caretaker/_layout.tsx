@@ -1,5 +1,5 @@
-import TabBar from "@/components/shared/TabBar";
-import { Tabs } from "expo-router";
+import TabBar from '@/components/shared/TabBar';
+import { Tabs } from 'expo-router';
 
 const CaretakerBottomBarLayout = () => {
   return (
@@ -8,11 +8,11 @@ const CaretakerBottomBarLayout = () => {
       tabBar={(props) => (
         <TabBar
           visibleTabNames={[
-            "SeniorManagement",
-            "Requests",
-            "HomePage",
-            "Sensors",
-            "Profile",
+            'SeniorManagement',
+            'Requests',
+            'HomePage',
+            'Sensors',
+            'Profile',
           ]}
           sidePadding={46}
           {...props}
@@ -22,11 +22,11 @@ const CaretakerBottomBarLayout = () => {
         headerShown: false,
       }}
     >
-      <Tabs.Screen name="SeniorManagement" options={{ title: "Management" }} />
-      <Tabs.Screen name="Requests" options={{ title: "Requests" }} />
-      <Tabs.Screen name="HomePage" options={{ title: "Home" }} />
-      <Tabs.Screen name="Sensors" options={{ title: "Sensors" }} />
-      <Tabs.Screen name="Profile" options={{ title: "Profile" }} />
+      <Tabs.Screen name="SeniorManagement" options={{ title: 'Management' }} />
+      <Tabs.Screen name="Requests" options={{ title: 'Requests' }} />
+      <Tabs.Screen name="HomePage" options={{ title: 'Home' }} />
+      <Tabs.Screen name="Sensors" options={{ title: 'Sensors' }} />
+      <Tabs.Screen name="Profile" options={{ title: 'Profile' }} />
     </Tabs>
   );
 };
