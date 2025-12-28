@@ -1,7 +1,14 @@
 import React from 'react';
-import { View, Image, Pressable, ImageSourcePropType } from 'react-native';
+import {
+  View,
+  Image,
+  Pressable,
+  ImageSourcePropType,
+  TouchableOpacity,
+} from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { ThemedText } from '../ThemedText';
+import { Route, useRouter } from 'expo-router';
 
 type CardVariant = 'alert' | 'medication' | 'info';
 
@@ -50,6 +57,7 @@ interface NotificationCardProps {
   iconName?: keyof typeof MaterialIcons.glyphMap;
   imageSource?: ImageSourcePropType;
   rightContent?: React.ReactNode;
+  route?: string;
 }
 
 export const NotificationCard = ({
@@ -59,12 +67,18 @@ export const NotificationCard = ({
   iconName,
   imageSource,
   rightContent,
+  route,
 }: NotificationCardProps) => {
   const theme = THEMES[variant];
+  const router = useRouter();
 
   return (
-    <View
+    <TouchableOpacity
+      activeOpacity={route ? 0.8 : 1}
       className={`flex-row items-center justify-between rounded-3xl border-2 p-4 ${theme.container} ${theme.border}`}
+      onPress={() => {
+        if (route) router.push(route as Route);
+      }}
     >
       <View className="flex-1 flex-row items-center gap-4">
         <View
@@ -81,7 +95,7 @@ export const NotificationCard = ({
           )}
         </View>
 
-        <View className="flex-1 justify-center gap-2">
+        <View className="flex-1 justify-center gap-1">
           <ThemedText type="subtitle" className="uppercase">
             {title}
           </ThemedText>
@@ -99,7 +113,7 @@ export const NotificationCard = ({
       {rightContent && (
         <View className="flex-row items-center gap-2">{rightContent}</View>
       )}
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -143,7 +157,8 @@ export const NotificationCard = ({
 }
 
 // Aviso queda
-{/* <NotificationCard
+{
+  /* <NotificationCard
   variant="alert"
   title="Aviso"
   iconName="report"
@@ -154,4 +169,5 @@ export const NotificationCard = ({
       <ActionButton icon="videocam" />
     </>
   }
-/>; */}
+/>; */
+}
