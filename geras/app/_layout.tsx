@@ -39,7 +39,7 @@ export default function RootLayout() {
         initialRouteName="index"
         screenOptions={{
           animation: 'fade',
-          contentStyle: { backgroundColor: '' },
+          contentStyle: { backgroundColor: 'transparent' },
         }}
       >
         <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -49,6 +49,7 @@ export default function RootLayout() {
           options={{
             headerShown: true,
             headerTransparent: true,
+            contentStyle: { backgroundColor: '#fbfbfb' },
             header: () => (
               <Header
                 leftIconName="home"
