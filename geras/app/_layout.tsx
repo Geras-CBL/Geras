@@ -39,7 +39,7 @@ export default function RootLayout() {
         initialRouteName="index"
         screenOptions={{
           animation: 'fade',
-          contentStyle: { backgroundColor: 'transparent' },
+          contentStyle: { backgroundColor: '#fbfbfb' },
         }}
       >
         <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -49,7 +49,21 @@ export default function RootLayout() {
           options={{
             headerShown: true,
             headerTransparent: true,
-            contentStyle: { backgroundColor: '#fbfbfb' },
+            header: () => (
+              <Header
+                leftIconName="home"
+                rightIconName="settings"
+                onLeftPress={() => {}}
+                onRightPress={() => {}}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="navigation/senior/Health"
+          options={{
+            headerShown: true,
+            headerTransparent: true,
             header: () => (
               <Header
                 leftIconName="home"

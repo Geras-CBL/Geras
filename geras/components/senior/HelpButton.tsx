@@ -4,10 +4,10 @@ import { ThemedText } from '../ThemedText';
 import HelpShape from '../../assets/images/HelpShape.png';
 import { useState } from 'react';
 import { useAudioPlayer } from 'expo-audio';
-import Animated, { 
-  FadeIn, 
-  FadeOut, 
-  LinearTransition 
+import Animated, {
+  FadeIn,
+  FadeOut,
+  LinearTransition,
 } from 'react-native-reanimated';
 
 export default function HelpButton() {
@@ -25,8 +25,8 @@ export default function HelpButton() {
   return (
     <>
       {isOpen && (
-        <Animated.View 
-          entering={FadeIn.duration(250)} 
+        <Animated.View
+          entering={FadeIn.duration(250)}
           exiting={FadeOut.duration(250)}
           className="absolute bottom-0 left-0 right-0 top-0 z-40"
         >
@@ -38,14 +38,14 @@ export default function HelpButton() {
         </Animated.View>
       )}
 
-      <Animated.View 
+      <Animated.View
         layout={LinearTransition.springify().damping(30).stiffness(200)}
-        className="absolute bottom-0 z-50 w-full items-center pointer-events-box-none"
+        className="pointer-events-box-none absolute bottom-0 z-50 w-full items-center"
       >
         {!isOpen ? (
-          <Animated.View 
+          <Animated.View
             key="closed-button"
-            entering={FadeIn.duration(150)} 
+            entering={FadeIn.duration(150)}
             exiting={FadeOut.duration(100)}
             className="items-center pb-8"
           >
@@ -88,7 +88,7 @@ export default function HelpButton() {
             </View>
           </Animated.View>
         ) : (
-          <Animated.View 
+          <Animated.View
             key="open-chat"
             entering={FadeIn.duration(150).delay(25)}
             exiting={FadeOut.duration(80)}
@@ -124,7 +124,11 @@ export default function HelpButton() {
                   <ThemedText className="text-lg font-bold text-white">
                     Pressione aqui para falar
                   </ThemedText>
-                  <MaterialIcons name="record-voice-over" size={24} color="white" />
+                  <MaterialIcons
+                    name="record-voice-over"
+                    size={24}
+                    color="white"
+                  />
                 </TouchableOpacity>
               </View>
             </View>

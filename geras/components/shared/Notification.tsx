@@ -44,7 +44,7 @@ interface ActionButtonProps {
 export const ActionButton = ({ icon, onPress }: ActionButtonProps) => (
   <Pressable
     onPress={onPress}
-    className="bg-neutralLight h-12 w-12 items-center justify-center rounded-xl"
+    className="h-12 w-12 items-center justify-center rounded-xl bg-neutralLight"
   >
     <MaterialIcons name={icon} size={24} color="black" />
   </Pressable>
