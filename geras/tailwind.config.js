@@ -9,6 +9,7 @@ module.exports = {
         secondary: '#efab59',
         tertiary: '#db6536',
         neutral: '#1d1d1b',
+        neutralLight: '#fbfbfb',
       },
       fontFamily: {
         momo: ['MomoTrustDisplay-Regular'],
