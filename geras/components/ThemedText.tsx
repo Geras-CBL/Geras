@@ -1,7 +1,7 @@
 import { StyleSheet, Text, type TextProps } from 'react-native';
 
 export type ThemedTextProps = TextProps & {
-  type?: 'title' | 'subtitle' | 'body' | 'bodyBold';
+  type?: 'title' | 'subtitle' | 'body' | 'bodyBold' | 'bigButton';
 };
 
 export function ThemedText({
@@ -18,6 +18,7 @@ export function ThemedText({
         type === 'subtitle' ? styles.subtitle : undefined,
         type === 'body' ? styles.body : undefined,
         type === 'bodyBold' ? styles.bodyBold : undefined,
+        type === 'bigButton' ? styles.bigButton : undefined,
         style,
       ]}
       {...props}
@@ -40,6 +41,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Rubik',
     lineHeight: 24,
+  },
+  bigButton: {
+    fontSize: 20,
+    fontFamily: 'Rubik',
+    fontWeight: 'bold',
   },
   bodyBold: {
     fontSize: 16,
