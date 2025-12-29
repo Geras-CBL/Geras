@@ -1,5 +1,6 @@
 import React from "react";
-import { Text, View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
+import { ThemedText } from "../ThemedText";
 
 interface AddButtonComponentProps {
   onPress?: () => void;
@@ -14,9 +15,9 @@ const AddButtonComponent = ({ onPress, title = "Adicionar" }: AddButtonComponent
         activeOpacity={0.7}
         className="bg-primary rounded-lg py-4 items-center justify-center shadow-black/10 shadow-md elevation-5 w-full"
       >
-        <Text className="text-[#fbfbfb] text-base capitalize font-['Rubik-Regular'] text-center">
+        <ThemedText type="body" className="text-neutralLight capitalize text-center">
           {title}
-        </Text>
+        </ThemedText>
       </TouchableOpacity>
     </View>
   );

@@ -17,7 +17,7 @@ const SensorComponent = ({ name, iconName, isActive, onPress }: SensorProps) => 
         onPress={onPress}
         className={`w-full h-32 flex-row justify-center items-center gap-2 rounded-3xl
           ${isActive
-            ? "bg-[#1E5128]"
+            ? "bg-primary"
             : "bg-white border border-slate-200 shadow-sm shadow-black/5"
           }`}
         style={({ pressed }) => ({ opacity: pressed ? 0.8 : 1, elevation: isActive ? 0 : 3 })}
