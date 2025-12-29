@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { View, ScrollView } from 'react-native';
 import SensorComponent from '@/components/caretaker/SensorComponent';
-import AddButtonComponent from '@/components/caretaker/AddButtonComponent';
+import ButtonComponent from '@/components/shared/ButtonComponent';
 import { sensorsData, type Sensor } from '@/data/sensorsData';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SectionTitle from '@/components/shared/SectionTitle';
@@ -34,9 +34,10 @@ export default function Sensors() {
           </View>
         </SectionTitle>
 
-        <AddButtonComponent
+        <ButtonComponent
           onPress={() => console.log('Add Sensor Button Pressed')}
           title="Adicionar"
+          variant="default" // aqui você pode escolher outras variantes se quiser
         />
 
         <View className="h-40" />
