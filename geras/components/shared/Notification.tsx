@@ -101,9 +101,7 @@ export const NotificationCard = ({
           </ThemedText>
 
           {typeof description === 'string' ? (
-            <ThemedText type="bodyInfo">
-              {description}
-            </ThemedText>
+            <ThemedText type="bodyInfo">{description}</ThemedText>
           ) : (
             <View className="mt-1">{description}</View>
           )}

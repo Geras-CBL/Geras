@@ -1,21 +1,21 @@
-import { View, ScrollView } from "react-native";
+import { View, ScrollView } from 'react-native';
 import {
   NotificationCard,
   ActionButton,
-} from "@/components/shared/Notification";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { ThemedText } from "@/components/ThemedText";
+} from '@/components/shared/Notification';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { ThemedText } from '@/components/ThemedText';
 
 export default function Notifications() {
   return (
     <SafeAreaView edges={['top']} className="flex-1">
       <ScrollView
-        className="flex-1 bg-background px-6 pt-24"
+        className="bg-background flex-1 px-6 pt-24"
         showsVerticalScrollIndicator={false}
       >
-      <ThemedText type="title" className="mb-6">
-        Notificações
-      </ThemedText>
+        <ThemedText type="title" className="mb-6">
+          Notificações
+        </ThemedText>
 
         {/* AVISO */}
         <View className="mb-6">

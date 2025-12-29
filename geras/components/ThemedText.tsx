@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Rubik',
     lineHeight: 18,
-  }
+  },
 });
 
 export { styles };
