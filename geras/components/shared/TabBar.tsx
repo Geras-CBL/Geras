@@ -119,10 +119,7 @@ export default function TabBar({
 
   return (
     <Animated.View
-      style={[
-        { left: sidePadding, right: sidePadding },
-        containerStyle, 
-      ]}
+      style={[{ left: sidePadding, right: sidePadding }, containerStyle]}
       className="absolute bottom-10 bg-transparent"
       onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
     >
