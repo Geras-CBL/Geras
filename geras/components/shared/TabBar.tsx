@@ -55,6 +55,8 @@ export default function TabBar({
   // New: Control visibility of the bubble (hide it if we are on a hidden page)
   const isBubbleVisible = activeIndex !== -1;
 
+  const isBarVisible = activeIndex !== -1;
+
   useEffect(() => {
     if (width > 0 && activeIndex !== -1) {
       translateX.value = withSpring(activeIndex * tabWidth, {
@@ -107,10 +109,21 @@ export default function TabBar({
     };
   });
 
+  const containerStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateY: withTiming(isBarVisible ? 0 : 200, { duration: 300 }) },
+      ],
+    };
+  });
+
   return (
-    <View
-      style={{ left: sidePadding, right: sidePadding }}
-      className="absolute bottom-10 bg-transparent shadow-lg shadow-black/10"
+    <Animated.View
+      style={[
+        { left: sidePadding, right: sidePadding },
+        containerStyle, 
+      ]}
+      className="absolute bottom-10 bg-transparent"
       onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
     >
       <View className="absolute bottom-0 left-0 right-0 top-0">
@@ -189,7 +202,7 @@ export default function TabBar({
           );
         })}
       </View>
-    </View>
+    </Animated.View>
   );
 }
 

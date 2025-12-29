@@ -18,7 +18,7 @@ const Header: React.FC<HeaderProps> = ({
   onRightPress,
 }) => {
   return (
-    <SafeAreaView edges={['top']} className="w-full bg-neutralLight">
+    <SafeAreaView edges={['top']} className="w-full">
       <View className="flex-row items-center justify-between px-5">
         <TouchableOpacity
           onPress={onLeftPress}
