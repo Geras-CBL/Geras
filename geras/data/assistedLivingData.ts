@@ -28,8 +28,8 @@ export const ASSISTED_LIVING_DATA: AssistedLivingData[] = [
     id: '3',
     title: 'Temperatura',
     description: 'Monitorização da temperatura corporal ao longo do dia.',
-    status: 'Excessivo',
-    value: 360.5,
+    status: 'Adequado',
+    value: 36.5,
     unit: '°C',
   },
 ];
