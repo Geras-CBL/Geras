@@ -1,16 +1,17 @@
+import { MaterialIcons } from '@expo/vector-icons';
+import { Route, useRouter } from 'expo-router';
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { ThemedText } from '../ThemedText';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Route, useRouter } from 'expo-router';
 
 interface BigButtonProps {
   iconName: keyof typeof MaterialIcons.glyphMap;
   label: string;
   route?: string;
+  onPress?: () => void;
 }
 
-const BigButton = ({ iconName, label, route }: BigButtonProps) => {
+const BigButton = ({ iconName, label, route, onPress }: BigButtonProps) => {
   const router = useRouter();
 
   return (
@@ -19,6 +20,7 @@ const BigButton = ({ iconName, label, route }: BigButtonProps) => {
       activeOpacity={0.8}
       onPress={() => {
         if (route) router.push(route as Route);
+        onPress?.();
       }}
     >
       <MaterialIcons name={iconName} size={80} color="#fbfbfb" />

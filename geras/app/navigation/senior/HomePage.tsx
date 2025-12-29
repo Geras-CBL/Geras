@@ -6,7 +6,7 @@ import {
   NotificationCard,
 } from '@/components/shared/Notification';
 import { ThemedText } from '@/components/ThemedText';
-import { View } from 'react-native';
+import { View, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Home() {
@@ -28,6 +28,10 @@ export default function Home() {
             rightContent={<ActionButton icon="call" />}
             route="../../navigation/senior/RequestDetails"
           />
+          {/* no notification */}
+          {/* <ThemedText type="body" className="text-neutralDark text-center py-10">
+            Não há notificações novas
+          </ThemedText> */}
         </View>
         <View className="-m-4 flex-row flex-wrap">
           <View className="aspect-square w-1/2 p-4">
@@ -55,7 +59,13 @@ export default function Home() {
           </View>
 
           <View className="aspect-square w-1/2 p-4">
-            <BigButton iconName={'phone'} label={'Ligar a Sofia'} />
+            <BigButton
+              iconName={'phone'}
+              label={'Ligar a Sofia'}
+              onPress={() => {
+                Linking.openURL(`tel:${963744454}`);
+              }}
+            />
           </View>
         </View>
       </SafeAreaView>
