@@ -1,7 +1,14 @@
 import { StyleSheet, Text, type TextProps } from 'react-native';
 
 export type ThemedTextProps = TextProps & {
-  type?: 'title' | 'subtitle' | 'body' | 'bodyInfo' | 'bodySmall' | 'bodyBold' | 'bigButton';
+  type?:
+    | 'title'
+    | 'subtitle'
+    | 'body'
+    | 'bodyInfo'
+    | 'bodySmall'
+    | 'bodyBold'
+    | 'bigButton';
 };
 
 export function ThemedText({
