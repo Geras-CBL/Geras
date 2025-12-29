@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { ThemedText } from '../ThemedText';
 
-interface ButtonComponentProps {
+interface ButtonProps {
   title: string;
   onPress?: () => void;
   variant?: 'default' | 'outlined' | 'destructive' | 'lineThrough';
@@ -11,7 +11,7 @@ interface ButtonComponentProps {
   disabled?: boolean;
 }
 
-const ButtonComponent: React.FC<ButtonComponentProps> = ({
+const Button: React.FC<ButtonProps> = ({
   title,
   onPress,
   variant = 'default',
@@ -59,4 +59,4 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
   );
 };
 
-export default ButtonComponent;
+export default Button;

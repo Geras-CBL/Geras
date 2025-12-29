@@ -10,7 +10,7 @@ import { MedicationSchedule } from '@/components/senior/MedicineDrawer';
 import { ASSISTED_LIVING_DATA } from '@/data/assistedLivingData';
 import SectionTitle from '@/components/shared/SectionTitle';
 import BottomActions from '@/components/senior/BottomActions';
-import ButtonComponent from '@/components/shared/ButtonComponent';
+import Button from '@/components/shared/Button';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function Health() {
@@ -55,7 +55,7 @@ export default function Health() {
           </View>
         </SectionTitle>
         <MedicationSchedule />
-        <ButtonComponent
+        <Button
           title="Fazer pedido farmácia"
           icon={<MaterialCommunityIcons name="pill" size={24} color="#ffff" />}
           onPress={() => {
