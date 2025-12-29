@@ -5,7 +5,7 @@ import {
   ActionButton,
   NotificationCard,
 } from '@/components/shared/Notification';
-import { ThemedText } from '@/components/ThemedText';
+import SectionTitle from '@/components/shared/SectionTitle';
 import { View, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -16,10 +16,7 @@ export default function Home() {
         edges={['top']}
         className="flex-1 items-center gap-12 p-4 px-6 pt-24"
       >
-        <View className="w-full flex-col items-start gap-4">
-          <ThemedText type="title" className="text-center">
-            Notificações
-          </ThemedText>
+        <SectionTitle title={'Notificações'}>
           <NotificationCard
             variant="info"
             title="Lucas Wiliam"
@@ -32,7 +29,7 @@ export default function Home() {
           {/* <ThemedText type="body" className="text-neutralDark text-center py-10">
             Não há notificações novas
           </ThemedText> */}
-        </View>
+        </SectionTitle>
         <View className="-m-4 flex-row flex-wrap">
           <View className="aspect-square w-1/2 p-4">
             <BigButton

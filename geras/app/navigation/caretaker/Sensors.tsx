@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { View, ScrollView } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
 import SensorComponent from '@/components/caretaker/SensorComponent';
 import AddButtonComponent from '@/components/caretaker/AddButtonComponent';
 import { sensorsData, type Sensor } from '@/data/sensorsData';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import SectionTitle from '@/components/shared/SectionTitle';
 
 export default function Sensors() {
   const [sensors, setSensors] = useState<Sensor[]>(sensorsData);
@@ -20,12 +20,8 @@ export default function Sensors() {
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-24">
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-        <View className="mb-6">
-          <ThemedText type="title" className="mb-6">
-            Sensores de António Silva
-          </ThemedText>
-
-          <View className="flex-row flex-wrap justify-between">
+        <SectionTitle title={'Sensores de António Silva'}>
+          <View className="mb-10 mt-4 flex-row flex-wrap justify-between">
             {sensors.map((sensor) => (
               <SensorComponent
                 key={sensor.id}
@@ -36,7 +32,7 @@ export default function Sensors() {
               />
             ))}
           </View>
-        </View>
+        </SectionTitle>
 
         <AddButtonComponent
           onPress={() => console.log('Add Sensor Button Pressed')}

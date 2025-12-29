@@ -1,5 +1,4 @@
 import { ScrollView, View } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NotificationCard } from '@/components/shared/Notification';
 import ClockPill from '@/components/shared/InfoPill';
@@ -9,6 +8,7 @@ import MedicationCard, {
 import { useRouter } from 'expo-router';
 import { MedicationSchedule } from '@/components/senior/MedicineDrawer';
 import { ASSISTED_LIVING_DATA } from '@/data/assistedLivingData';
+import SectionTitle from '@/components/shared/SectionTitle';
 
 export default function Health() {
   const router = useRouter();
@@ -20,10 +20,7 @@ export default function Health() {
         contentContainerClassName="items-center gap-10 px-6 pt-24 pb-20"
         showsVerticalScrollIndicator={false}
       >
-        <View className="w-full flex-col items-start gap-4">
-          <ThemedText type="title" className="text-center">
-            Notificações
-          </ThemedText>
+        <SectionTitle title={'Notificações'}>
           <NotificationCard
             variant="medication"
             title="Aviso Medicação"
@@ -31,12 +28,8 @@ export default function Health() {
             description="Losartan 50 mg"
             rightContent={<ClockPill time="08:00" />}
           />
-        </View>
-        <View className="w-full flex-col items-start gap-4">
-          <ThemedText type="title" className="text-center">
-            Monitorização
-          </ThemedText>
-
+        </SectionTitle>
+        <SectionTitle title={'Monitorização'}>
           <View className="-m-4 flex-row flex-wrap">
             {ASSISTED_LIVING_DATA.map((metric) => (
               <View key={metric.id} className="aspect-square w-1/2 p-4">
@@ -57,7 +50,7 @@ export default function Health() {
               />
             </View>
           </View>
-        </View>
+        </SectionTitle>
         <MedicationSchedule />
       </ScrollView>
     </SafeAreaView>
