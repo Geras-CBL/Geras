@@ -5,9 +5,10 @@ import { ThemedText } from '../ThemedText';
 interface ButtonComponentProps {
   title: string;
   onPress?: () => void;
-  variant?: 'default' | 'withIcon' | 'outlined' | 'destructive' | 'lineThrough';
+  variant?: 'default' | 'outlined' | 'destructive' | 'lineThrough';
   icon?: React.ReactNode;
   className?: string;
+  disabled?: boolean;
 }
 
 const ButtonComponent: React.FC<ButtonComponentProps> = ({
@@ -16,36 +17,45 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
   variant = 'default',
   icon,
   className = '',
+  disabled = false,
 }) => {
-  const variantStyles: Record<string, string> = {
-    default: 'bg-[#205a2d] rounded-xl py-4 px-16',
-    withIcon:
-      'bg-[#205a2d] rounded-xl py-4 px-6 flex-row items-center justify-center space-x-4',
-    outlined:
-      'bg-[#fbfbfb] border border-[#e7e7e7] rounded-xl py-4 px-16 shadow-md',
-    destructive: 'bg-[#dcbfbb] border border-[#a20707] rounded-xl py-4 px-16',
-    lineThrough: 'bg-[#205a2d] rounded-xl py-4 px-16',
+  const baseButtonStyles =
+    'flex-row items-center justify-center rounded-xl py-4 px-6';
+
+  const stylesMap = {
+    default: {
+      button: 'bg-primary',
+      text: 'text-white font-regular',
+    },
+    outlined: {
+      button: 'bg-neutralLight border border-[#e7e7e7] shadow-sm',
+      text: 'text-neutral font-regular',
+    },
+    destructive: {
+      button: 'bg-[#dcbfbb] border border-[#a20707]',
+      text: 'text-[#a20707] font-bold',
+    },
+    lineThrough: {
+      button: 'bg-primary',
+      text: 'text-white font-regular line-through',
+    },
   };
 
-  const textVariantStyles: Record<string, string> = {
-    default: 'text-white text-base font-regular capitalize',
-    withIcon: 'text-white text-base font-regular capitalize',
-    outlined: 'text-[#1d1d1b] text-base font-regular capitalize',
-    destructive: 'text-[#a20707] text-base font-medium capitalize',
-    lineThrough: 'text-white text-base font-regular capitalize line-through',
-  };
+  const currentStyle = stylesMap[variant] || stylesMap.default;
 
   return (
-    <View className="mt-4 w-full">
-      <TouchableOpacity
-        onPress={onPress}
-        activeOpacity={0.7}
-        className={`${variantStyles[variant]} ${className} items-center justify-center`}
-      >
-        {icon && <View className="mr-2">{icon}</View>}
-        <ThemedText className={textVariantStyles[variant]}>{title}</ThemedText>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.7}
+      disabled={disabled}
+      className={`${baseButtonStyles} ${currentStyle.button} ${className}`}
+    >
+      {icon && <View className="mr-3">{icon}</View>}
+
+      <ThemedText className={`text-base capitalize ${currentStyle.text}`}>
+        {title}
+      </ThemedText>
+    </TouchableOpacity>
   );
 };
 
