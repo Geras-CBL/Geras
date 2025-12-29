@@ -3,6 +3,8 @@ import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import GerasLogo from '../../assets/logo/GerasLogo.svg';
+import { useSegments } from 'expo-router';
+import { Colors } from '@/constants/theme';
 
 interface HeaderProps {
   leftIconName?: keyof typeof MaterialIcons.glyphMap;
@@ -17,6 +19,9 @@ const Header: React.FC<HeaderProps> = ({
   onLeftPress,
   onRightPress,
 }) => {
+  const segments = useSegments();
+  const onNotificationsRoute = (segments as string[]).includes('Notifications');
+
   return (
     <SafeAreaView edges={['top']} className="w-full">
       <View className="flex-row items-center justify-between px-5">
@@ -35,7 +40,11 @@ const Header: React.FC<HeaderProps> = ({
           onPress={onRightPress}
           className="items-center justify-center p-2"
         >
-          <MaterialIcons name={rightIconName} size={28} color="black" />
+          <MaterialIcons
+            name={rightIconName}
+            size={28}
+            color={onNotificationsRoute ? Colors.light.tint : 'black'}
+          />
         </TouchableOpacity>
       </View>
     </SafeAreaView>

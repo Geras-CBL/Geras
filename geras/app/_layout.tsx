@@ -113,7 +113,7 @@ export default function RootLayout() {
                 onLeftPress={() => {
                   router.back();
                 }}
-                onRightPress={() => router.push('../shared/Notifications')}
+                onRightPress={() => router.push('../caretaker/Notifications')}
               />
             ),
           }}
