@@ -50,8 +50,7 @@ const styles = StyleSheet.create({
   bodyBold: {
     fontSize: 16,
     fontFamily: 'Rubik',
-    fontWeight: 'bold',
-    lineHeight: 24,
+    fontWeight: '700',
   },
 });
 
