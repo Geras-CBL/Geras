@@ -20,6 +20,7 @@ const CaretakerBottomBarLayout = () => {
       )}
       screenOptions={{
         headerShown: false,
+        sceneStyle: { backgroundColor: 'transparent' },
       }}
     >
       <Tabs.Screen name="SeniorManagement" options={{ title: 'Management' }} />

@@ -39,7 +39,7 @@ export default function RootLayout() {
         initialRouteName="index"
         screenOptions={{
           animation: 'fade',
-          contentStyle: { backgroundColor: '#fbfbfb' },
+          contentStyle: { backgroundColor: 'transparent' },
         }}
       >
         <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -49,12 +49,13 @@ export default function RootLayout() {
           options={{
             headerShown: true,
             headerTransparent: true,
+            contentStyle: { backgroundColor: '#fbfbfb' },
             header: () => (
               <Header
                 leftIconName="home"
                 rightIconName="settings"
                 onLeftPress={() => {}}
-                onRightPress={() => {}}
+                onRightPress={() => router.push('/navigation/senior/Settings')}
               />
             ),
           }}
@@ -64,12 +65,13 @@ export default function RootLayout() {
           options={{
             headerShown: true,
             headerTransparent: true,
+            contentStyle: { backgroundColor: '#fbfbfb' },
             header: () => (
               <Header
                 leftIconName="home"
                 rightIconName="settings"
-                onLeftPress={() => {}}
-                onRightPress={() => {}}
+                onLeftPress={() => router.push('/navigation/senior/HomePage')}
+                onRightPress={() => router.push('/navigation/senior/Settings')}
               />
             ),
           }}
@@ -84,6 +86,7 @@ export default function RootLayout() {
           options={{
             headerShown: true,
             headerTransparent: true,
+            contentStyle: { backgroundColor: 'transparent' },
             header: () => (
               <Header
                 leftIconName="arrow-back"
@@ -102,6 +105,7 @@ export default function RootLayout() {
           options={{
             headerShown: true,
             headerTransparent: true,
+            contentStyle: { backgroundColor: 'transparent' },
             header: () => (
               <Header
                 leftIconName="arrow-back"
