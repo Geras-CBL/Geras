@@ -1,11 +1,23 @@
+import TabBar from "@/components/shared/TabBar";
 import { Tabs } from "expo-router";
-import { CaretakerTabBar } from "./CaretakerTabBar";
 
 const CaretakerBottomBarLayout = () => {
   return (
     <Tabs
       initialRouteName="HomePage"
-      tabBar={(props) => <CaretakerTabBar {...props} />}
+      tabBar={(props) => (
+        <TabBar
+          visibleTabNames={[
+            "SeniorManagement",
+            "Requests",
+            "HomePage",
+            "Sensors",
+            "Profile",
+          ]}
+          sidePadding={46}
+          {...props}
+        />
+      )}
       screenOptions={{
         headerShown: false,
       }}

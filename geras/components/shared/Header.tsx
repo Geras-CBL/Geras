@@ -2,16 +2,16 @@ import { MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import GerasLogo from "../../../assets/logo/GerasLogo.svg";
+import GerasLogo from "../../assets/logo/GerasLogo.svg";
 
-interface VolunteerHeaderProps {
+interface HeaderProps {
   leftIconName?: keyof typeof MaterialIcons.glyphMap;
   rightIconName?: keyof typeof MaterialIcons.glyphMap;
   onLeftPress?: () => void;
   onRightPress?: () => void;
 }
 
-export const VolunteerHeader: React.FC<VolunteerHeaderProps> = ({
+const Header: React.FC<HeaderProps> = ({
   leftIconName = "person",
   rightIconName = "notifications",
   onLeftPress,
@@ -41,3 +41,5 @@ export const VolunteerHeader: React.FC<VolunteerHeaderProps> = ({
     </SafeAreaView>
   );
 };
+
+export default Header;

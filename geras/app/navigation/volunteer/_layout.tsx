@@ -1,11 +1,17 @@
+import TabBar from "@/components/shared/TabBar";
 import { Tabs } from "expo-router";
-import { VolunteerTabBar } from "./VolunteerTabBar";
 
 const VolunteerBottomBarLayout = () => {
   return (
     <Tabs
       initialRouteName="HomePage"
-      tabBar={(props) => <VolunteerTabBar {...props} />}
+      tabBar={(props) => (
+        <TabBar
+          visibleTabNames={["RequestsHistory", "HomePage", "Vouchers"]}
+          sidePadding={96}
+          {...props}
+        />
+      )}
       screenOptions={{
         headerShown: false,
       }}

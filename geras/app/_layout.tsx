@@ -6,7 +6,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { ImageBackground } from "react-native";
 import "../global.css";
-import { VolunteerHeader } from "./navigation/volunteer/VolunteerHeader";
+import Header from "@/components/shared/Header";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -43,14 +43,34 @@ export default function RootLayout() {
         }}
       >
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="senior/HomePage" options={{ headerShown: false }} />
+        {/* senior */}
+        <Stack.Screen
+          name="navigation/senior/HomePage"
+          options={{
+            headerShown: true,
+            headerTransparent: true,
+            header: () => (
+              <Header
+                leftIconName="home"
+                rightIconName="settings"
+                onLeftPress={() => {}}
+                onRightPress={() => {}}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="navigation/senior/ErrorPage"
+          options={{ headerShown: false }}
+        />
+        {/* volunteer */}
         <Stack.Screen
           name="navigation/volunteer"
           options={{
             headerShown: true,
             headerTransparent: true,
             header: () => (
-              <VolunteerHeader
+              <Header
                 leftIconName="arrow-back"
                 rightIconName="notifications"
                 onLeftPress={() => {
@@ -61,13 +81,14 @@ export default function RootLayout() {
             ),
           }}
         />
+        {/* caretaker */}
         <Stack.Screen
           name="navigation/caretaker"
           options={{
             headerShown: true,
             headerTransparent: true,
             header: () => (
-              <VolunteerHeader
+              <Header
                 leftIconName="arrow-back"
                 rightIconName="notifications"
                 onLeftPress={() => {

@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { View, TouchableOpacity } from "react-native";
-import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { MaterialIcons } from "@expo/vector-icons";
-import Svg, { Path } from "react-native-svg";
+import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import React, { useEffect, useState } from "react";
+import { TouchableOpacity, View } from "react-native";
 import Animated, {
-  useSharedValue,
   useAnimatedProps,
   useAnimatedStyle,
+  useSharedValue,
   withSpring,
   withTiming,
 } from "react-native-reanimated";
+import Svg, { Path } from "react-native-svg";
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
@@ -25,19 +25,21 @@ const CORNER_RADIUS = 36;
 const CURVE_WIDTH = 88;
 const CURVE_DEPTH = 34;
 
-// This defines the specific tabs you want to show (in the order you want them)
-const VISIBLE_TABS = ["RequestsHistory", "HomePage", "Vouchers"];
-
-export function VolunteerTabBar({
+interface CustomTabBarProps extends BottomTabBarProps {
+  visibleTabNames: string[];
+  sidePadding?: number;
+}
+export default function TabBar({
   state,
-  descriptors,
   navigation,
-}: Readonly<BottomTabBarProps>) {
+  visibleTabNames,
+  sidePadding = 12,
+}: Readonly<CustomTabBarProps>) {
   const [width, setWidth] = useState(0);
 
   // Filter the raw state.routes to only include our 3 visible tabs
   const visibleRoutes = state.routes.filter((route) =>
-    VISIBLE_TABS.includes(route.name)
+    visibleTabNames.includes(route.name)
   );
 
   // If the user is on a hidden page (like "MapRequests"), this will be -1
@@ -107,7 +109,8 @@ export function VolunteerTabBar({
 
   return (
     <View
-      className="absolute bottom-10 left-24 right-24 bg-transparent shadow-lg shadow-black/10"
+      style={{ left: sidePadding, right: sidePadding }}
+      className="absolute bottom-10 bg-transparent shadow-lg shadow-black/10"
       onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
     >
       <View className="absolute top-0 bottom-0 left-0 right-0">
@@ -202,8 +205,20 @@ function IconRenderer({
   let iconName: keyof typeof MaterialIcons.glyphMap;
 
   switch (routeName) {
+    case "SeniorManagement":
+      iconName = "elderly";
+      break;
+    case "Requests":
+      iconName = "confirmation-number";
+      break;
     case "HomePage":
       iconName = "home";
+      break;
+    case "Sensors":
+      iconName = "sensors";
+      break;
+    case "Profile":
+      iconName = "person";
       break;
     case "RequestsHistory":
       iconName = "alarm-on";
