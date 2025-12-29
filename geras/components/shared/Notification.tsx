@@ -95,13 +95,13 @@ export const NotificationCard = ({
           )}
         </View>
 
-        <View className="flex-1 justify-center gap-1">
-          <ThemedText type="subtitle" className="uppercase">
+        <View className="flex-1 justify-center gap-1 pr-4">
+          <ThemedText type="bodyBold" className="uppercase">
             {title}
           </ThemedText>
 
           {typeof description === 'string' ? (
-            <ThemedText type="body" className="w-52 truncate">
+            <ThemedText type="bodyInfo">
               {description}
             </ThemedText>
           ) : (
