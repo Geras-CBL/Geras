@@ -1,8 +1,8 @@
-import { MaterialIcons } from "@expo/vector-icons";
-import React from "react";
-import { TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import GerasLogo from "../../assets/logo/GerasLogo.svg";
+import { MaterialIcons } from '@expo/vector-icons';
+import React from 'react';
+import { TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import GerasLogo from '../../assets/logo/GerasLogo.svg';
 
 interface HeaderProps {
   leftIconName?: keyof typeof MaterialIcons.glyphMap;
@@ -12,17 +12,17 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({
-  leftIconName = "person",
-  rightIconName = "notifications",
+  leftIconName = 'person',
+  rightIconName = 'notifications',
   onLeftPress,
   onRightPress,
 }) => {
   return (
-    <SafeAreaView edges={["top"]} className="bg-transparent w-full">
+    <SafeAreaView edges={['top']} className="w-full bg-transparent">
       <View className="flex-row items-center justify-between px-5">
         <TouchableOpacity
           onPress={onLeftPress}
-          className="p-2 items-center justify-center"
+          className="items-center justify-center p-2"
         >
           <MaterialIcons name={leftIconName} size={28} color="black" />
         </TouchableOpacity>
@@ -33,7 +33,7 @@ const Header: React.FC<HeaderProps> = ({
 
         <TouchableOpacity
           onPress={onRightPress}
-          className="p-2 items-center justify-center"
+          className="items-center justify-center p-2"
         >
           <MaterialIcons name={rightIconName} size={28} color="black" />
         </TouchableOpacity>

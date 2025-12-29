@@ -1,5 +1,5 @@
-import TabBar from "@/components/shared/TabBar";
-import { Tabs } from "expo-router";
+import TabBar from '@/components/shared/TabBar';
+import { Tabs } from 'expo-router';
 
 const VolunteerBottomBarLayout = () => {
   return (
@@ -7,7 +7,7 @@ const VolunteerBottomBarLayout = () => {
       initialRouteName="HomePage"
       tabBar={(props) => (
         <TabBar
-          visibleTabNames={["RequestsHistory", "HomePage", "Vouchers"]}
+          visibleTabNames={['RequestsHistory', 'HomePage', 'Vouchers']}
           sidePadding={96}
           {...props}
         />
@@ -16,9 +16,9 @@ const VolunteerBottomBarLayout = () => {
         headerShown: false,
       }}
     >
-      <Tabs.Screen name="RequestsHistory" options={{ title: "Requests" }} />
-      <Tabs.Screen name="HomePage" options={{ title: "Home" }} />
-      <Tabs.Screen name="Vouchers" options={{ title: "Vouchers" }} />
+      <Tabs.Screen name="RequestsHistory" options={{ title: 'Requests' }} />
+      <Tabs.Screen name="HomePage" options={{ title: 'Home' }} />
+      <Tabs.Screen name="Vouchers" options={{ title: 'Vouchers' }} />
     </Tabs>
   );
 };

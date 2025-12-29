@@ -1,7 +1,7 @@
-import React from "react";
-import { Pressable, View } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-import { ThemedText } from "@/components/ThemedText";
+import React from 'react';
+import { Pressable, View } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import { ThemedText } from '@/components/ThemedText';
 
 interface SensorProps {
   name: string;
@@ -10,27 +10,35 @@ interface SensorProps {
   onPress: () => void;
 }
 
-const SensorComponent = ({ name, iconName, isActive, onPress }: SensorProps) => {
+const SensorComponent = ({
+  name,
+  iconName,
+  isActive,
+  onPress,
+}: SensorProps) => {
   return (
-    <View className="w-[48%] mb-4">
+    <View className="mb-4 w-[48%]">
       <Pressable
         onPress={onPress}
-        className={`w-full h-32 flex-row justify-center items-center gap-2 rounded-3xl
-          ${isActive
-            ? "bg-primary"
-            : "bg-white border border-slate-200 shadow-sm shadow-black/5"
-          }`}
-        style={({ pressed }) => ({ opacity: pressed ? 0.8 : 1, elevation: isActive ? 0 : 3 })}
+        className={`h-32 w-full flex-row items-center justify-center gap-2 rounded-3xl ${
+          isActive
+            ? 'bg-primary'
+            : 'border border-slate-200 bg-white shadow-sm shadow-black/5'
+        }`}
+        style={({ pressed }) => ({
+          opacity: pressed ? 0.8 : 1,
+          elevation: isActive ? 0 : 3,
+        })}
       >
         <MaterialIcons
           name={iconName}
           size={24}
-          color={isActive ? "#FFFFFF" : "#000000"}
+          color={isActive ? '#FFFFFF' : '#000000'}
         />
-        
+
         <ThemedText
           type="bodyBold"
-          className={`${isActive ? "text-white" : "text-black"}`}
+          className={`${isActive ? 'text-white' : 'text-black'}`}
         >
           {name}
         </ThemedText>

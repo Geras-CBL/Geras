@@ -1,12 +1,12 @@
-import { Rubik_400Regular, Rubik_700Bold } from "@expo-google-fonts/rubik";
-import { useFonts } from "expo-font";
-import { Stack, useRouter } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
-import { ImageBackground } from "react-native";
-import "../global.css";
-import Header from "@/components/shared/Header";
+import { Rubik_400Regular, Rubik_700Bold } from '@expo-google-fonts/rubik';
+import { useFonts } from 'expo-font';
+import { Stack, useRouter } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
+import { ImageBackground } from 'react-native';
+import '../global.css';
+import Header from '@/components/shared/Header';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -14,8 +14,8 @@ export default function RootLayout() {
   const router = useRouter();
   const [loaded] = useFonts({
     Rubik: Rubik_400Regular,
-    "Rubik-Bold": Rubik_700Bold,
-    MonoTrustDisplay: require("../assets/fonts/MomoTrustDisplay-Regular.ttf"),
+    'Rubik-Bold': Rubik_700Bold,
+    MonoTrustDisplay: require('../assets/fonts/MomoTrustDisplay-Regular.ttf'),
   });
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function RootLayout() {
 
   return (
     <ImageBackground
-      source={require("../assets/images/background.png")}
+      source={require('../assets/images/background.png')}
       style={{ flex: 1 }}
       resizeMode="cover"
     >
@@ -38,14 +38,29 @@ export default function RootLayout() {
       <Stack
         initialRouteName="index"
         screenOptions={{
-          animation: "fade",
-          contentStyle: { backgroundColor: "" },
+          animation: 'fade',
+          contentStyle: { backgroundColor: '#fbfbfb' },
         }}
       >
         <Stack.Screen name="index" options={{ headerShown: false }} />
         {/* senior */}
         <Stack.Screen
           name="navigation/senior/HomePage"
+          options={{
+            headerShown: true,
+            headerTransparent: true,
+            header: () => (
+              <Header
+                leftIconName="home"
+                rightIconName="settings"
+                onLeftPress={() => {}}
+                onRightPress={() => {}}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="navigation/senior/Health"
           options={{
             headerShown: true,
             headerTransparent: true,
@@ -76,7 +91,7 @@ export default function RootLayout() {
                 onLeftPress={() => {
                   router.back();
                 }}
-                onRightPress={() => router.push("../shared/Notifications")}
+                onRightPress={() => router.push('../shared/Notifications')}
               />
             ),
           }}
@@ -94,7 +109,7 @@ export default function RootLayout() {
                 onLeftPress={() => {
                   router.back();
                 }}
-                onRightPress={() => router.push("../shared/Notifications")}
+                onRightPress={() => router.push('../shared/Notifications')}
               />
             ),
           }}
