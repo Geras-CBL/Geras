@@ -1,76 +1,69 @@
-import { Pressable, View, TextInput } from "react-native";
-import {LinearGradient } from 'expo-linear-gradient';
+import { Pressable, View, TextInput } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { ThemedText } from '@/components/ThemedText';
 import MainLogo from '../../../assets/logo/Main_Logo.svg';
 
 export default function Home() {
   return (
-
-     <View className="flex-1">
+    <View className="flex-1">
       {/* Background Gradient */}
       <LinearGradient
-        className="absolute left-0 top-0 w-full h-full"
+        className="absolute left-0 top-0 h-full w-full"
         locations={[0, 1]}
         colors={['#6b8548', '#205b2d']}
-        start={{ x: 0, y: 0 }} 
+        start={{ x: 0, y: 0 }}
         end={{ x: 0.3, y: 1 }}
       />
 
       {/* Painel Gráfico (Imagens) */}
-        <View className="mt-[42px] w-[116px] h-[162px] relative items-center justify-center self-center">
+      <View className="relative mt-[42px] h-[162px] w-[116px] items-center justify-center self-center">
+        <MainLogo width={116} height={162} />
+      </View>
 
-          <MainLogo width={116} height={162} />
-          
-        </View>
+      {/* Título */}
+      <ThemedText
+        type="title"
+        className="mt-[48px] px-8 text-left text-neutralLight"
+      >
+        Insira os seus dados
+      </ThemedText>
 
-        {/* Título */}
-        <ThemedText type="title" className="mt-[48px] text-neutralLight text-left px-8">
-          Insira os seus dados
-        </ThemedText>
-
-      <View className="flex-1 items-center w-full">
-        
-
+      <View className="w-full flex-1 items-center">
         {/* Formulário (Inputs)*/}
-        <View className="w-full px-8 mt-10 gap-y-7">
-          
+        <View className="mt-10 w-full gap-y-7 px-8">
           <TextInput
-            className="w-full h-12 bg-neutralLight/40 rounded-2xl px-4 text-neutralLight text-base"
-            placeholder="Nome" 
+            className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
+            placeholder="Nome"
             numberOfLines={1}
             maxLength={60}
             placeholderTextColor="#fbfbfb"
           />
           <TextInput
-            className="w-full h-12 bg-neutralLight/40 rounded-2xl px-4 text-neutralLight text-base"
-            placeholder="Email" 
+            className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
+            placeholder="Email"
             numberOfLines={1}
             maxLength={40}
             placeholderTextColor="#fbfbfb"
           />
           <TextInput
-            className="w-full h-12 bg-neutralLight/40 rounded-2xl px-4 text-neutralLight text-base"
+            className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
             numberOfLines={1}
             maxLength={15}
-            placeholder="Palavra-passe" 
+            placeholder="Palavra-passe"
             placeholderTextColor="#fbfbfb"
           />
-
-
-        </View> 
+        </View>
 
         {/* Botão Sign Up */}
-        <Pressable 
-          className="mt-[90px] w-[130px] h-[39px] border-[2.5px] border-[#fbfbfb] rounded-2xl items-center justify-center"
+        <Pressable
+          className="mt-[90px] h-[39px] w-[130px] items-center justify-center rounded-2xl border-[2.5px] border-[#fbfbfb]"
           onPress={() => {}}
         >
-          <ThemedText type="bigButton" className="text-neutralLight font-momo">
+          <ThemedText type="bigButton" className="font-momo text-neutralLight">
             Sign Up
           </ThemedText>
         </Pressable>
-
       </View>
     </View>
-
   );
 }
