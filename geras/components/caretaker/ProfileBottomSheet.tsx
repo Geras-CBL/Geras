@@ -7,45 +7,21 @@ import {
 } from '@gorhom/bottom-sheet';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
+import { profilesData, SeniorProfile } from '@/data/profilesData';
 
-interface SeniorProfile {
-  id: string;
-  name: string;
-  age: number;
-  image: any;
-  selected: boolean;
-}
-
-const profiles: SeniorProfile[] = [
-  {
-    id: '1',
-    name: 'António Silva',
-    age: 74,
-    // image: require("@/assets/images/senior-placeholder.png"),
-    image: null,
-    selected: true,
-  },
-  {
-    id: '2',
-    name: 'Maria Silva',
-    age: 73,
-    // image: require("@/assets/images/senior-placeholder.png"),
-    image: null,
-    selected: false,
-  },
-];
-
-export type ProfileBottomSheetRef = BottomSheetModal;
-
-interface ProfileBottomSheetProps {
+type ProfileBottomSheetRef = BottomSheetModal;
+type ProfileBottomSheetProps = {
   onSelectProfile: (profile: { name: string; age: number }) => void;
-}
+};
 
 const ProfileBottomSheet = React.forwardRef<
   ProfileBottomSheetRef,
   ProfileBottomSheetProps
 >(({ onSelectProfile }, ref) => {
   const snapPoints = React.useMemo(() => ['55%'], []);
+
+  const [profilesState, setProfilesState] =
+    React.useState<SeniorProfile[]>(profilesData);
 
   const renderBackdrop = React.useCallback(
     (props: any) => (
@@ -54,13 +30,22 @@ const ProfileBottomSheet = React.forwardRef<
         disappearsOnIndex={-1}
         appearsOnIndex={0}
         opacity={0.5}
+        pressBehavior="close"
       />
     ),
     [],
   );
 
-  const handleProfileSelect = (profile: SeniorProfile) => {
-    onSelectProfile({ name: profile.name, age: profile.age });
+  const handleProfileSelect = (selectedProfile: SeniorProfile) => {
+    setProfilesState((prev) =>
+      prev.map((p) => ({
+        ...p,
+        selected: p.id === selectedProfile.id,
+      })),
+    );
+
+    onSelectProfile({ name: selectedProfile.name, age: selectedProfile.age });
+
     const modalRef = ref as React.RefObject<BottomSheetModal>;
     modalRef.current?.dismiss();
   };
@@ -86,7 +71,7 @@ const ProfileBottomSheet = React.forwardRef<
         </ThemedText>
 
         <View className="gap-5">
-          {profiles.map((profile) => (
+          {profilesState.map((profile) => (
             <TouchableOpacity
               key={profile.id}
               onPress={() => handleProfileSelect(profile)}

@@ -2,12 +2,19 @@ import * as React from 'react';
 import { View, Pressable } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
+import { SeniorProfile } from '@/data/profilesData';
 
 interface ProfilePickerProps {
   onPress?: () => void;
+  profile: SeniorProfile;
 }
 
-const ProfilePicker: React.FC<ProfilePickerProps> = ({ onPress }) => {
+const ProfilePicker: React.FC<ProfilePickerProps> = ({ onPress, profile }) => {
+  const initials = profile.name
+    .split(' ')
+    .map((n) => n[0])
+    .join('');
+
   return (
     <Pressable
       onPress={onPress}
@@ -17,10 +24,10 @@ const ProfilePicker: React.FC<ProfilePickerProps> = ({ onPress }) => {
       })}
     >
       <View className="h-[50px] w-[50px] items-center justify-center rounded-full border border-secondary bg-secondary/50">
-        <ThemedText type="subtitle">AS</ThemedText>
+        <ThemedText type="subtitle">{initials}</ThemedText>
       </View>
 
-      <ThemedText type="subtitle">António Silva</ThemedText>
+      <ThemedText type="subtitle">{profile.name}</ThemedText>
 
       <MaterialIcons name="keyboard-arrow-down" size={18} color="#1d1d1b" />
     </Pressable>

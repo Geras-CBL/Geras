@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { View, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import ProfilePicker from '@/components/caretaker/ProfilePicker';
 import Resume from '@/components/caretaker/Resume';
 import SensorCardInfo from '@/components/caretaker/SensorCardInfo';
@@ -11,16 +9,21 @@ import {
   NotificationCard,
   ActionButton,
 } from '@/components/shared/Notification';
-import ProfileBottomSheet, {
-  ProfileBottomSheetRef,
-} from '@/components/caretaker/ProfileBottomSheet';
+import ProfileBottomSheet from '@/components/caretaker/ProfileBottomSheet';
+import { profilesData, SeniorProfile } from '@/data/profilesData';
 
 export default function HomePage() {
-  const sheetRef = React.useRef<ProfileBottomSheetRef>(null);
+  const sheetRef = React.useRef<any>(null);
+
+  const [selectedProfile, setSelectedProfile] = React.useState<SeniorProfile>(
+    profilesData.find((p) => p.selected) || profilesData[0],
+  );
 
   const handleSelectProfile = (profile: { name: string; age: number }) => {
     console.log('Perfil selecionado:', profile);
-    sheetRef.current?.dismiss();
+
+    const newSelected = profilesData.find((p) => p.name === profile.name);
+    if (newSelected) setSelectedProfile(newSelected);
   };
 
   const handleOpenSheet = () => {
@@ -28,58 +31,54 @@ export default function HomePage() {
   };
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <BottomSheetModalProvider>
-        <View style={{ flex: 1 }}>
-          <SafeAreaView edges={['top']} className="flex-1 pt-16">
-            <ScrollView
-              className="flex-1 p-1 px-6"
-              showsVerticalScrollIndicator={false}
-            >
-              <ProfilePicker onPress={handleOpenSheet} />
+    <View style={{ flex: 1 }}>
+      <SafeAreaView edges={['top']} className="flex-1 pt-16">
+        <ScrollView
+          className="flex-1 p-1 px-6"
+          showsVerticalScrollIndicator={false}
+        >
+          <ProfilePicker onPress={handleOpenSheet} profile={selectedProfile} />
 
-              <View className="p-1">
-                <Resume />
+          <View className="p-1">
+            <Resume />
+          </View>
+
+          <View>
+            <SectionTitle title="Notificações">
+              <View className="mb-6 w-full">
+                <NotificationCard
+                  variant="alert"
+                  title="Aviso"
+                  iconName="warning"
+                  description="Queda na sala há 4 min"
+                  rightContent={
+                    <>
+                      <ActionButton icon="call" />
+                      <ActionButton icon="videocam" />
+                    </>
+                  }
+                />
               </View>
+            </SectionTitle>
+          </View>
 
-              <View>
-                <SectionTitle title="Notificações">
-                  <View className="mb-6 w-full">
-                    <NotificationCard
-                      variant="alert"
-                      title="Aviso"
-                      iconName="warning"
-                      description="Queda na sala há 4 min"
-                      rightContent={
-                        <>
-                          <ActionButton icon="call" />
-                          <ActionButton icon="videocam" />
-                        </>
-                      }
-                    />
-                  </View>
-                </SectionTitle>
+          <View className="mt-9">
+            <SectionTitle title="Sensores">
+              <View className="mt-2 w-full flex-col gap-4">
+                <SensorCardInfo status="motion" sensorCount={3} />
+                <SensorCardInfo status="noMotion" sensorCount={2} />
               </View>
+            </SectionTitle>
+          </View>
 
-              <View className="mt-9">
-                <SectionTitle title="Sensores">
-                  <View className="mt-2 w-full flex-col gap-4">
-                    <SensorCardInfo status="motion" sensorCount={3} />
-                    <SensorCardInfo status="noMotion" sensorCount={2} />
-                  </View>
-                </SectionTitle>
-              </View>
+          <View className="h-40" />
+        </ScrollView>
+      </SafeAreaView>
 
-              <View className="h-40" />
-            </ScrollView>
-          </SafeAreaView>
-
-          <ProfileBottomSheet
-            ref={sheetRef}
-            onSelectProfile={handleSelectProfile}
-          />
-        </View>
-      </BottomSheetModalProvider>
-    </GestureHandlerRootView>
+      <ProfileBottomSheet
+        ref={sheetRef}
+        onSelectProfile={handleSelectProfile}
+      />
+    </View>
   );
 }
