@@ -35,7 +35,7 @@ export default function Requests() {
               <View className="mb-6 gap-2">
                 <ThemedText type="bodyBold">{request.title}</ThemedText>
 
-                <ThemedText type="body">{request.subtitle}</ThemedText>
+                <ThemedText type="bodySmall">{request.subtitle}</ThemedText>
               </View>
 
               <View className="flex-row gap-6">
