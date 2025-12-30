@@ -23,34 +23,20 @@ const SensorCardInfo = ({
   return (
     <Pressable
       onPress={onPress}
-      className="
-        w-full flex-row items-center justify-between
-        p-4 gap-[15px]
-        bg-neutralLight
-        rounded-2xl
-      "
+      className="w-full flex-row items-center justify-between gap-[15px] rounded-2xl bg-neutralLight p-4"
       style={{ elevation: 10 }} // Android
     >
-      <View className="flex-row h-[72px]">
-        <View className="self-stretch justify-center px-1 py-2 gap-2">
-          <ThemedText
-            type="bodyBold"
-            className="uppercase font-semibold"
-          >
+      <View className="h-[72px] flex-row">
+        <View className="justify-center gap-2 self-stretch px-1 py-2">
+          <ThemedText type="bodyBold" className="font-semibold uppercase">
             {data.title}
           </ThemedText>
 
-          <ThemedText type="bodyInfo">
-            {data.subtitle(sensorCount)}
-          </ThemedText>
+          <ThemedText type="bodyInfo">{data.subtitle(sensorCount)}</ThemedText>
         </View>
       </View>
 
-      <MaterialIcons
-        name="keyboard-arrow-right"
-        size={28}
-        color="#1d1d1b"
-      />
+      <MaterialIcons name="keyboard-arrow-right" size={28} color="#1d1d1b" />
     </Pressable>
   );
 };

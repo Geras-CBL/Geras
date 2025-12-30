@@ -5,13 +5,15 @@ import ProfilePicker from '@/components/caretaker/ProfilePicker';
 import Resume from '@/components/caretaker/Resume';
 import SensorCardInfo from '@/components/caretaker/SensorCardInfo';
 import SectionTitle from '@/components/shared/SectionTitle';
-import { NotificationCard, ActionButton } from '@/components/shared/Notification';
+import {
+  NotificationCard,
+  ActionButton,
+} from '@/components/shared/Notification';
 
 export default function HomePage() {
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-16">
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-
         <View className="p-1">
           <ProfilePicker />
         </View>
@@ -22,7 +24,7 @@ export default function HomePage() {
 
         <View>
           <SectionTitle title="Notificações">
-            <View className="w-full mb-6">
+            <View className="mb-6 w-full">
               <NotificationCard
                 variant="alert"
                 title="Aviso"
@@ -41,7 +43,7 @@ export default function HomePage() {
 
         <View className="mt-6">
           <SectionTitle title="Sensores">
-            <View className="flex-col gap-4 mt-2">
+            <View className="mt-2 flex-col gap-4">
               <SensorCardInfo status="motion" sensorCount={3} />
               <SensorCardInfo status="noMotion" sensorCount={2} />
             </View>
