@@ -8,7 +8,7 @@ const Resume = () => {
     <SafeAreaView className="flex-1">
       <View
         className="w-full flex-row items-center rounded-2xl bg-neutralLight px-4 py-2"
-        style={{ elevation: 10 }}
+        style={{ elevation: 8 }}
       >
         <View className="flex-1 flex-row">
           <View className="justify-center self-stretch px-1 py-2">

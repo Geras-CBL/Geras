@@ -24,13 +24,10 @@ const SensorCardInfo = ({
     <Pressable
       onPress={onPress}
       className="w-full flex-row items-center justify-between gap-[15px] rounded-2xl bg-neutralLight p-4"
-      style={{ elevation: 10 }} // Android
     >
-      <View className="h-[72px] flex-row">
+      <View className="h-20 flex-row">
         <View className="justify-center gap-2 self-stretch px-1 py-2">
-          <ThemedText type="bodyBold" className="font-semibold uppercase">
-            {data.title}
-          </ThemedText>
+          <ThemedText type="bodyBold">{data.title}</ThemedText>
 
           <ThemedText type="bodyInfo">{data.subtitle(sensorCount)}</ThemedText>
         </View>

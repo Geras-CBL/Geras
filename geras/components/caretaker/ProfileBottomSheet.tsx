@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, TouchableOpacity, Image } from 'react-native';
 import {
   BottomSheetModal,
   BottomSheetView,
@@ -76,32 +76,36 @@ const ProfileBottomSheet = React.forwardRef<
               key={profile.id}
               onPress={() => handleProfileSelect(profile)}
               activeOpacity={0.8}
-              className={`h-[148px] flex-row items-center justify-between rounded-2xl p-6 shadow-sm ${
+              className={`h-42 flex-row items-center justify-between rounded-2xl p-6 shadow-sm ${
                 profile.selected
-                  ? 'bg-[#2A793B]/40 shadow-green-900/20'
-                  : 'bg-[#FBFBFB] shadow-black/10'
+                  ? 'bg-primary/40 shadow-green-200/20'
+                  : 'bg-neutralLight shadow-black/10'
               }`}
             >
               <View className="flex-row items-center gap-5">
                 {profile.image ? (
                   <Image
                     source={profile.image}
-                    className="h-[100px] w-[100px] rounded-lg bg-gray-300"
+                    className="h-42 w-42 rounded-lg bg-gray-300"
                     resizeMode="cover"
                   />
                 ) : (
-                  <View className="h-[100px] w-[100px] items-center justify-center rounded-lg bg-gray-200">
+                  <View className="h-42 w-42 items-center justify-center rounded-lg bg-gray-200">
                     <Ionicons name="person" size={80} color="#205a2d" />
                   </View>
                 )}
 
-                <View className="h-[94px] justify-center gap-2">
-                  <Text className="font-[Rubik-Bold] text-base font-semibold uppercase text-[#1d1d1b]">
+                <View className="h-42 justify-center gap-2">
+                  <ThemedText
+                    type="bodyBold"
+                    className="uppercase text-neutral"
+                  >
                     {profile.name}
-                  </Text>
-                  <Text className="font-[Rubik] text-sm text-[#1d1d1b]">
+                  </ThemedText>
+
+                  <ThemedText type="bodyInfo" className="text-neutral">
                     {profile.age} anos
-                  </Text>
+                  </ThemedText>
                 </View>
               </View>
 

@@ -39,7 +39,7 @@ export default function HomePage() {
         >
           <ProfilePicker onPress={handleOpenSheet} profile={selectedProfile} />
 
-          <View className="p-1">
+          <View className="mb-1 p-1">
             <Resume />
           </View>
 
@@ -62,7 +62,7 @@ export default function HomePage() {
             </SectionTitle>
           </View>
 
-          <View className="mt-9">
+          <View className="mt-6">
             <SectionTitle title="Sensores">
               <View className="mt-2 w-full flex-col gap-4">
                 <SensorCardInfo status="motion" sensorCount={3} />
