@@ -7,7 +7,7 @@ const Resume = () => {
   return (
     <SafeAreaView className="flex-1">
       <View
-        className="w-full flex-row items-center rounded-3xl bg-neutralLight px-4 py-2"
+        className="w-full flex-row items-center rounded-2xl bg-neutralLight px-4 py-2"
         style={{ elevation: 10 }}
       >
         <View className="flex-1 flex-row">

@@ -3,11 +3,18 @@ import { View, Pressable } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
 
-const ProfilePicker = () => {
+interface ProfilePickerProps {
+  onPress?: () => void;
+}
+
+const ProfilePicker: React.FC<ProfilePickerProps> = ({ onPress }) => {
   return (
     <Pressable
-      onPress={() => {}}
+      onPress={onPress}
       className="w-full flex-1 flex-row items-center gap-2"
+      style={({ pressed }) => ({
+        opacity: pressed ? 0.7 : 1,
+      })}
     >
       <View className="h-[50px] w-[50px] items-center justify-center rounded-full border border-secondary bg-secondary/50">
         <ThemedText type="subtitle">AS</ThemedText>
