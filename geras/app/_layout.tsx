@@ -77,6 +77,22 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
+          name="navigation/senior/RequestHelp"
+          options={{
+            headerShown: true,
+            headerTransparent: true,
+            contentStyle: { backgroundColor: '#fbfbfb' },
+            header: () => (
+              <Header
+                leftIconName="home"
+                rightIconName="settings"
+                onLeftPress={() => router.push('/navigation/senior/HomePage')}
+                onRightPress={() => router.push('/navigation/senior/Settings')}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
           name="navigation/senior/ErrorPage"
           options={{ headerShown: false }}
         />
