@@ -88,53 +88,55 @@ export default function HelpButton() {
             </View>
           </Animated.View>
         ) : (
-          <Animated.View
-            key="open-chat"
-            entering={FadeIn.duration(150).delay(25)}
-            exiting={FadeOut.duration(80)}
-            className="w-5/6"
-          >
-            <View className="w-full rounded-3xl bg-white px-6 pb-10 pt-12 shadow-2xl">
-              <View className="absolute -top-8 left-0 right-0 items-center justify-center">
-                <View className="absolute top-2 h-20 w-20 rounded-full bg-white" />
-
-                <View className="z-10 h-16 w-16 items-center justify-center rounded-full bg-primary shadow-sm">
-                  <MaterialIcons name="question-mark" size={32} color="white" />
-                </View>
-              </View>
-
-              <TouchableOpacity
-                onPress={toggleOpen}
-                className="absolute right-6 top-6 rounded-full bg-gray-100 p-2"
-              >
-                <MaterialIcons name="close" size={24} color="black" />
-              </TouchableOpacity>
-
-              <View className="w-full gap-6">
-                <View className="mt-2 self-start rounded-2xl rounded-tl-none bg-gray-200 px-6 py-4">
-                  <ThemedText className="text-base font-medium text-gray-700">
-                    Olá! Como posso ajudar?
-                  </ThemedText>
-                </View>
-
-                <TouchableOpacity
-                  className="w-full flex-row items-center justify-center gap-3 rounded-2xl bg-primary py-4 shadow-md"
-                  activeOpacity={0.8}
-                >
-                  <ThemedText className="text-lg font-bold text-white">
-                    Pressione aqui para falar
-                  </ThemedText>
-                  <MaterialIcons
-                    name="record-voice-over"
-                    size={24}
-                    color="white"
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Animated.View>
+          <HelpContent toggleOpen={toggleOpen} />
         )}
       </Animated.View>
     </>
   );
 }
+
+export const HelpContent = ({ toggleOpen }: { toggleOpen: () => void }) => {
+  return (
+    <Animated.View
+      key="open-chat"
+      entering={FadeIn.duration(150).delay(25)}
+      exiting={FadeOut.duration(80)}
+      className="w-5/6"
+    >
+      <View className="w-full rounded-3xl bg-white px-6 pb-10 pt-12 shadow-2xl">
+        <View className="absolute -top-8 left-0 right-0 items-center justify-center">
+          <View className="absolute top-2 h-20 w-20 rounded-full bg-white" />
+
+          <View className="z-10 h-16 w-16 items-center justify-center rounded-full bg-primary shadow-sm">
+            <MaterialIcons name="question-mark" size={32} color="white" />
+          </View>
+        </View>
+
+        <TouchableOpacity
+          onPress={toggleOpen}
+          className="absolute right-6 top-6 rounded-full bg-gray-100 p-2"
+        >
+          <MaterialIcons name="close" size={24} color="black" />
+        </TouchableOpacity>
+
+        <View className="w-full gap-6">
+          <View className="mt-2 self-start rounded-2xl rounded-tl-none bg-gray-200 px-6 py-4">
+            <ThemedText className="text-base font-medium text-gray-700">
+              Olá! Como posso ajudar?
+            </ThemedText>
+          </View>
+
+          <TouchableOpacity
+            className="w-full flex-row items-center justify-center gap-3 rounded-2xl bg-primary py-4 shadow-md"
+            activeOpacity={0.8}
+          >
+            <ThemedText className="text-lg font-bold text-white">
+              Pressione aqui para falar
+            </ThemedText>
+            <MaterialIcons name="record-voice-over" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Animated.View>
+  );
+};

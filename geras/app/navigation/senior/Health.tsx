@@ -9,6 +9,9 @@ import { useRouter } from 'expo-router';
 import { MedicationSchedule } from '@/components/senior/MedicineDrawer';
 import { ASSISTED_LIVING_DATA } from '@/data/assistedLivingData';
 import SectionTitle from '@/components/shared/SectionTitle';
+import BottomActions from '@/components/senior/BottomActions';
+import Button from '@/components/shared/Button';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function Health() {
   const router = useRouter();
@@ -17,7 +20,7 @@ export default function Health() {
     <SafeAreaView edges={['top']} className="flex-1">
       <ScrollView
         className="flex-1"
-        contentContainerClassName="items-center gap-10 px-6 pt-24 pb-20"
+        contentContainerClassName="items-center gap-10 px-6 pt-24 pb-44"
         showsVerticalScrollIndicator={false}
       >
         <SectionTitle title={'Notificações'}>
@@ -52,7 +55,15 @@ export default function Health() {
           </View>
         </SectionTitle>
         <MedicationSchedule />
+        <Button
+          title="Fazer pedido farmácia"
+          icon={<MaterialCommunityIcons name="pill" size={24} color="#ffff" />}
+          onPress={() => {
+            router.push('./PharmacyShopping');
+          }}
+        />
       </ScrollView>
+      <BottomActions />
     </SafeAreaView>
   );
 }

@@ -4,8 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/ThemedText';
 import { pedidosData, type Pedido } from '@/data/requestData';
 import SectionTitle from '@/components/shared/SectionTitle';
-import ActionButton from '@/components/caretaker/ActionButton';
 import SearchBar from '@/components/caretaker/SearchBar';
+import Button from '@/components/shared/Button';
 
 export default function Requests() {
   const [requests] = useState<Pedido[]>(pedidosData);
@@ -22,34 +22,30 @@ export default function Requests() {
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
         <SectionTitle title="Pedidos de António Silva" />
 
-        {/* Search */}
         <View className="mb-8 mt-8">
           <SearchBar searchValue={search} onSearchChange={setSearch} />
         </View>
 
-        {/* Lista de pedidos */}
         <View className="gap-6">
           {filteredRequests.map((request) => (
             <View
               key={request.id}
-              className="rounded-xl bg-white p-4 shadow-md"
+              className="rounded-2xl bg-white p-6 shadow-md"
             >
-              {/* Conteúdo */}
-              <View className="mb-6 gap-1">
+              <View className="mb-6 gap-2">
                 <ThemedText type="bodyBold">{request.title}</ThemedText>
 
                 <ThemedText type="bodySmall">{request.subtitle}</ThemedText>
               </View>
 
-              {/* Ações */}
-              <View className="flex-row gap-3">
-                <ActionButton
+              <View className="flex-row gap-6">
+                <Button
                   title="Reencaminhar"
                   variant="outlined"
                   className="flex-1"
                   onPress={() => console.log('Reencaminhar', request.id)}
                 />
-                <ActionButton
+                <Button
                   title="Aceitar Pedido"
                   variant="default"
                   className="flex-1"
