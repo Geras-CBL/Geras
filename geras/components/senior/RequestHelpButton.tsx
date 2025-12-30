@@ -19,7 +19,7 @@ export default function RequestHelpButton({
     <TouchableOpacity
       activeOpacity={0.8}
       className="flex-row items-center gap-6 rounded-3xl bg-primary p-8"
-      onPress={() => router.push(route  as Route)}
+      onPress={() => router.push(route as Route)}
     >
       <MaterialIcons name={iconName} size={52} color="#fbfbfb" />
       <ThemedText type="subtitle" className="text-neutralLight">
