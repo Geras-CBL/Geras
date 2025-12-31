@@ -12,7 +12,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   onSearchChange,
 }) => {
   return (
-    <View className="h-16 w-full flex-row items-center rounded-full bg-white px-4">
+    <View className="h-16 w-full flex-row items-center rounded-full bg-white px-4 shadow-lg">
       <MaterialIcons
         name="search"
         size={22}
