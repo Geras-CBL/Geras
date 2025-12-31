@@ -30,15 +30,15 @@ export default function Requests() {
           {filteredRequests.map((request) => (
             <View
               key={request.id}
-              className="rounded-2xl bg-white p-6 shadow-md"
+              className="rounded-2xl bg-white p-5 shadow-md"
             >
-              <View className="mb-6 gap-2">
+              <View className="mb-6 gap-1">
                 <ThemedText type="bodyBold">{request.title}</ThemedText>
 
                 <ThemedText type="bodySmall">{request.subtitle}</ThemedText>
               </View>
 
-              <View className="flex-row gap-6">
+              <View className="flex-row gap-3">
                 <Button
                   title="Reencaminhar"
                   variant="outlined"
