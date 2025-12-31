@@ -21,7 +21,6 @@ export default function HomePage() {
 
   const handleSelectProfile = (profile: { name: string; age: number }) => {
     console.log('Perfil selecionado:', profile);
-
     const newSelected = profilesData.find((p) => p.name === profile.name);
     if (newSelected) setSelectedProfile(newSelected);
   };
@@ -34,16 +33,15 @@ export default function HomePage() {
     <View style={{ flex: 1 }}>
       <SafeAreaView edges={['top']} className="flex-1 pt-16">
         <ScrollView
-          className="flex-1 p-1 px-6"
+          className="flex-1"
+          contentContainerClassName="p-1 px-6 gap-6 pb-10"
           showsVerticalScrollIndicator={false}
         >
           <ProfilePicker onPress={handleOpenSheet} profile={selectedProfile} />
 
-          <View className="mb-1 p-1">
-            <Resume />
-          </View>
+          <Resume />
 
-          <View>
+          <View className="pt-8">
             <SectionTitle title="Notificações">
               <View className="mb-6 w-full">
                 <NotificationCard
@@ -64,14 +62,12 @@ export default function HomePage() {
 
           <View className="mt-6">
             <SectionTitle title="Sensores">
-              <View className="mt-2 w-full flex-col gap-4">
+              <View className="mt-2 gap-4">
                 <SensorCardInfo status="motion" sensorCount={3} />
                 <SensorCardInfo status="noMotion" sensorCount={2} />
               </View>
             </SectionTitle>
           </View>
-
-          <View className="h-40" />
         </ScrollView>
       </SafeAreaView>
 
