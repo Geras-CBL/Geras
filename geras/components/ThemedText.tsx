@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   body: {
     fontSize: 16,
     fontFamily: "Rubik",
-    lineHeight: 24,
+    lineHeight: 24, // TODO: Check
   },
   bodyBold: {
     fontSize: 16,
