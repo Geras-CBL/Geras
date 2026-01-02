@@ -5,8 +5,8 @@ export type ItemDTO = {
 
 export async function fetchItems(): Promise<ItemDTO[]> {
   return [
-    { id: '1', name: 'Item lista 1' },
-    { id: '2', name: 'Item lista 2' },
-    { id: '3', name: 'Item lista 3' },
+    { id: '1', name: 'Atum em lata (em água) - 4 unidades' },
+    { id: '2', name: 'Ovos - 12 unidades' },
+    { id: '3', name: 'Peito de frango - 500 g' },
   ];
 }

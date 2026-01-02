@@ -4,7 +4,7 @@ import { ThemedText } from '@/components/ThemedText';
 
 type CardAesProps = {
   title: string;
-  time: string;
+  time: string | React.ReactNode;
   actions?: React.ReactNode;
 };
 
@@ -21,9 +21,13 @@ const MedicineInfo = ({ title, time, actions }: CardAesProps) => {
         </ThemedText>
 
         <View className="flex-row items-center rounded-2xl bg-neutralLight px-3 py-2">
-          <ThemedText type="bodyInfo" className="text-primary">
-            {time}
-          </ThemedText>
+          {typeof time === 'string' ? (
+            <ThemedText type="bodyInfo" className="text-primary">
+              {time}
+            </ThemedText>
+          ) : (
+            time
+          )}
         </View>
       </View>
 
