@@ -129,6 +129,10 @@ export default function RootLayout() {
                 }}
               />
               <Stack.Screen
+                name="navigation/senior/RequestDetails"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
                 name="navigation/senior/ErrorPage"
                 options={{ headerShown: false }}
               />
