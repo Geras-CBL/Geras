@@ -168,7 +168,7 @@ export default function Requests() {
   };
 
   return (
-    <SafeAreaView edges={['top']} className="flex-1 gap-8 px-10 pb-56">
+    <SafeAreaView edges={['top']} className="flex-1 gap-8 px-6 pb-56">
       <View className="pb-4 pt-24">
         <SectionTitle title="Pedir Ajuda" />
         <View className="mt-2">
