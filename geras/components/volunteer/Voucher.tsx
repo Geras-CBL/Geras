@@ -1,6 +1,6 @@
-import React from "react";
-import { View, Pressable } from "react-native";
-import { ThemedText } from "@/components/ThemedText";
+import React from 'react';
+import { View, Pressable } from 'react-native';
+import { ThemedText } from '@/components/ThemedText';
 
 // Props para o componente Voucher
 interface VoucherProps {
@@ -12,68 +12,74 @@ interface VoucherProps {
   onPress: () => void; // Função para abrir a bottom sheet
 }
 
-const Voucher = ({  
-name_store,
-address, 
-value, 
-currentTasks, 
-totalTasks, 
-  onPress 
+const Voucher = ({
+  name_store,
+  address,
+  value,
+  currentTasks,
+  totalTasks,
+  onPress,
 }: VoucherProps) => {
-
   // Calcula a percentagem para a barra de progresso
   const progressPercentage = Math.min((currentTasks / totalTasks) * 100, 100);
 
   return (
-    <Pressable 
+    <Pressable
       onPress={onPress}
-      className="bg-white p-4 gap-4 rounded-xl shadow-sm mx-1 my-2 w-10/12"
+      className="mx-1 my-2 w-10/12 gap-4 rounded-xl bg-white p-4 shadow-sm"
       // O 'elevation' (Android) e shadow específico muitas vezes precisam de style inline ou config extra no tailwind
-      style={{ elevation: 5, shadowColor: "#000", shadowOpacity: 0.25, shadowRadius: 3.84, shadowOffset: { width: 0, height: 2 } }}
+      style={{
+        elevation: 5,
+        shadowColor: '#000',
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        shadowOffset: { width: 0, height: 2 },
+      }}
     >
       {/* --- Secção Superior: Informação e Valor --- */}
-      <View className="flex-row justify-between items-start gap-5">
-        
+      <View className="flex-row items-start justify-between gap-5">
         {/* Texto Esquerda */}
         <View className="flex-1 gap-2">
-          <ThemedText type="subtitle" className="text-neutral uppercase text-base">
+          <ThemedText
+            type="subtitle"
+            className="text-base uppercase text-neutral"
+          >
             {name_store}
           </ThemedText>
-          <ThemedText className="text-neutral capitalize text-base">
+          <ThemedText className="text-base capitalize text-neutral">
             {address}
           </ThemedText>
         </View>
 
         {/* Chip de Valor (Direita) */}
-        <View className="bg-primary rounded-full px-4 py-2 justify-center items-center">
-          <ThemedText className="text-neutralLight text-base">
+        <View className="items-center justify-center rounded-full bg-primary px-4 py-2">
+          <ThemedText className="text-base text-neutralLight">
             {value}
           </ThemedText>
         </View>
       </View>
 
       {/* --- Secção Inferior: Progresso --- */}
-      <View className="gap-2 w-full">
-        <View className="flex-row justify-between ">
-          <ThemedText type="bodyBold" className="text-primary text-left">
+      <View className="w-full gap-2">
+        <View className="flex-row justify-between">
+          <ThemedText type="bodyBold" className="text-left text-primary">
             {currentTasks}/{totalTasks}
           </ThemedText>
-          <ThemedText className="text-neutral text-base text-right">
+          <ThemedText className="text-right text-base text-neutral">
             Tarefas completadas
           </ThemedText>
         </View>
 
         {/* Barra de Progresso */}
         {/* Barra Cinzenta (Fundo) */}
-        <View className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+        <View className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
           {/* Barra Verde (Preenchimento) */}
-          <View 
-            className="h-full bg-primary rounded-full" 
-            style={{ width: `${progressPercentage}%` }} 
+          <View
+            className="h-full rounded-full bg-primary"
+            style={{ width: `${progressPercentage}%` }}
           />
         </View>
       </View>
-
     </Pressable>
   );
 };
