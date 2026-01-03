@@ -1,7 +1,15 @@
 import { StyleSheet, Text, type TextProps } from 'react-native';
+import { useFontScale } from './FontContext';
 
 export type ThemedTextProps = TextProps & {
-  type?: 'title' | 'subtitle' | 'body' | 'bodyInfo' | 'bodyBold' | 'bigButton';
+  type?:
+    | 'title'
+    | 'subtitle'
+    | 'body'
+    | 'bodyInfo'
+    | 'bodySmall'
+    | 'bodyBold'
+    | 'bigButton';
 };
 
 export function ThemedText({
@@ -10,18 +18,20 @@ export function ThemedText({
   className,
   ...props
 }: ThemedTextProps) {
+  const { scale } = useFontScale();
+
+  const baseStyle = styles[type] || styles.body;
+
+  const flattenedBase = StyleSheet.flatten(baseStyle);
+
+  const dynamicStyle = {
+    fontSize: (flattenedBase.fontSize || 16) * scale,
+  };
+
   return (
     <Text
       className={`${className || ''}`}
-      style={[
-        type === 'title' ? styles.title : undefined,
-        type === 'subtitle' ? styles.subtitle : undefined,
-        type === 'body' ? styles.body : undefined,
-        type === 'bodyInfo' ? styles.bodyInfo : undefined,
-        type === 'bodyBold' ? styles.bodyBold : undefined,
-        type === 'bigButton' ? styles.bigButton : undefined,
-        style,
-      ]}
+      style={[baseStyle, dynamicStyle, style]}
       {...props}
     />
   );
@@ -51,8 +61,12 @@ const styles = StyleSheet.create({
   bodyBold: {
     fontSize: 16,
     fontFamily: 'Rubik',
-    fontWeight: 'bold',
-    lineHeight: 24,
+    fontWeight: '700',
+  },
+  bodySmall: {
+    fontSize: 12,
+    fontFamily: 'Rubik',
+    lineHeight: 18,
   },
   bodyInfo: {
     fontSize: 14,

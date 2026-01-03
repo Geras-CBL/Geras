@@ -14,6 +14,7 @@ const VolunteerBottomBarLayout = () => {
       )}
       screenOptions={{
         headerShown: false,
+        sceneStyle: { backgroundColor: 'transparent' },
       }}
     >
       <Tabs.Screen name="RequestsHistory" options={{ title: 'Requests' }} />

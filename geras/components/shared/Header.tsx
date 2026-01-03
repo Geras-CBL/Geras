@@ -23,7 +23,7 @@ const Header: React.FC<HeaderProps> = ({
   const onNotificationsRoute = (segments as string[]).includes('Notifications');
 
   return (
-    <SafeAreaView edges={['top']} className="w-full bg-transparent">
+    <SafeAreaView edges={['top']} className="w-full">
       <View className="flex-row items-center justify-between px-5">
         <TouchableOpacity
           onPress={onLeftPress}
