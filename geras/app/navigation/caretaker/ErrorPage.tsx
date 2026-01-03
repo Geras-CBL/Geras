@@ -1,5 +1,5 @@
-import { Pressable, View } from "react-native";
-import { ThemedText } from "@/components/ThemedText";
+import { Pressable, View } from 'react-native';
+import { ThemedText } from '@/components/ThemedText';
 import { useRouter } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from 'expo-linear-gradient';

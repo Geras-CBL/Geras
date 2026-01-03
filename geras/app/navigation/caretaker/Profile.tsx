@@ -1,4 +1,3 @@
-
-import ProfileScreen from "../shared/Profile";
+import ProfileScreen from '../shared/Profile';
 
 export default ProfileScreen;
