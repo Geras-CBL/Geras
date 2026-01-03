@@ -1,8 +1,10 @@
-import { MaterialIcons } from "@expo/vector-icons";
-import React from "react";
-import { TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import GerasLogo from "../../assets/logo/GerasLogo.svg";
+import { MaterialIcons } from '@expo/vector-icons';
+import React from 'react';
+import { TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import GerasLogo from '../../assets/logo/GerasLogo.svg';
+import { useSegments } from 'expo-router';
+import { Colors } from '@/constants/theme';
 
 interface HeaderProps {
   leftIconName?: keyof typeof MaterialIcons.glyphMap;
@@ -12,17 +14,20 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({
-  leftIconName = "person",
-  rightIconName = "notifications",
+  leftIconName = 'person',
+  rightIconName = 'notifications',
   onLeftPress,
   onRightPress,
 }) => {
+  const segments = useSegments();
+  const onNotificationsRoute = (segments as string[]).includes('Notifications');
+
   return (
-    <SafeAreaView edges={["top"]} className="bg-transparent w-full">
+    <SafeAreaView edges={['top']} className="w-full">
       <View className="flex-row items-center justify-between px-5">
         <TouchableOpacity
           onPress={onLeftPress}
-          className="p-2 items-center justify-center"
+          className="items-center justify-center p-2"
         >
           <MaterialIcons name={leftIconName} size={28} color="black" />
         </TouchableOpacity>
@@ -33,9 +38,13 @@ const Header: React.FC<HeaderProps> = ({
 
         <TouchableOpacity
           onPress={onRightPress}
-          className="p-2 items-center justify-center"
+          className="items-center justify-center p-2"
         >
-          <MaterialIcons name={rightIconName} size={28} color="black" />
+          <MaterialIcons
+            name={rightIconName}
+            size={28}
+            color={onNotificationsRoute ? Colors.light.tint : 'black'}
+          />
         </TouchableOpacity>
       </View>
     </SafeAreaView>

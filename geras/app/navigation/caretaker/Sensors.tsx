@@ -1,12 +1,47 @@
-import { View } from "react-native";
-import { ThemedText } from "@/components/ThemedText";
+import { useState } from 'react';
+import { View, ScrollView } from 'react-native';
+import SensorComponent from '@/components/caretaker/SensorComponent';
+import Button from '@/components/shared/Button';
+import { sensorsData, type Sensor } from '@/data/sensorsData';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import SectionTitle from '@/components/shared/SectionTitle';
 
-export default function Home() {
+export default function Sensors() {
+  const [sensors, setSensors] = useState<Sensor[]>(sensorsData);
+
+  const toggleSensor = (id: string) => {
+    setSensors((currentSensors) =>
+      currentSensors.map((s) =>
+        s.id === id ? { ...s, active: !s.active } : s,
+      ),
+    );
+  };
+
   return (
-    <View className="flex-1 items-center justify-center">
-      <ThemedText type="title" className="text-primary">
-        Sensores de António Silva
-      </ThemedText>
-    </View>
+    <SafeAreaView edges={['top']} className="flex-1 pt-24">
+      <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
+        <SectionTitle title={'Sensores de António Silva'}>
+          <View className="mb-10 mt-4 flex-row flex-wrap justify-between">
+            {sensors.map((sensor) => (
+              <SensorComponent
+                key={sensor.id}
+                name={sensor.name}
+                iconName={sensor.icon}
+                isActive={sensor.active}
+                onPress={() => toggleSensor(sensor.id)}
+              />
+            ))}
+          </View>
+        </SectionTitle>
+
+        <Button
+          onPress={() => console.log('Add Sensor Button Pressed')}
+          title="Adicionar"
+          variant="default"
+        />
+
+        <View className="h-40" />
+      </ScrollView>
+    </SafeAreaView>
   );
 }

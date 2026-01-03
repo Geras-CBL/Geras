@@ -1,6 +1,6 @@
-import { Pressable, View } from "react-native";
-import { ThemedText } from "@/components/ThemedText";
-import { useRouter } from "expo-router";
+import { Pressable, View } from 'react-native';
+import { ThemedText } from '@/components/ThemedText';
+import { useRouter } from 'expo-router';
 
 export default function Home() {
   const router = useRouter();
@@ -12,8 +12,8 @@ export default function Home() {
       </ThemedText>
 
       <Pressable
-        onPress={() => router.push("./ErrorPage")}
-        className="p-4 bg-secondary rounded-xl"
+        onPress={() => router.push('./ErrorPage')}
+        className="rounded-xl bg-secondary p-4"
       >
         <ThemedText type="subtitle">Go to ErrorPage</ThemedText>
       </Pressable>

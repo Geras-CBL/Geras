@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Expo / Build output
+.expo/
+dist/
+web-build/
+
+# Native folders (often auto-generated in Expo)
+android/
+ios/
+
+# Package managers
+package-lock.json
+yarn.lock
