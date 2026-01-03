@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   },
   body: {
     fontSize: 16,
-    fontFamily: "Rubik",
+    fontFamily: 'Rubik',
     lineHeight: 24,
   },
   bigButton: {
