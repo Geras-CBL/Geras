@@ -1,4 +1,5 @@
 import { StyleSheet, Text, type TextProps } from 'react-native';
+import { useFontScale } from './FontContext';
 
 export type ThemedTextProps = TextProps & {
   type?:
@@ -17,19 +18,20 @@ export function ThemedText({
   className,
   ...props
 }: ThemedTextProps) {
+  const { scale } = useFontScale();
+
+  const baseStyle = styles[type] || styles.body;
+
+  const flattenedBase = StyleSheet.flatten(baseStyle);
+
+  const dynamicStyle = {
+    fontSize: (flattenedBase.fontSize || 16) * scale,
+  };
+
   return (
     <Text
       className={`${className || ''}`}
-      style={[
-        type === 'title' ? styles.title : undefined,
-        type === 'subtitle' ? styles.subtitle : undefined,
-        type === 'body' ? styles.body : undefined,
-        type === 'bodyInfo' ? styles.bodyInfo : undefined,
-        type === 'bodySmall' ? styles.bodySmall : undefined,
-        type === 'bodyBold' ? styles.bodyBold : undefined,
-        type === 'bigButton' ? styles.bigButton : undefined,
-        style,
-      ]}
+      style={[baseStyle, dynamicStyle, style]}
       {...props}
     />
   );
