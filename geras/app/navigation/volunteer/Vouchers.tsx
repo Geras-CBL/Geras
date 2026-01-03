@@ -1,10 +1,14 @@
 import { View, Pressable, FlatList } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/ThemedText';
-import Voucher from '@/components/volunteer/Voucher';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
+import SectionTitle from '@/components/shared/SectionTitle';
+import Voucher from '@/components/volunteer/Voucher';
+import BottomSheet from '@/components/volunteer/VoucherBottomSheet';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
-// Dados fictícios para "automatizar" - Usar API/json mais tarde
+// Dados fictícios
 const mockVouchers = [
   {
     id: '1',
@@ -50,7 +54,6 @@ const mockVouchers = [
 
 export default function Vouchers() {
   const router = useRouter();
-  // Estado inicializado em 'disponiveis'
   const [activeTab, setActiveTab] = useState<'disponiveis' | 'usados'>(
     'disponiveis',
   );
@@ -58,87 +61,110 @@ export default function Vouchers() {
   // Lógica para gerir a troca de tabs
   const handleTabPress = (tab: 'disponiveis' | 'usados') => {
     setActiveTab(tab);
-
     if (tab === 'usados') {
-      // Como a página UsedVouchers é feita à parte, navegamos para lá
       router.push('./UsedVouchers');
       console.log('Navegar para página de Usados');
     }
   };
 
+  // Lógica para abertura do Bottom Sheet
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const [selectedVoucher, setSelectedVoucher] = useState<
+    (typeof mockVouchers)[0] | null
+  >(null);
+
+  const handlePresentModalPress = useCallback(
+    (item: (typeof mockVouchers)[0]) => {
+      setSelectedVoucher(item);
+      bottomSheetModalRef.current?.present();
+    },
+    [],
+  );
+
   return (
-    <View className="mt-16 flex-1 justify-center">
-      {/* Título */}
-      <View className="mb-6 mt-10">
-        <ThemedText type="title" className="ml-10 text-left text-neutral">
-          Vouchers
-        </ThemedText>
-      </View>
+    <SafeAreaView edges={['top']} className="flex-1 pt-24">
+      {/* Removemos o ScrollView e usamos apenas FlatList */}
+      <FlatList
+        data={mockVouchers}
+        keyExtractor={(item) => item.id}
+        showsVerticalScrollIndicator={false}
+        // Adicionamos padding global à lista aqui
+        contentContainerClassName="px-6 pb-32"
+        // --- AQUI ESTÁ A CORREÇÃO ---
+        // Tudo o que estava acima da lista passa para o Header
+        ListHeaderComponent={() => (
+          <View>
+            {/* Título */}
+            <SectionTitle title="Vouchers" />
 
-      {/* Tabs / Botões */}
-      <View className="mb-6 h-[35px] w-full flex-row rounded-2xl px-6">
-        {/* Tab Disponíveis */}
-        <Pressable
-          onPress={() => handleTabPress('disponiveis')}
-          className={`flex-1 items-center justify-center rounded-l-2xl ${
-            activeTab === 'disponiveis' ? 'bg-primary' : 'bg-white'
-          }`}
-        >
-          <ThemedText
-            type="body"
-            className={`uppercase ${
-              activeTab === 'disponiveis' ? 'text-white' : 'text-[#1d1d1b]'
-            }`}
-          >
-            disponíveis
-          </ThemedText>
-        </Pressable>
+            {/* Tabs / Botões */}
+            <View className="mb-6 mt-6 h-[35px] w-full flex-row rounded-2xl">
+              {/* Tab Disponíveis */}
+              <Pressable
+                onPress={() => handleTabPress('disponiveis')}
+                className={`flex-1 items-center justify-center rounded-l-2xl ${
+                  activeTab === 'disponiveis' ? 'bg-primary' : 'bg-neutralLight'
+                }`}
+              >
+                <ThemedText
+                  type="body"
+                  className={`uppercase ${
+                    activeTab === 'disponiveis'
+                      ? 'text-neutralLight'
+                      : 'text-primary'
+                  }`}
+                >
+                  disponíveis
+                </ThemedText>
+              </Pressable>
 
-        {/* Tab Usados */}
-        <Pressable
-          onPress={() => handleTabPress('usados')}
-          className={`flex-1 items-center justify-center rounded-r-2xl ${
-            activeTab === 'usados' ? 'bg-primary' : 'bg-white'
-          }`}
-        >
-          <ThemedText
-            type="body"
-            className={`uppercase ${
-              activeTab === 'usados' ? 'text-white' : 'text-[#1d1d1b]'
-            }`}
-          >
-            usados
-          </ThemedText>
-        </Pressable>
-      </View>
+              {/* Tab Usados */}
+              <Pressable
+                onPress={() => handleTabPress('usados')}
+                className={`flex-1 items-center justify-center rounded-r-2xl ${
+                  activeTab === 'usados' ? 'bg-primary' : 'bg-neutralLight'
+                }`}
+              >
+                <ThemedText
+                  type="body"
+                  className={`uppercase ${
+                    activeTab === 'usados'
+                      ? 'text-neutralLight'
+                      : 'text-primary'
+                  }`}
+                >
+                  usados
+                </ThemedText>
+              </Pressable>
+            </View>
+          </View>
+        )}
+        // ---------------------------
 
-      {/* Lista de Vouchers Automatizada */}
-      <View className="mb-35 ml-8 w-full flex-1">
-        <FlatList
-          data={mockVouchers}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
+        renderItem={({ item }) => (
+          // Adicionei mb-4 aqui para dar espaço entre os items da lista
+          <View className="mb-4">
             <Voucher
               name_store={item.name_store}
               address={item.address}
               value={item.value}
               currentTasks={item.currentTasks}
               totalTasks={item.totalTasks}
-              onPress={() =>
-                console.log(`Voucher ${item.name_store} pressionado`)
-              }
+              onPress={() => handlePresentModalPress(item)}
             />
-          )}
-          // Caso a lista esteja vazia
-          ListEmptyComponent={() => (
-            <View className="mt-10 flex-1 items-center justify-center">
-              <ThemedText type="bodyInfo" className="text-neutral">
-                Não há vouchers disponíveis.
-              </ThemedText>
-            </View>
-          )}
-        />
-      </View>
-    </View>
+          </View>
+        )}
+        // Caso a lista esteja vazia
+        ListEmptyComponent={() => (
+          <View className="mt-10 flex-1 items-center justify-center">
+            <ThemedText type="bodyInfo" className="text-neutral">
+              Não há vouchers disponíveis.
+            </ThemedText>
+          </View>
+        )}
+      />
+
+      <BottomSheet ref={bottomSheetModalRef} voucher={selectedVoucher} />
+    </SafeAreaView>
   );
 }

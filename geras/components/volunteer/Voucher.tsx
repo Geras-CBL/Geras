@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Pressable } from 'react-native';
+import { View, Pressable, ScrollView  } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
+
 
 // Props para o componente Voucher
 interface VoucherProps {
@@ -26,34 +27,25 @@ const Voucher = ({
   return (
     <Pressable
       onPress={onPress}
-      className="mx-1 my-2 w-10/12 gap-4 rounded-xl bg-white p-4 shadow-sm"
-      // O 'elevation' (Android) e shadow específico muitas vezes precisam de style inline ou config extra no tailwind
-      style={{
-        elevation: 5,
-        shadowColor: '#000',
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        shadowOffset: { width: 0, height: 2 },
-      }}
-    >
+      className="w-full gap-2 rounded-xl bg-neutralLight p-4 shadow-md">
       {/* --- Secção Superior: Informação e Valor --- */}
       <View className="flex-row items-start justify-between gap-5">
         {/* Texto Esquerda */}
-        <View className="flex-1 gap-2">
+        <View className="flex-1 gap-1">
           <ThemedText
             type="subtitle"
-            className="text-base uppercase text-neutral"
+            className="uppercase text-neutral"
           >
             {name_store}
           </ThemedText>
-          <ThemedText className="text-base capitalize text-neutral">
+          <ThemedText className="capitalize text-neutral">
             {address}
           </ThemedText>
         </View>
 
         {/* Chip de Valor (Direita) */}
         <View className="items-center justify-center rounded-full bg-primary px-4 py-2">
-          <ThemedText className="text-base text-neutralLight">
+          <ThemedText className="text-neutralLight">
             {value}
           </ThemedText>
         </View>
