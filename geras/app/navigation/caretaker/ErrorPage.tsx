@@ -1,13 +1,9 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
-import { useRouter } from 'expo-router';
-import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import ErrorRoad from '../../../assets/illustrations/ErrorPage_Road.svg';
 
 export default function Home() {
-  const router = useRouter();
-
   return (
     <LinearGradient
       colors={['#6B8548', '#205B2D']}
