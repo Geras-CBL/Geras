@@ -1,7 +1,6 @@
 import React from 'react';
-import { View, Pressable} from 'react-native';
+import { View, Pressable } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
-
 
 // Props para o componente Voucher
 interface VoucherProps {
@@ -27,27 +26,21 @@ const Voucher = ({
   return (
     <Pressable
       onPress={onPress}
-      className="w-full gap-2 rounded-xl bg-neutralLight p-4 shadow-md">
+      className="w-full gap-2 rounded-xl bg-neutralLight p-4 shadow-md"
+    >
       {/* --- Secção Superior: Informação e Valor --- */}
       <View className="flex-row items-start justify-between gap-5">
         {/* Texto Esquerda */}
         <View className="flex-1 gap-1">
-          <ThemedText
-            type="subtitle"
-            className="uppercase text-neutral"
-          >
+          <ThemedText type="subtitle" className="uppercase text-neutral">
             {name_store}
           </ThemedText>
-          <ThemedText className="capitalize text-neutral">
-            {address}
-          </ThemedText>
+          <ThemedText className="capitalize text-neutral">{address}</ThemedText>
         </View>
 
         {/* Chip de Valor (Direita) */}
         <View className="items-center justify-center rounded-full bg-primary px-4 py-2">
-          <ThemedText className="text-neutralLight">
-            {value}
-          </ThemedText>
+          <ThemedText className="text-neutralLight">{value}</ThemedText>
         </View>
       </View>
 

@@ -19,57 +19,62 @@ interface VoucherBottomSheetProps {
   onChange?: (index: number) => void;
 }
 
-const VoucherBottomSheet = forwardRef<BottomSheetModal, VoucherBottomSheetProps>(
-  ({ voucher, onChange }, ref) => {
-    const snapPoints = useMemo(() => ['45%'], []);
+const VoucherBottomSheet = forwardRef<
+  BottomSheetModal,
+  VoucherBottomSheetProps
+>(({ voucher, onChange }, ref) => {
+  const snapPoints = useMemo(() => ['45%'], []);
 
-    const renderBackdrop = (props: any) => (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}
-        appearsOnIndex={0}
-        opacity={0.5}
-      />
-    );
+  const renderBackdrop = (props: any) => (
+    <BottomSheetBackdrop
+      {...props}
+      disappearsOnIndex={-1}
+      appearsOnIndex={0}
+      opacity={0.5}
+    />
+  );
 
-    return (
-      <BottomSheetModal
-        ref={ref}
-        index={0}
-        snapPoints={snapPoints}
-        backdropComponent={renderBackdrop}
-        enablePanDownToClose={true}
-        backgroundStyle={{ borderRadius: 32, backgroundColor: '#fafafa' }}
-        handleIndicatorStyle={{ backgroundColor: '#205a2d', width: 35, height: 6 }}
-      >
-        <BottomSheetView className="flex-1 items-center px-[30px] pt-3 pb-16 gap-6 z-10">
-          
-          <ThemedText type='title' className="text-neutral">
-            {voucher?.name_store || 'Loja'}
+  return (
+    <BottomSheetModal
+      ref={ref}
+      index={0}
+      snapPoints={snapPoints}
+      backdropComponent={renderBackdrop}
+      enablePanDownToClose={true}
+      backgroundStyle={{ borderRadius: 32, backgroundColor: '#fafafa' }}
+      handleIndicatorStyle={{
+        backgroundColor: '#205a2d',
+        width: 35,
+        height: 6,
+      }}
+    >
+      <BottomSheetView className="z-10 flex-1 items-center gap-6 px-[30px] pb-16 pt-3">
+        <ThemedText type="title" className="text-neutral">
+          {voucher?.name_store || 'Loja'}
+        </ThemedText>
+
+        <View className="items-center justify-center overflow-hidden rounded-full bg-primary px-4 py-2">
+          <ThemedText type="body" className="text-neutralLight">
+            {voucher?.value || '0%'}
           </ThemedText>
+        </View>
 
-          <View className="bg-primary rounded-full px-4 py-2 justify-center items-center overflow-hidden">
-            <ThemedText type='body' className="text-neutralLight">
-              {voucher?.value || '0%'}
-            </ThemedText>
-          </View>
+        <Image
+          className="h-[142px] w-[142px]"
+          source={{
+            uri: 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example',
+          }}
+          resizeMode="cover"
+        />
 
-          <Image 
-            className="w-[142px] h-[142px]" 
-            source={{ uri: 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example' }} 
-            resizeMode="cover"
-          />
-
-          <ThemedText className="text-neutral text-base capitalize text-center">
-            <ThemedText type='bodyBold'>Localização: </ThemedText>
-            <ThemedText className="font-rubik">{voucher?.address}</ThemedText>
-          </ThemedText>
-
-        </BottomSheetView>
-      </BottomSheetModal>
-    );
-  }
-);
+        <ThemedText className="text-center text-base capitalize text-neutral">
+          <ThemedText type="bodyBold">Localização: </ThemedText>
+          <ThemedText className="font-rubik">{voucher?.address}</ThemedText>
+        </ThemedText>
+      </BottomSheetView>
+    </BottomSheetModal>
+  );
+});
 
 VoucherBottomSheet.displayName = 'VoucherBottomSheet';
 
