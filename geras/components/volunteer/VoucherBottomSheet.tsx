@@ -71,4 +71,6 @@ const VoucherBottomSheet = forwardRef<BottomSheetModal, VoucherBottomSheetProps>
   }
 );
 
+VoucherBottomSheet.displayName = 'VoucherBottomSheet';
+
 export default VoucherBottomSheet;

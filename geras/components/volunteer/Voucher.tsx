@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Pressable, ScrollView  } from 'react-native';
+import { View, Pressable} from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 
 
