@@ -4,7 +4,7 @@ import { ThemedText } from '../ThemedText';
 interface ButtonProps {
   title: string;
   onPress?: () => void;
-  variant?: 'default' | 'outlined' | 'destructive' | 'lineThrough';
+  variant?: 'default' | 'outlined' | 'destructive' | 'warning' | 'lineThrough';
   icon?: React.ReactNode;
   className?: string;
   disabled?: boolean;
@@ -33,6 +33,10 @@ const Button: React.FC<ButtonProps> = ({
     destructive: {
       button: 'bg-[#dcbfbb] border border-[#a20707]',
       text: 'text-[#a20707] font-bold',
+    },
+    warning: {
+      button: 'bg-secondary/10 border border-tertiary',
+      text: 'text-tertiary font-regular',
     },
     lineThrough: {
       button: 'bg-primary',

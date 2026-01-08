@@ -24,7 +24,7 @@ const THEMES: Record<CardVariant, Theme> = {
     iconBg: 'bg-red-800',
   },
   medication: {
-    container: 'bg-orange-100',
+    container: 'bg-neutralLight',
     border: 'border-orange-300',
     iconBg: 'bg-orange-500',
   },
@@ -34,7 +34,6 @@ const THEMES: Record<CardVariant, Theme> = {
     iconBg: 'bg-green-800',
   },
 };
-
 interface ActionButtonProps {
   icon: keyof typeof MaterialIcons.glyphMap;
   onPress?: () => void;
@@ -49,27 +48,63 @@ export const ActionButton = ({ icon, onPress }: ActionButtonProps) => (
   </Pressable>
 );
 
-interface NotificationCardProps {
-  variant?: CardVariant;
-  title: string;
-  description: string | React.ReactNode;
-  iconName?: keyof typeof MaterialIcons.glyphMap;
-  imageSource?: ImageSourcePropType;
-  rightContent?: React.ReactNode;
-  route?: string;
-}
+type NotificationCardProps =
+  | {
+      variant: 'alert' | 'info';
+      title: string;
+      description: string | React.ReactNode;
+      iconName?: keyof typeof MaterialIcons.glyphMap;
+      imageSource?: ImageSourcePropType;
+      rightContent?: React.ReactNode;
+      route?: string;
+    }
+  | {
+      variant: 'medication';
+      title: string;
+      time: string | React.ReactNode;
+      actions?: React.ReactNode;
+    };
 
-export const NotificationCard = ({
-  variant = 'alert',
-  title,
-  description,
-  iconName,
-  imageSource,
-  rightContent,
-  route,
-}: NotificationCardProps) => {
-  const theme = THEMES[variant];
+export const NotificationCard = (props: NotificationCardProps) => {
   const router = useRouter();
+  const theme = THEMES[props.variant];
+
+  if (props.variant === 'medication') {
+    const { title, time, actions } = props;
+
+    return (
+      <View
+        className={`w-full gap-6 rounded-xl p-4 shadow-md ${theme.container}`}
+      >
+        <View className="flex-row items-center justify-between">
+          <ThemedText
+            type="bodyBold"
+            className="flex-1 uppercase text-primary"
+            numberOfLines={2}
+          >
+            {title}
+          </ThemedText>
+
+          <View className="flex-row items-center rounded-2xl bg-neutralLight px-3 py-2">
+            {typeof time === 'string' ? (
+              <ThemedText type="bodyInfo" className="text-primary">
+                {time}
+              </ThemedText>
+            ) : (
+              time
+            )}
+          </View>
+        </View>
+
+        {actions && (
+          <View className="flex-row justify-between gap-4">{actions}</View>
+        )}
+      </View>
+    );
+  }
+
+  const { title, description, iconName, imageSource, rightContent, route } =
+    props;
 
   return (
     <TouchableOpacity
@@ -90,7 +125,7 @@ export const NotificationCard = ({
               resizeMode="cover"
             />
           ) : (
-            <MaterialIcons name={iconName} size={48} color="#FFF" />
+            iconName && <MaterialIcons name={iconName} size={48} color="#FFF" />
           )}
         </View>
 
@@ -113,58 +148,3 @@ export const NotificationCard = ({
     </TouchableOpacity>
   );
 };
-
-// EXEMPLOS:
-// Lucas a 5min
-{
-  /* <NotificationCard
-  variant="info"
-  title="Lucas Wiliam"
-  imageSource={{ uri: 'https://i.pravatar.cc/150?img=12' }}
-  description={<InfoPill text="A 5 min..." />}
-  rightContent={<ActionButton icon="call" />}
-/>; */
-}
-
-// Aviso medicação horario
-{
-  /* <NotificationCard
-  variant="medication"
-  title="Aviso Medicação"
-  iconName="medication"
-  description="Losartan 50 mg"
-  rightContent={<ClockPill time="08:00" />}
-/>; */
-}
-
-// Aviso medicação
-{
-  /* <NotificationCard
-  variant="medication"
-  title="Medicação"
-  iconName="medication" // Pill icon
-  description="Sem Benuron 50mg"
-  rightContent={
-    <>
-      <ActionButton icon="sensors" />
-      <ActionButton icon="videocam" />
-    </>
-  }
-/>; */
-}
-
-// Aviso queda
-{
-  /* <NotificationCard
-  variant="alert"
-  title="Aviso"
-  iconName="report"
-  description={'Tropeçar na sala há 3 min'}
-  rightContent={
-    <>
-      <ActionButton icon="call" />
-      <ActionButton icon="videocam" />
-    </>
-  }
-/>; */
-}
