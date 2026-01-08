@@ -121,7 +121,7 @@ export default function Requests() {
         {config.title}
       </ThemedText>
 
-      <View className="relative h-48 rounded-2xl border-2 border-primary bg-white p-4 shadow-sm">
+      <View className="relative mb-2 flex-1 rounded-2xl border-2 border-primary bg-white p-4 shadow-sm">
         <TextInput
           placeholder="Breve descrição da tarefa..."
           multiline
@@ -142,7 +142,7 @@ export default function Requests() {
         <Button
           title={'Fazer Pedido'}
           variant="outlined"
-          className="w-1/2"
+          className="w-2/3"
           onPress={() => router.push('./RequestDetails')}
         />
       );
@@ -155,12 +155,13 @@ export default function Requests() {
           icon={
             <MaterialIcons name="record-voice-over" size={24} color="#ffff" />
           }
-          className="flex-1"
-          onPress={() => {}}
+          className="mb-2 w-full"
+          onPress={() => router.push('./Voice')}
         />
         <Button
           title={'Fazer pedido'}
           variant="outlined"
+          className="w-full"
           onPress={() => router.push('./RequestDetails')}
         />
       </View>
