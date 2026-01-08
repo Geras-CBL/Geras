@@ -4,7 +4,6 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 
 import SectionTitle from '@/components/shared/SectionTitle';
-import MedicineInfo from '@/components/caretaker/MedicineInfo';
 import MedicationCard, {
   AddMedicationCard,
 } from '@/components/shared/MedicationCard';
@@ -12,6 +11,7 @@ import { ListItem } from '@/components/caretaker/ListItem';
 import Button from '@/components/shared/Button';
 import { ThemedText } from '@/components/ThemedText';
 import { fetchItems, ItemDTO } from '@/data/items';
+import { NotificationCard } from '@/components/shared/Notification';
 
 export default function SeniorManagement() {
   const [items, setItems] = useState<ItemDTO[]>([]);
@@ -35,7 +35,8 @@ export default function SeniorManagement() {
 
         <View className="mt-12">
           <SectionTitle title="Medicação">
-            <MedicineInfo
+            <NotificationCard
+              variant="medication"
               title="Flexofytol Plus - por tomar"
               time={
                 <View className="flex-row items-center gap-1">
