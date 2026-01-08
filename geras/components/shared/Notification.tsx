@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   View,
   Image,
@@ -95,13 +94,15 @@ export const NotificationCard = ({
           )}
         </View>
 
-        <View className="flex-1 justify-center gap-1 pr-4">
-          <ThemedText type="bodyBold" className="uppercase">
+        <View className="flex-1 justify-center gap-1">
+          <ThemedText type="subtitle" className="uppercase">
             {title}
           </ThemedText>
 
           {typeof description === 'string' ? (
-            <ThemedText type="bodyInfo">{description}</ThemedText>
+            <ThemedText type="body" className="w-52 truncate">
+              {description}
+            </ThemedText>
           ) : (
             <View className="mt-1">{description}</View>
           )}
