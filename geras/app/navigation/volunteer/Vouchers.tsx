@@ -83,21 +83,19 @@ export default function Vouchers() {
 
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-24">
-      {/* Removemos o ScrollView e usamos apenas FlatList */}
       <FlatList
         data={mockVouchers}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
-        // Adicionamos padding global à lista aqui
         contentContainerClassName="px-6 pb-32"
-        // --- AQUI ESTÁ A CORREÇÃO ---
-        // Tudo o que estava acima da lista passa para o Header
         ListHeaderComponent={() => (
           <View>
             {/* Título */}
             <SectionTitle title="Vouchers" />
 
-            {/* Tabs / Botões */}
+               {/* Alterar Tabs para componente (Shared) */}
+
+            {/* Tabs / Botões */} 
             <View className="mb-6 mt-6 h-[35px] w-full flex-row rounded-2xl">
               {/* Tab Disponíveis */}
               <Pressable
@@ -139,10 +137,9 @@ export default function Vouchers() {
             </View>
           </View>
         )}
-        // ---------------------------
 
+        /* --------------------------- Lista de Vouchers --------------------------- */
         renderItem={({ item }) => (
-          // Adicionei mb-4 aqui para dar espaço entre os items da lista
           <View className="mb-4">
             <Voucher
               name_store={item.name_store}
