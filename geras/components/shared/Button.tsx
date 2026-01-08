@@ -28,8 +28,8 @@ const Button: React.FC<ButtonProps> = ({
       text: 'text-white font-regular',
     },
     outlined: {
-      button: 'bg-neutralLight border border-[#e7e7e7] shadow-sm',
-      text: 'text-neutral font-regular',
+      button: 'bg-neutralLight border border-primary shadow-sm',
+      text: 'text-primary font-regular',
     },
     destructive: {
       button: 'bg-[#dcbfbb] border border-[#a20707]',
