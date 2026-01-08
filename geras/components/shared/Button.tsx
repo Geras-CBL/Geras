@@ -5,7 +5,13 @@ import { ThemedText } from '../ThemedText';
 interface ButtonProps {
   title: string;
   onPress?: () => void;
-  variant?: 'default' | 'outlined' | 'destructive' | 'warning' | 'lineThrough';
+  variant?:
+    | 'default'
+    | 'outlined'
+    | 'destructive'
+    | 'warning'
+    | 'lineThrough'
+    | 'transparent';
   icon?: React.ReactNode;
   className?: string;
   disabled?: boolean;
@@ -41,7 +47,11 @@ const Button: React.FC<ButtonProps> = ({
     },
     lineThrough: {
       button: 'bg-primary',
-      text: 'text-white font-regular line-through',
+      text: 'text-neutralLight font-regular line-through',
+    },
+    transparent: {
+      button: 'bg-primary border-2 border-neutralLight bg-transparent',
+      text: 'text-neutralLight font-extrabold',
     },
   };
 
