@@ -93,9 +93,9 @@ export default function Vouchers() {
             {/* Título */}
             <SectionTitle title="Vouchers" />
 
-               {/* Alterar Tabs para componente (Shared) */}
+            {/* Alterar Tabs para componente (Shared) */}
 
-            {/* Tabs / Botões */} 
+            {/* Tabs / Botões */}
             <View className="mb-6 mt-6 h-[35px] w-full flex-row rounded-2xl">
               {/* Tab Disponíveis */}
               <Pressable
@@ -137,7 +137,6 @@ export default function Vouchers() {
             </View>
           </View>
         )}
-
         /* --------------------------- Lista de Vouchers --------------------------- */
         renderItem={({ item }) => (
           <View className="mb-4">
