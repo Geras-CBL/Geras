@@ -109,6 +109,90 @@ export default function RootLayout() {
                 }}
               />
               <Stack.Screen
+                name="navigation/senior/Requests"
+                options={{
+                  headerShown: true,
+                  headerTransparent: true,
+                  contentStyle: { backgroundColor: '#fbfbfb' },
+                  header: () => (
+                    <Header
+                      leftIconName="home"
+                      rightIconName="settings"
+                      onLeftPress={() =>
+                        router.push('/navigation/senior/HomePage')
+                      }
+                      onRightPress={() =>
+                        router.push('/navigation/senior/Settings')
+                      }
+                    />
+                  ),
+                }}
+              />
+              <Stack.Screen
+                name="navigation/senior/Voice"
+                options={{
+                  headerShown: true,
+                  headerTransparent: true,
+                  contentStyle: { backgroundColor: '#fbfbfb' },
+                  header: () => (
+                    <Header
+                      leftIconName="home"
+                      rightIconName="settings"
+                      onLeftPress={() =>
+                        router.push('/navigation/senior/HomePage')
+                      }
+                      onRightPress={() =>
+                        router.push('/navigation/senior/Settings')
+                      }
+                    />
+                  ),
+                }}
+              />
+              <Stack.Screen
+                name="navigation/senior/Groceries"
+                options={{
+                  headerShown: true,
+                  headerTransparent: true,
+                  contentStyle: { backgroundColor: '#fbfbfb' },
+                  header: () => (
+                    <Header
+                      leftIconName="home"
+                      rightIconName="settings"
+                      onLeftPress={() =>
+                        router.push('/navigation/senior/HomePage')
+                      }
+                      onRightPress={() =>
+                        router.push('/navigation/senior/Settings')
+                      }
+                    />
+                  ),
+                }}
+              />
+              <Stack.Screen
+                name="navigation/senior/AddGrocerieList"
+                options={{
+                  headerShown: true,
+                  headerTransparent: true,
+                  contentStyle: { backgroundColor: '#fbfbfb' },
+                  header: () => (
+                    <Header
+                      leftIconName="home"
+                      rightIconName="settings"
+                      onLeftPress={() =>
+                        router.push('/navigation/senior/HomePage')
+                      }
+                      onRightPress={() =>
+                        router.push('/navigation/senior/Settings')
+                      }
+                    />
+                  ),
+                }}
+              />
+              <Stack.Screen
+                name="navigation/senior/RequestDetails"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
                 name="navigation/senior/ErrorPage"
                 options={{ headerShown: false }}
               />
