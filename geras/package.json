@@ -17,6 +17,7 @@
     "@expo/vector-icons": "^15.0.3",
     "@futurejj/react-native-checkbox": "^1.0.5",
     "@gorhom/bottom-sheet": "^5.2.8",
+    "@react-native-community/datetimepicker": "^8.6.0",
     "@react-navigation/bottom-tabs": "^7.9.0",
     "@react-navigation/elements": "^2.6.3",
     "@react-navigation/native": "^7.1.8",
