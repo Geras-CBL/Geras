@@ -20,16 +20,15 @@ export default function CardPedidos({
   imageUrl = 'https://via.placeholder.com/101x71',
   onPress,
 }: CardPedidosProps) {
-  
   const isAvailable = status === 'disponivel';
-  
+
   return (
     <Pressable
       onPress={onPress}
-      className="w-full bg-neutralLight p-6 gap-4 rounded-3xl shadow-md"
+      className="w-full gap-4 rounded-3xl bg-neutralLight p-6 shadow-md"
     >
       {/* Top Section: Info & Image */}
-      <View className="flex-row w-full justify-between items-start gap-4">
+      <View className="w-full flex-row items-start justify-between gap-4">
         <View className="flex-1 gap-4">
           <View className="gap-1">
             <ThemedText type="bodyBold" className="uppercase text-neutral">
@@ -54,10 +53,7 @@ export default function CardPedidos({
 
       {/* Status Chip */}
       <View
-        className={`
-          self-start rounded-full border px-3 py-1 items-center justify-center
-          ${isAvailable ? 'border-primary' : 'border-neutral'}
-        `}
+        className={`items-center justify-center self-start rounded-full border px-3 py-1 ${isAvailable ? 'border-primary' : 'border-neutral'} `}
       >
         <ThemedText
           type="bodyInfo"
