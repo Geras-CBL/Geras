@@ -9,7 +9,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { ThemedText } from '../ThemedText';
 import { Route, useRouter } from 'expo-router';
 
-type CardVariant = 'alert' | 'medication' | 'info';
+type CardVariant = 'alert' | 'medication' | 'info' | 'pantry';
 
 interface Theme {
   container: string;
@@ -32,6 +32,11 @@ const THEMES: Record<CardVariant, Theme> = {
     container: 'bg-green-600/40',
     border: 'border-primary',
     iconBg: 'bg-green-800',
+  },
+  pantry: {
+    container: 'bg-[#D8E6DE]',
+    border: 'border-primary',
+    iconBg: 'bg-primary',
   },
 };
 
@@ -90,11 +95,11 @@ export const NotificationCard = ({
               resizeMode="cover"
             />
           ) : (
-            <MaterialIcons name={iconName} size={48} color="#FFF" />
+            <MaterialIcons name={iconName} size={40} color="#FFF" />
           )}
         </View>
 
-        <View className="flex-1 justify-center gap-1">
+        <View className="flex-1 justify-center gap-1 pr-2">
           <ThemedText type="subtitle" className="uppercase">
             {title}
           </ThemedText>
@@ -104,7 +109,7 @@ export const NotificationCard = ({
               {description}
             </ThemedText>
           ) : (
-            <View className="mt-1">{description}</View>
+            <View className="mt-1 w-full pr-2">{description}</View>
           )}
         </View>
       </View>
@@ -168,5 +173,16 @@ export const NotificationCard = ({
       <ActionButton icon="videocam" />
     </>
   }
+/>; */
+}
+
+// Despensa
+{
+  /* <NotificationCard
+  variant="pantry"
+  title="Despensa"
+  iconName="pantry"
+  description="Alimentos disponíveis"
+  route="/senior/groceries"
 />; */
 }
