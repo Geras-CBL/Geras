@@ -155,6 +155,26 @@ export default function RootLayout() {
                 }}
               />
               <Stack.Screen
+                name="navigation/shared/SignInPage"
+                options={{
+                  headerShown: false,
+                  headerTransparent: true,
+                  contentStyle: { backgroundColor: 'transparent' },
+                  header: () => (
+                    <Header
+                      leftIconName="arrow-back"
+                      rightIconName="notifications"
+                      onLeftPress={() => {
+                        router.back();
+                      }}
+                      onRightPress={() =>
+                        router.push('../caretaker/Notifications')
+                      }
+                    />
+                  ),
+                }}
+              />
+              <Stack.Screen
                 name="navigation/shared/EditProfile"
                 options={{
                   headerShown: true,
