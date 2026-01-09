@@ -48,11 +48,7 @@ export default function VoicePage() {
           />
         </View>
         <View className="flex-1">
-          <Button
-            title="Adicionar"
-            className="w-full"
-            onPress={handleBack}
-          />
+          <Button title="Adicionar" className="w-full" onPress={handleBack} />
         </View>
       </View>
     </View>
@@ -61,10 +57,7 @@ export default function VoicePage() {
   return (
     <SafeAreaView edges={['top']} className="flex-1 pb-56 pt-24">
       <View className="mt-8 items-center px-10">
-        <ThemedText
-          type="subtitle"
-          className="text-neutral"
-        >
+        <ThemedText type="subtitle" className="text-neutral">
           Adicionar item a lista de compras
         </ThemedText>
       </View>

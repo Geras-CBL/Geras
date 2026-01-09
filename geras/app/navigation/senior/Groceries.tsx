@@ -80,7 +80,9 @@ export default function Groceries() {
             icon={<MaterialIcons name="add" size={24} color="#2F5C3E" />}
             variant="outlined"
             title={'Adicionar'}
-            onPress={() => router.push('../../navigation/senior/AddGrocerieList')}
+            onPress={() =>
+              router.push('../../navigation/senior/AddGrocerieList')
+            }
           />
           <Button
             icon={
