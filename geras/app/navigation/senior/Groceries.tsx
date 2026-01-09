@@ -65,7 +65,7 @@ export default function Groceries() {
                 <Checkbox
                   status={item.checked ? 'checked' : 'unchecked'}
                   onPress={() => toggleCheckbox(item.id)}
-                  color="#969696"
+                  color={item.checked ? '#205a2d' : '#969696'}
                 />
                 <ThemedText className={`ml-2 text-base text-neutral`}>
                   {item.name}

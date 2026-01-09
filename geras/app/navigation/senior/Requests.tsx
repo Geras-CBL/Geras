@@ -91,6 +91,7 @@ export default function Requests() {
       <ScrollView
         className="-m-4 flex-1 p-4"
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 36 }}
       >
         {filteredItems.slice(0, 3).map((item) => (
           <TouchableOpacity
@@ -101,7 +102,7 @@ export default function Requests() {
             <Checkbox
               status={item.checked ? 'checked' : 'unchecked'}
               onPress={() => toggleCheckbox(item.id)}
-              color="#969696"
+              color={item.checked ? '#205a2d' : '#969696'}
             />
             <ThemedText className="text-neutral">{item.name}</ThemedText>
           </TouchableOpacity>
