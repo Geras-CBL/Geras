@@ -18,10 +18,10 @@ type FormFieldProps =
 export function FormField(props: FormFieldProps) {
   const baseContainerClasses = `
     w-full
-    h-14         
+    h-12      
     border
     border-neutral/15
-    rounded-xl   
+    rounded-lg 
     px-6           
     justify-center
   `;

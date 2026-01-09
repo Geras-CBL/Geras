@@ -62,7 +62,7 @@ export default function EditProfile() {
   };
 
   const handleDateChange = (event: any, selectedDate?: Date) => {
-    if (Platform.OS === 'android') setShowDatePicker(false); // fecha no Android
+    if (Platform.OS === 'android') setShowDatePicker(false);
     if (selectedDate) {
       const formattedDate = selectedDate.toLocaleDateString();
       setBirthDate(formattedDate);
@@ -76,8 +76,8 @@ export default function EditProfile() {
 
   return (
     <ScrollView
-      className="flex-1"
-      contentContainerStyle={{ padding: 20 }}
+      className="flex-1 pt-24"
+      contentContainerStyle={{ padding: 20, paddingBottom: 130 }}
       keyboardShouldPersistTaps="handled"
     >
       {/* Avatar */}
@@ -122,7 +122,7 @@ export default function EditProfile() {
           onPress={() => setShowDatePicker(true)}
         />
 
-        <SectionTitle title="Country / Region" />
+        <SectionTitle title="País/Região" />
         <FormField
           className="-mt-6"
           variant="dropdown"
