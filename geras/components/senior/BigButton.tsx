@@ -1,6 +1,5 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { Route, useRouter } from 'expo-router';
-import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { ThemedText } from '../ThemedText';
 
