@@ -12,6 +12,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
 import Button from '@/components/shared/Button';
 import SectionTitle from '@/components/shared/SectionTitle';
+import BottomActions from '@/components/senior/BottomActions';
 
 type MetricStatus = 'Adequado' | 'Moderado' | 'Excessivo';
 
@@ -126,6 +127,7 @@ export default function AddHealthMetric() {
           />
         </View>
       </ScrollView>
+      <BottomActions />
     </SafeAreaView>
   );
 }
