@@ -2,17 +2,23 @@ export interface SeniorProfile {
   id: string;
   name: string;
   age: number;
+  email: string; // novo
+  password: string; // novo
+  birthDate: string; // novo
+  country: string; // novo
   image?: any;
   selected: boolean;
 }
 
-// Simulando dados vindos de uma "API"
 export const profilesData: SeniorProfile[] = [
   {
     id: '1',
     name: 'António Silva',
     age: 74,
-    // image: require('@/assets/images/senior-placeholder.png'),
+    email: 'antonio.silva@gmail.com',
+    password: '********',
+    birthDate: '12/04/1949',
+    country: 'Portugal',
     image: null,
     selected: true,
   },
@@ -20,7 +26,10 @@ export const profilesData: SeniorProfile[] = [
     id: '2',
     name: 'Maria Silva',
     age: 73,
-    // image: require('@/assets/images/senior-placeholder.png'),
+    email: 'maria.silva@gmail.com',
+    password: '********',
+    birthDate: '23/05/1950',
+    country: 'Portugal',
     image: null,
     selected: false,
   },
