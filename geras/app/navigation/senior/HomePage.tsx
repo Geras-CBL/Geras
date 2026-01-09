@@ -1,11 +1,13 @@
 import BigButton from '@/components/senior/BigButton';
 import HelpButton from '@/components/senior/HelpButton';
+import Button from '@/components/shared/Button';
 import { InfoPill } from '@/components/shared/InfoPill';
 import {
   ActionButton,
   NotificationCard,
 } from '@/components/shared/Notification';
 import SectionTitle from '@/components/shared/SectionTitle';
+import { router } from 'expo-router';
 import { View, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -65,6 +67,12 @@ export default function Home() {
             />
           </View>
         </View>
+        <Button
+          title="signgin"
+          onPress={() => {
+            router.push('../../navigation/shared/SignInPage');
+          }}
+        />
       </SafeAreaView>
       <View className="absolute bottom-4 left-0 right-0 z-50 items-center">
         <HelpButton />

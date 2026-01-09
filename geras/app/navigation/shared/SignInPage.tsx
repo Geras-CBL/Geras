@@ -23,47 +23,47 @@ export default function Home() {
           <MainLogo width={116} height={162} />
         </View>
 
-        {/* Título */}
-        <ThemedText
-          type="title"
-          className="mt-10 px-8 text-left text-neutralLight"
-        >
-          Insira os seus dados
-        </ThemedText>
+        <View className="pt-14">
+          <ThemedText
+            type="title"
+            className="mt-10 px-8 text-left text-neutralLight"
+          >
+            Insira os seus dados
+          </ThemedText>
 
-        <View className="w-full items-center">
-          {/* Formulário (Inputs)*/}
-          <View className="mt-10 w-full gap-y-7 px-8">
-            <TextInput
-              className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
-              placeholder="Nome"
-              numberOfLines={1}
-              maxLength={60}
-              placeholderTextColor="#fbfbfb"
-            />
-            <TextInput
-              className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
-              placeholder="Email"
-              numberOfLines={1}
-              maxLength={40}
-              placeholderTextColor="#fbfbfb"
-            />
-            <TextInput
-              className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
-              numberOfLines={1}
-              maxLength={15}
-              placeholder="Palavra-passe"
-              placeholderTextColor="#fbfbfb"
-            />
+          <View className="w-full items-center gap-12">
+            {/* Formulário (Inputs)*/}
+            <View className="mt-10 w-full gap-8 px-8">
+              <TextInput
+                className="h-14 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
+                placeholder="Nome"
+                numberOfLines={1}
+                maxLength={60}
+                placeholderTextColor="#fbfbfb"
+              />
+              <TextInput
+                className="h-14 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
+                placeholder="Email"
+                numberOfLines={1}
+                maxLength={40}
+                placeholderTextColor="#fbfbfb"
+              />
+              <TextInput
+                className="h-14 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
+                numberOfLines={1}
+                maxLength={15}
+                placeholder="Palavra-passe"
+                placeholderTextColor="#fbfbfb"
+              />
+            </View>
+
+            {/* Botão Sign Up */}
+            <Button
+              title=" Sign Up "
+              variant="transparent"
+              onPress={() => {}}
+            ></Button>
           </View>
-
-          {/* Botão Sign Up */}
-          <Button
-            title=" Sign Up "
-            variant="transparent"
-            className="mt-6"
-            onPress={() => {}}
-          ></Button>
         </View>
       </SafeAreaView>
     </View>
