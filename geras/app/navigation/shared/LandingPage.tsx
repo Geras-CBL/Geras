@@ -37,7 +37,7 @@ export default function Home() {
     setTimeout(() => {
       pulse(opacity3);
     }, 400);
-  }, []);
+  }, [opacity1, opacity2, opacity3]);
 
   return (
     <LinearGradient
