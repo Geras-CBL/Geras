@@ -48,7 +48,7 @@ export default function Health() {
             <View className="aspect-square w-1/2 p-4">
               <AddMedicationCard
                 onPress={() => {
-                  router.push('./AddHealthMetric');
+                  router.push('../shared/AddHealthMetric');
                 }}
               />
             </View>

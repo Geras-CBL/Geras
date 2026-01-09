@@ -278,6 +278,27 @@ export default function RootLayout() {
                   ),
                 }}
               />
+              {/* Shared */}
+              <Stack.Screen
+                name="navigation/shared/AddHealthMetric"
+                options={{
+                  headerShown: true,
+                  headerTransparent: true,
+                  contentStyle: { backgroundColor: '#fbfbfb' },
+                  header: () => (
+                    <Header
+                      leftIconName="home"
+                      rightIconName="settings"
+                      onLeftPress={() =>
+                        router.push('/navigation/senior/HomePage')
+                      }
+                      onRightPress={() =>
+                        router.push('/navigation/senior/Settings')
+                      }
+                    />
+                  ),
+                }}
+              />
             </Stack>
           </BottomSheetModalProvider>
         </FontProvider>
