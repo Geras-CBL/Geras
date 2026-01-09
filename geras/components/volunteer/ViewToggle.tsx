@@ -52,7 +52,7 @@ export default function ViewToggle({
   return (
     <View
       onLayout={handleLayout}
-      className="relative h-9 w-full flex-row overflow-hidden rounded-full bg-neutralLight shadow-sm"
+      className="relative mb-4 h-9 w-full flex-row overflow-hidden rounded-full bg-neutralLight shadow-sm"
     >
       <Animated.View
         style={[{ width: '50%' }, animatedStyle]}

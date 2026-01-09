@@ -3,8 +3,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/ThemedText';
 import SectionTitle from '@/components/shared/SectionTitle';
 import CardPedidos from '@/components/volunteer/CardPedidos';
+import ViewToggle from '@/components/volunteer/ViewToggle';
 import React from 'react';
-import ViewToggle from './ViewToggle';
 import FilterButton from './FilterButton';
 
 // Mock Data temos passar ficheiro .ts novo

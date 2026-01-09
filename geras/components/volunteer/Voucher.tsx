@@ -26,7 +26,7 @@ const Voucher = ({
   return (
     <Pressable
       onPress={onPress}
-      className="w-full gap-2 rounded-xl bg-neutralLight p-4 shadow-md"
+      className="w-full gap-6 rounded-xl bg-neutralLight p-4 shadow-md"
     >
       {/* --- Secção Superior: Informação e Valor --- */}
       <View className="flex-row items-start justify-between gap-5">
