@@ -4,10 +4,12 @@ import Voucher from './Voucher';
 import { VOUCHERS_DATA } from '@/data/vouchersData';
 
 export default function UsedVouchers() {
+  const usedVouchers = VOUCHERS_DATA.filter((item) => item.status === false);
+
   return (
     <View>
       <FlatList
-        data={VOUCHERS_DATA}
+        data={usedVouchers}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View className="mb-6">

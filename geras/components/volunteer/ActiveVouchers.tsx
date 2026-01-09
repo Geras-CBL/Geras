@@ -13,6 +13,8 @@ export default function ActiveVouchers() {
     (typeof VOUCHERS_DATA)[0] | null
   >(null);
 
+  const activeVouchers = VOUCHERS_DATA.filter((item) => item.status === true);
+
   const handlePresentModalPress = useCallback(
     (item: (typeof VOUCHERS_DATA)[0]) => {
       setSelectedVoucher(item);
@@ -24,7 +26,7 @@ export default function ActiveVouchers() {
   return (
     <View>
       <FlatList
-        data={VOUCHERS_DATA}
+        data={activeVouchers}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View className="mb-6">

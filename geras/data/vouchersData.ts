@@ -5,6 +5,7 @@ export interface VoucherData {
   value: string;
   currentTasks: number;
   totalTasks: number;
+  status: boolean;
 }
 
 export const VOUCHERS_DATA: VoucherData[] = [
@@ -15,6 +16,7 @@ export const VOUCHERS_DATA: VoucherData[] = [
     value: '2%',
     currentTasks: 3,
     totalTasks: 5,
+    status: true,
   },
   {
     id: '2',
@@ -23,6 +25,7 @@ export const VOUCHERS_DATA: VoucherData[] = [
     value: '5%',
     currentTasks: 3,
     totalTasks: 5,
+    status: false,
   },
   {
     id: '3',
@@ -31,6 +34,7 @@ export const VOUCHERS_DATA: VoucherData[] = [
     value: '2%',
     currentTasks: 2,
     totalTasks: 5,
+    status: true,
   },
   {
     id: '4',
@@ -39,6 +43,7 @@ export const VOUCHERS_DATA: VoucherData[] = [
     value: '10%',
     currentTasks: 1,
     totalTasks: 5,
+    status: true,
   },
   {
     id: '5',
@@ -47,5 +52,6 @@ export const VOUCHERS_DATA: VoucherData[] = [
     value: '5%',
     currentTasks: 0,
     totalTasks: 5,
+    status: true,
   },
 ];
