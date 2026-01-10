@@ -68,6 +68,25 @@ export default function RootLayout() {
                   ),
                 }}
               />
+
+              <Stack.Screen
+                name="navigation/senior/RequestLoading"
+                options={{
+                  headerShown: true,
+                  headerTransparent: true,
+                  contentStyle: { backgroundColor: '#fbfbfb' },
+                  header: () => (
+                    <Header
+                      leftIconName="home"
+                      rightIconName="settings"
+                      onLeftPress={() => {}}
+                      onRightPress={() =>
+                        router.push('/navigation/senior/Settings')
+                      }
+                    />
+                  ),
+                }}
+              />
               <Stack.Screen
                 name="navigation/senior/Health"
                 options={{
@@ -109,6 +128,90 @@ export default function RootLayout() {
                 }}
               />
               <Stack.Screen
+                name="navigation/senior/Requests"
+                options={{
+                  headerShown: true,
+                  headerTransparent: true,
+                  contentStyle: { backgroundColor: '#fbfbfb' },
+                  header: () => (
+                    <Header
+                      leftIconName="home"
+                      rightIconName="settings"
+                      onLeftPress={() =>
+                        router.push('/navigation/senior/HomePage')
+                      }
+                      onRightPress={() =>
+                        router.push('/navigation/senior/Settings')
+                      }
+                    />
+                  ),
+                }}
+              />
+              <Stack.Screen
+                name="navigation/senior/Voice"
+                options={{
+                  headerShown: true,
+                  headerTransparent: true,
+                  contentStyle: { backgroundColor: '#fbfbfb' },
+                  header: () => (
+                    <Header
+                      leftIconName="home"
+                      rightIconName="settings"
+                      onLeftPress={() =>
+                        router.push('/navigation/senior/HomePage')
+                      }
+                      onRightPress={() =>
+                        router.push('/navigation/senior/Settings')
+                      }
+                    />
+                  ),
+                }}
+              />
+              <Stack.Screen
+                name="navigation/senior/Groceries"
+                options={{
+                  headerShown: true,
+                  headerTransparent: true,
+                  contentStyle: { backgroundColor: '#fbfbfb' },
+                  header: () => (
+                    <Header
+                      leftIconName="home"
+                      rightIconName="settings"
+                      onLeftPress={() =>
+                        router.push('/navigation/senior/HomePage')
+                      }
+                      onRightPress={() =>
+                        router.push('/navigation/senior/Settings')
+                      }
+                    />
+                  ),
+                }}
+              />
+              <Stack.Screen
+                name="navigation/senior/AddGrocerieList"
+                options={{
+                  headerShown: true,
+                  headerTransparent: true,
+                  contentStyle: { backgroundColor: '#fbfbfb' },
+                  header: () => (
+                    <Header
+                      leftIconName="home"
+                      rightIconName="settings"
+                      onLeftPress={() =>
+                        router.push('/navigation/senior/HomePage')
+                      }
+                      onRightPress={() =>
+                        router.push('/navigation/senior/Settings')
+                      }
+                    />
+                  ),
+                }}
+              />
+              <Stack.Screen
+                name="navigation/senior/RequestDetails"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
                 name="navigation/senior/ErrorPage"
                 options={{ headerShown: false }}
               />
@@ -136,6 +239,46 @@ export default function RootLayout() {
               {/* caretaker */}
               <Stack.Screen
                 name="navigation/caretaker"
+                options={{
+                  headerShown: true,
+                  headerTransparent: true,
+                  contentStyle: { backgroundColor: 'transparent' },
+                  header: () => (
+                    <Header
+                      leftIconName="arrow-back"
+                      rightIconName="notifications"
+                      onLeftPress={() => {
+                        router.back();
+                      }}
+                      onRightPress={() =>
+                        router.push('../caretaker/Notifications')
+                      }
+                    />
+                  ),
+                }}
+              />
+              <Stack.Screen
+                name="navigation/shared/SignInPage"
+                options={{
+                  headerShown: false,
+                  headerTransparent: true,
+                  contentStyle: { backgroundColor: 'transparent' },
+                  header: () => (
+                    <Header
+                      leftIconName="arrow-back"
+                      rightIconName="notifications"
+                      onLeftPress={() => {
+                        router.back();
+                      }}
+                      onRightPress={() =>
+                        router.push('../caretaker/Notifications')
+                      }
+                    />
+                  ),
+                }}
+              />
+              <Stack.Screen
+                name="navigation/shared/EditProfile"
                 options={{
                   headerShown: true,
                   headerTransparent: true,

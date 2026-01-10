@@ -9,6 +9,7 @@ import Animated, {
   FadeOut,
   LinearTransition,
 } from 'react-native-reanimated';
+import Button from '../shared/Button';
 
 export default function HelpButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -126,15 +127,14 @@ export const HelpContent = ({ toggleOpen }: { toggleOpen: () => void }) => {
             </ThemedText>
           </View>
 
-          <TouchableOpacity
-            className="w-full flex-row items-center justify-center gap-3 rounded-2xl bg-primary py-4 shadow-md"
-            activeOpacity={0.8}
-          >
-            <ThemedText className="text-lg font-bold text-white">
-              Pressione aqui para falar
-            </ThemedText>
-            <MaterialIcons name="record-voice-over" size={24} color="white" />
-          </TouchableOpacity>
+          <Button
+            title={'Pressione para falar'}
+            icon={
+              <MaterialIcons name="record-voice-over" size={24} color="#ffff" />
+            }
+            className="mb-2 w-full"
+            onPress={() => {}}
+          />
         </View>
       </View>
     </Animated.View>

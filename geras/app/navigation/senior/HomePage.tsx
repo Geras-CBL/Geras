@@ -21,7 +21,7 @@ export default function Home() {
             variant="info"
             title="Lucas Wiliam"
             imageSource={require('../../../assets/images/hottie.png')}
-            description={<InfoPill text="A 5 minutos de distância" />}
+            description={<InfoPill text="A 5 minutos de dist..." />}
             rightContent={<ActionButton icon="call" />}
             route="../../navigation/senior/RequestDetails"
           />
