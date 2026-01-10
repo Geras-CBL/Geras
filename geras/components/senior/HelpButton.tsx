@@ -146,7 +146,7 @@ export const HelpContent = ({ toggleOpen }: { toggleOpen: () => void }) => {
     setIsLoading(true);
     try {
       const model = genAI.getGenerativeModel({
-        model: 'gemini-1.5-flash',
+        model: 'gemini-2.5-flash',
         systemInstruction:
           "És um assistente para idosos. Responde curto e em Português. Usa a ferramenta 'navigate' se o utilizador quiser ir a algum lado.",
         tools: [
