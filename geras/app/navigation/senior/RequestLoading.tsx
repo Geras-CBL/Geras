@@ -119,7 +119,7 @@ export default function RequestDetails() {
     if (currentStepIndex < STEPS.length) {
       const timeout = setTimeout(() => {
         setCurrentStepIndex((prev) => prev + 1);
-      }, 5000);
+      }, 300);
 
       return () => clearTimeout(timeout);
     } else {

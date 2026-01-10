@@ -17,11 +17,20 @@ export default function ClockPill({ time }: Readonly<ClockPillProps>) {
 
 interface InfoPillProps {
   text: string;
+  variant?: 'success' | 'secondary';
 }
 
-export function InfoPill({ text }: Readonly<InfoPillProps>) {
+export function InfoPill({
+  text,
+  variant = 'success',
+}: Readonly<InfoPillProps>) {
+  const variantStyles = {
+    success: 'bg-green-800',
+    secondary: 'bg-secondary',
+  };
+
   return (
-    <View className="self-start rounded-full bg-green-800 px-3 py-1">
+    <View className={`rounded-full px-3 py-1 ${variantStyles[variant]}`}>
       <ThemedText className="text-neutralLight">{text}</ThemedText>
     </View>
   );
