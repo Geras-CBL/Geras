@@ -2,7 +2,7 @@ import { View, TouchableOpacity, Image } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { ThemedText } from '../ThemedText';
 import HelpShape from '../../assets/images/HelpShape.png';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAudioPlayer } from 'expo-audio';
 import Animated, {
   FadeIn,
@@ -10,11 +10,13 @@ import Animated, {
   LinearTransition,
 } from 'react-native-reanimated';
 import Button from '../shared/Button';
+import Voice, { SpeechResultsEvent } from '@react-native-voice/voice';
 
 export default function HelpButton() {
   const [isOpen, setIsOpen] = useState(false);
   const audioSource = require('../../assets/audio/assistant.mp3');
   const player = useAudioPlayer(audioSource);
+
   const toggleOpen = () => {
     setIsOpen(!isOpen);
     if (!isOpen) {
@@ -97,6 +99,48 @@ export default function HelpButton() {
 }
 
 export const HelpContent = ({ toggleOpen }: { toggleOpen: () => void }) => {
+  const [started, setStarted] = useState(false);
+  const [results, setResults] = useState<string[]>([]);
+
+  const onSpeechResultsHandler = (e: SpeechResultsEvent) => {
+    setResults(e.value ?? []);
+  };
+
+  const onSpeechErrorHandler = (e: any) => {
+    console.error(e);
+    setStarted(false);
+  };
+
+  // Resets state when the OS stops listening automatically
+  const onSpeechEndHandler = () => {
+    setStarted(false);
+  };
+
+  useEffect(() => {
+    Voice.onSpeechError = onSpeechErrorHandler;
+    Voice.onSpeechResults = onSpeechResultsHandler;
+    Voice.onSpeechEnd = onSpeechEndHandler;
+
+    return () => {
+      Voice.destroy().then(Voice.removeAllListeners);
+    };
+  }, []);
+
+  const handleSpeechToggle = async () => {
+    if (started) {
+      await Voice.stop();
+      setStarted(false);
+    } else {
+      setResults([]); // Clear previous text when starting new
+      try {
+        await Voice.start('pt-PT');
+        setStarted(true);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
+
   return (
     <Animated.View
       key="open-chat"
@@ -120,20 +164,42 @@ export const HelpContent = ({ toggleOpen }: { toggleOpen: () => void }) => {
           <MaterialIcons name="close" size={24} color="black" />
         </TouchableOpacity>
 
-        <View className="w-full gap-6">
+        <View className="w-full gap-4">
+          {/* Bot Message */}
           <View className="mt-2 self-start rounded-2xl rounded-tl-none bg-gray-200 px-6 py-4">
             <ThemedText className="text-base font-medium text-gray-700">
               Olá! Como posso ajudar?
             </ThemedText>
           </View>
 
+          {/* User Message (Voice Result) - Only shows if there is text */}
+          {results.length > 0 && (
+            <Animated.View
+              entering={FadeIn}
+              className="self-end rounded-2xl rounded-tr-none bg-primary px-6 py-4"
+            >
+              <ThemedText className="text-base font-medium text-white">
+                {results[0]}
+              </ThemedText>
+            </Animated.View>
+          )}
+
+          {/* Spacer if no results yet, to keep layout consistent */}
+          {results.length === 0 && <View className="h-4" />}
+
           <Button
-            title={'Pressione para falar'}
-            icon={
-              <MaterialIcons name="record-voice-over" size={24} color="#ffff" />
+            title={
+              started ? 'Ouvindo... (Toque para parar)' : 'Pressione para falar'
             }
-            className="mb-2 w-full"
-            onPress={() => {}}
+            icon={
+              <MaterialIcons
+                name={started ? 'stop' : 'record-voice-over'}
+                size={24}
+                color="#ffff"
+              />
+            }
+            className={`mb-2 w-full ${started ? 'bg-red-500' : ''}`} // Optional: change color when recording
+            onPress={handleSpeechToggle}
           />
         </View>
       </View>
