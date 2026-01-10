@@ -16,9 +16,10 @@ import Animated, {
 import HelpShape from '../../assets/images/HelpShape.png';
 import Button from '../shared/Button';
 import { ThemedText } from '../ThemedText';
+import { API_KEY } from '../../api/api';
 
 // Aqui, é onde configuramos o Gemini (usa a tua chave aqui)
-const genAI = new GoogleGenerativeAI('A_TUA_API_KEY_GEMINI');
+const genAI = new GoogleGenerativeAI(API_KEY);
 
 // Aqui, é onde mapeamos os nomes amigáveis para as rotas reais da app
 const SENIOR_SCREENS = {
@@ -159,7 +160,7 @@ export const HelpContent = ({ toggleOpen }: { toggleOpen: () => void }) => {
                   properties: {
                     screen: {
                       type: SchemaType.STRING,
-                      format: "enum",
+                      format: 'enum',
                       description: `Ecrã de destino:
                         - 'home': Início.
                         - 'saude': Ver saúde/medicação.
@@ -190,7 +191,8 @@ export const HelpContent = ({ toggleOpen }: { toggleOpen: () => void }) => {
       if (call && call.length > 0) {
         const firstCall = call[0];
         if (firstCall.name === 'navigate') {
-          const screenKey = (firstCall.args as { screen: string }).screen as keyof typeof SENIOR_SCREENS;
+          const screenKey = (firstCall.args as { screen: string })
+            .screen as keyof typeof SENIOR_SCREENS;
           const targetPath = SENIOR_SCREENS[screenKey];
 
           if (targetPath) {
