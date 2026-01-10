@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Image, ScrollView } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,61 +17,50 @@ type EvaluationTaskVariant =
   | 'sentiment_neutral'
   | 'sentiment_satisfied';
 
-// Configuração completa por tipo de pedido
 const requestConfig: Record<
   string,
   { title: string; image: any; description: string }
 > = {
-  domestic: {
-    title: 'Tarefa Doméstica',
-    image: require('@/assets/images/domestic-tasks.png'),
-    description:
-      'O Sr. António precisa de auxílio para limpar o pó da sala. Ele sofre de mobilidade reduzida, não conseguindo realizar esta tarefa sozinho.',
-  },
   food: {
     title: 'Pedido de Compras',
     image: require('@/assets/images/food.png'),
     description:
-      'O Sr. António precisa de auxílio para fazer compras de alimentos essenciais.',
+      'O Sr. António precisa de auxílio para realizar compras de alimentos essenciais.',
   },
-  medicine: {
+  pharmacy: {
     title: 'Pedido de Farmácia',
     image: require('@/assets/images/medicine.png'),
     description:
       'O Sr. António precisa de auxílio para buscar medicamentos na farmácia.',
   },
+  cleaning: {
+    title: 'Tarefa Doméstica',
+    image: require('@/assets/images/domestic-tasks.png'),
+    description:
+      'O Sr. António precisa de ajuda para realizar tarefas domésticas devido à sua mobilidade reduzida.',
+  },
+  other: {
+    title: 'Pedido Personalizado',
+    image: require('@/assets/images/domestic-tasks.png'),
+    description:
+      'O Sr. António realizou um pedido personalizado que necessita de apoio.',
+  },
 };
 
 export default function RequestDetails() {
-  const { type } = useLocalSearchParams<{ type: string }>();
-  const [observation, setObservation] = useState('');
+  const { type } = useLocalSearchParams<{ type?: string }>();
+  const requestType = type && requestConfig[type] ? type : 'other';
 
-  const requestType =
-    type === 'food' || type === 'medicine' || type === 'domestic'
-      ? type
-      : 'domestic';
+  const { title, image, description } = requestConfig[requestType];
 
-  // Pega a configuração do pedido atual
-  const {
-    title: requestTitle,
-    image: requestImage,
-    description: requestDescription,
-  } = requestConfig[requestType];
-
-  const volunteer = {
-    name: 'Lucas William',
-    age: 20,
-    role: 'Estudante',
-    avatarUri: undefined,
-  };
+  const [taskStatus, setTaskStatus] = useState<'inProgress' | 'complete'>(
+    'inProgress',
+  );
 
   const [selectedVariant, setSelectedVariant] =
     useState<EvaluationTaskVariant | null>(null);
 
-  // Status da tarefa: inProgress → complete
-  const [taskStatus, setTaskStatus] = useState<'inProgress' | 'complete'>(
-    'inProgress',
-  );
+  const [observation, setObservation] = useState('');
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -81,24 +70,15 @@ export default function RequestDetails() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Seleção/deseleção das avaliações
-  const handlePress = (variant: EvaluationTaskVariant) => {
-    if (selectedVariant === variant) {
-      setSelectedVariant(null);
-    } else {
-      setSelectedVariant(variant);
-    }
-  };
-
-  const isAnySelected = selectedVariant !== null;
-
-  const handleSubmit = () => {
-    console.log('Avaliação selecionada:', selectedVariant);
-    console.log('Observação:', observation);
+  const volunteer = {
+    name: 'Lucas William',
+    age: 20,
+    role: 'Estudante',
+    avatarUri: undefined,
   };
 
   return (
-    <SafeAreaView edges={['top']} className="flex-1 bg-white">
+    <SafeAreaView edges={['top']} className="flex-1">
       <ScrollView
         contentContainerStyle={{
           paddingHorizontal: 24,
@@ -108,47 +88,28 @@ export default function RequestDetails() {
         showsVerticalScrollIndicator={false}
       >
         <View className="gap-6">
-          {/* Imagem do pedido */}
           <View className="mt-8 items-center">
-            <Image
-              source={requestImage}
-              style={{ height: 90 }}
-              resizeMode="contain"
-            />
+            <Image source={image} style={{ height: 90 }} resizeMode="contain" />
           </View>
 
-          {/* Status da tarefa */}
-          <View className="mb-4 mt-4 items-center justify-center gap-4 text-center">
-            <ThemedText type="title">{requestTitle}</ThemedText>
-            <ThemedText type="bodytitle">Estado da Tarefa</ThemedText>
+          <View className="items-center gap-4">
+            <ThemedText type="title">{title}</ThemedText>
             <InfoPill
               text={taskStatus === 'inProgress' ? 'Em progresso' : 'Completa'}
               variant={taskStatus === 'inProgress' ? 'secondary' : 'success'}
             />
           </View>
 
-          {/* Descrição do pedido */}
           <SectionTitle title="Descrição do Pedido" />
-          <ThemedText className="-mt-4 mb-4" type="body">
-            {requestDescription}
-          </ThemedText>
+          <ThemedText type="body">{description}</ThemedText>
 
-          {/* Voluntário */}
           <SectionTitle title="Voluntário" />
-          <ContainerVoluntario
-            name={volunteer.name}
-            age={volunteer.age}
-            role={volunteer.role}
-            avatarUri={volunteer.avatarUri}
-          />
+          <ContainerVoluntario {...volunteer} />
 
-          {/* Avaliação - só aparece se a tarefa estiver completa */}
           {taskStatus === 'complete' && (
             <>
-              <ThemedText className="mt-4" type="title">
-                Como correu a tarefa
-              </ThemedText>
-              <View className="-mt-2 mb-4 flex-row gap-4">
+              <ThemedText type="title">Como correu a tarefa</ThemedText>
+              <View className="flex-row gap-4">
                 {(
                   [
                     'sentiment_dissatisfied',
@@ -160,26 +121,31 @@ export default function RequestDetails() {
                     key={variant}
                     variant={variant}
                     selected={selectedVariant === variant}
-                    isAnySelected={isAnySelected}
-                    onPress={() => handlePress(variant)}
+                    isAnySelected={!!selectedVariant}
+                    onPress={() =>
+                      setSelectedVariant(
+                        selectedVariant === variant ? null : variant,
+                      )
+                    }
                   />
                 ))}
               </View>
             </>
           )}
 
-          {/* Observação */}
           <SectionTitle title="Enviar Observação" />
           <CommentBox value={observation} onChangeText={setObservation} />
 
-          {/* Botão Submeter */}
-          {isAnySelected && (
-            <Button title="Submeter" onPress={handleSubmit} className="mt-4" />
+          {selectedVariant && (
+            <Button
+              title="Submeter"
+              className="mt-4"
+              onPress={() => console.log(selectedVariant, observation)}
+            />
           )}
         </View>
       </ScrollView>
 
-      {/* Bottom Actions fixo */}
       <BottomActions />
     </SafeAreaView>
   );
