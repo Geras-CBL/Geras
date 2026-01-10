@@ -4,6 +4,8 @@ import { ThemedText } from '@/components/ThemedText';
 import { InfoPill } from '@/components/shared/InfoPill';
 import SectionTitle from '@/components/shared/SectionTitle';
 import ContainerVoluntario from '@/components/shared/ContainerVolunteer';
+import BottomActions from '@/components/senior/BottomActions';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const requestImages = {
   food: require('@/assets/images/food.png'),
@@ -28,16 +30,24 @@ export default function RequestDetails() {
   };
 
   return (
-    <View className="gap-4 rounded-2xl p-4">
-      <Image
+    <SafeAreaView
+      edges={['top']}
+      className="flex-1 px-6 pb-56 pt-20"
+    >
+    <View className="gap-6">
+
+      
+      <View className="items-center">
+        <Image
         source={requestImages[requestType]}
-        style={{ height: 95 }}
+        style={{ height: 91 }}
         resizeMode="contain"
       />
+      </View>
 
       <SectionTitle title="Tarefa Doméstica" />
 
-      <ThemedText type="bodytitle" className="text-lg">
+      <ThemedText type="bodytitle">
         Estado da Tarefa
       </ThemedText>
 
@@ -45,7 +55,7 @@ export default function RequestDetails() {
 
       <SectionTitle title="Descrição do Pedido" />
 
-      <ThemedText type="body">
+      <ThemedText className='-mt-4 mb-6' type="body">
         O Sr. António precisa de auxílio para limpar o pó da sala. Ele sofre de
         mobilidade reduzida, não conseguindo realizar esta tarefa sozinho.
       </ThemedText>
@@ -53,12 +63,21 @@ export default function RequestDetails() {
       <SectionTitle title="Voluntário" />
 
       {/* Container do voluntário */}
-      <ContainerVoluntario
+      <ContainerVoluntario 
         name={volunteer.name}
         age={volunteer.age}
         role={volunteer.role}
-        avatarUri={volunteer.avatarUri} // se undefined, ícone aparecerá
+        avatarUri={volunteer.avatarUri} 
       />
+
+      <SectionTitle title="Como correu a tarefa" />
+
+      <SectionTitle title="Enviar Observação" />
+
+
+      <BottomActions />
+      
     </View>
+    </SafeAreaView>
   );
 }

@@ -18,7 +18,6 @@ const ContainerVoluntario = ({
 }: ContainerVoluntarioProps) => {
   return (
     <View className="h-20 w-full flex-row items-center rounded-2xl bg-neutralLight px-4 shadow-md">
-      {/* Avatar ou ícone */}
       {avatarUri ? (
         <View className="w-15 h-15 overflow-hidden rounded-full">
           <img src={avatarUri} style={{ width: 60, height: 60 }} />
@@ -34,10 +33,10 @@ const ContainerVoluntario = ({
         <ThemedText type="body" className="text-lg text-neutral">
           {name}
         </ThemedText>
-        <ThemedText type="bodyInfo" className="mt-1 text-sm text-neutral">
+        <ThemedText type="bodyInfo" className="mt-1 text-sm text-neutral/60">
           {age} anos
         </ThemedText>
-        <ThemedText type="bodyInfo" className="mt-0.5 text-sm text-neutral">
+        <ThemedText type="bodyInfo" className="mt-0.5 text-sm text-neutral/60">
           {role}
         </ThemedText>
       </View>
