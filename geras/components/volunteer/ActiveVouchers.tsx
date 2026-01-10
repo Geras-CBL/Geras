@@ -27,6 +27,7 @@ export default function ActiveVouchers() {
     <View>
       <FlatList
         data={activeVouchers}
+        className="-m-4 p-4"
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View className="mb-6">

@@ -26,6 +26,7 @@ export default function UsedVouchers() {
     <View>
       <FlatList
         data={usedVouchers}
+        className="-m-4 p-4"
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
