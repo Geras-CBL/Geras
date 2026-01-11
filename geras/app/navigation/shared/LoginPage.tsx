@@ -1,77 +1,108 @@
 import { View, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ThemedText } from '@/components/ThemedText'; 
-
-import Button from '@/components/shared/Button'; 
-import { router } from 'expo-router';
+import { ThemedText } from '@/components/ThemedText';
+import MainLogo from '@/assets/logo/Main_Logo.svg';
+import Button from '@/components/shared/Button';
+import { Stack } from 'expo-router';
+import { Svg, G, Path, Defs, ClipPath, Rect } from 'react-native-svg';
 
 export default function LoginPage() {
   return (
-    <View style={{ flex: 1 }}>
-      <LinearGradient
-        className="absolute h-full w-full"
-        locations={[0, 1]}
-        colors={['#6b8548', '#205b2d']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0.3, y: 1 }}
+    <LinearGradient
+      style={{ flex: 1 }}
+      colors={['#6b8548', '#205b2d']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0.3, y: 1 }}
+    >
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          headerTransparent: true,
+          contentStyle: { backgroundColor: 'transparent' },
+          header: () => (
+            <SafeAreaView edges={['top']} className="w-full">
+              <View className="flex-row items-center justify-center px-5">
+                <View className="flex-1 items-center justify-center">
+                  <Svg
+                    width="100"
+                    height="30"
+                    viewBox="0 0 314 76"
+                    fill="none"
+                    style={{ marginTop: 20 }}
+                  >
+                    <G clipPath="url(#clip0_1652_4784)">
+                      <Path
+                        d="M32.17 75.19C25.56 75.19 19.84 73.66 15 70.61C10.17 67.56 6.45 63.23 3.87 57.64C1.29 52.05 0 45.4 0 37.68C0 29.96 1.29 23.3 3.87 17.68C6.45 12.06 10.12 7.7 14.86 4.62C19.61 1.54 25.17 0 31.54 0C37.13 0 42.07 1.14 46.36 3.42C50.65 5.7 54 8.84 56.41 12.82C58.28 15.93 59.43 19.39 59.84 23.2C60.03 24.97 58.63 26.51 56.85 26.51H46.37C45.07 26.51 43.75 25.47 43.46 24.2C42.92 21.82 41.8 19.79 40.1 18.12C37.88 15.94 35.02 14.84 31.54 14.84C26.67 14.84 22.9 16.88 20.23 20.96C17.56 25.04 16.22 30.52 16.22 37.4C16.22 44.28 17.58 49.96 20.3 54.05C23.13 58.31 28.14 60.77 33.24 60.4C36.08 60.2 38.5 59.16 40.5 57.31C42.36 55.59 43.72 53.07 44.57 49.75C44.86 48.63 44.04 47.53 42.88 47.53H35.61C33.95 47.53 32.61 46.19 32.61 44.53V36.74C32.61 35.08 33.95 33.74 35.61 33.74H49.01C53.46 33.74 56.64 34.83 58.56 37.02C60.48 39.21 61.44 42.29 61.44 46.27C61.44 49.23 60.93 52.38 59.91 55.72C58.89 59.06 57.24 62.21 54.95 65.17C52.67 68.13 49.65 70.54 45.89 72.4C42.14 74.26 37.55 75.2 32.15 75.2L32.17 75.19Z"
+                        fill="white"
+                      />
+                      <Path
+                        d="M72.2695 66.7502V8.4502C72.2695 4.5802 75.3995 1.4502 79.2695 1.4502H115.07C116.81 1.4502 118.23 2.8602 118.23 4.6102V12.8502C118.23 14.5902 116.82 16.0102 115.07 16.0102H91.0995C89.3595 16.0102 87.9395 17.4202 87.9395 19.1702V26.4502C87.9395 28.1902 89.3495 29.6102 91.0995 29.6102H113.18C114.92 29.6102 116.34 31.0202 116.34 32.7702V40.4402C116.34 42.1802 114.93 43.6002 113.18 43.6002H91.0995C89.3595 43.6002 87.9395 45.0102 87.9395 46.7602V56.0702C87.9395 57.8102 89.3495 59.2302 91.0995 59.2302H115.07C116.81 59.2302 118.23 60.6402 118.23 62.3902V70.6302C118.23 72.3702 116.82 73.7902 115.07 73.7902H79.2695C75.3995 73.7902 72.2695 70.6602 72.2695 66.7902V66.7502Z"
+                        fill="white"
+                      />
+                      <Path
+                        d="M129.31 70.7502V8.4502C129.31 4.5802 132.44 1.4502 136.31 1.4502H156.17C164.58 1.4502 171.04 3.2702 175.54 6.9002C180.05 10.5302 182.3 15.7202 182.3 22.4702C182.3 26.4602 181.31 29.9302 179.33 32.8802C178.26 34.4802 176.93 35.8902 175.36 37.0902C173.75 38.3302 173.76 40.7902 175.45 41.9302C177.14 43.0702 178.42 44.4502 179.24 46.0402C180.68 48.8402 181.4 52.3902 181.4 56.6902V70.7502C181.4 72.4102 180.06 73.7502 178.4 73.7502H168.9C167.24 73.7502 165.9 72.4102 165.9 70.7502V58.4202C165.9 51.0302 162.65 47.3302 156.17 47.3302H147.21C145.98 47.3302 144.99 48.3202 144.99 49.5502V70.7402C144.99 72.4002 143.65 73.7402 141.99 73.7402H132.31C130.65 73.7402 129.31 72.4002 129.31 70.7402V70.7502ZM144.99 30.1602C144.99 31.8202 146.33 33.1602 147.99 33.1602H156.17C159.35 33.1602 161.8 32.3702 163.51 30.8002C165.22 29.2302 166.08 26.9902 166.08 24.1002C166.08 21.4602 165.22 19.4202 163.51 17.9802C161.8 16.5302 159.35 15.8102 156.17 15.8102H147.99C146.33 15.8102 144.99 17.1502 144.99 18.8102V30.1602Z"
+                        fill="white"
+                      />
+                      <Path
+                        d="M192.94 73.7498C190.9 73.7498 189.45 71.7498 190.09 69.8098L208.26 14.7498C209.28 11.5998 210.32 8.92977 211.37 6.74977C212.42 4.55977 213.74 2.88977 215.34 1.73977C216.93 0.579766 218.99 0.00976562 221.51 0.00976562C224.03 0.00976562 226.19 0.589766 227.82 1.73977C229.45 2.88977 230.81 4.54977 231.92 6.69977C233.03 8.84977 234.07 11.4698 235.03 14.5598L252.7 69.8398C253.32 71.7798 251.87 73.7498 249.84 73.7498H240.16C238.82 73.7498 237.65 72.8698 237.28 71.5798L233.85 59.6898C233.63 58.9398 232.95 58.4198 232.17 58.4198H210.55C209.78 58.4198 209.09 58.9298 208.87 59.6698L205.29 71.6098C204.91 72.8798 203.74 73.7498 202.42 73.7498H192.94ZM221.32 18.6098L214.74 40.2898C214.16 42.2198 215.6 44.1598 217.61 44.1598H225.25C227.25 44.1598 228.69 42.2398 228.13 40.3298L221.85 18.6198C221.79 18.3598 221.7 18.2298 221.58 18.2298C221.46 18.2298 221.37 18.3598 221.31 18.6198L221.32 18.6098Z"
+                        fill="white"
+                      />
+                      <Path
+                        d="M286.74 75.1902C281.45 75.1902 276.66 74.2302 272.37 72.3002C268.07 70.3702 264.65 67.5602 262.1 63.8602C261.2 62.5602 260.46 61.1502 259.88 59.6402C258.13 55.1002 261.58 50.2202 266.45 50.2202H270.23C272.35 50.2202 274.3 51.5402 274.95 53.5602C275.6 55.5802 276.63 57.0702 278.1 58.2202C280.32 59.9502 283.09 60.8202 286.39 60.8202C289.69 60.8202 292.31 60.2102 294.41 58.9902C296.51 57.7702 297.57 56.0702 297.57 53.8802C297.57 52.0202 296.94 50.6402 295.68 49.7302C294.42 48.8302 292.5 47.9602 289.91 47.1302L275.49 42.6002C272.67 41.7002 269.99 40.5602 267.47 39.1802C264.95 37.8002 262.92 35.8902 261.39 33.4402C259.86 30.9902 259.09 27.6902 259.09 23.5102C259.09 18.6902 260.17 14.5302 262.33 11.0302C264.49 7.53023 267.56 4.81023 271.52 2.88023C275.48 0.950235 280.14 -0.00976562 285.49 -0.00976562C293.24 -0.00976562 299.53 2.01023 304.37 6.06023C306.79 8.09023 308.7 10.5502 310.09 13.4302C312.3 18.0102 308.8 23.3202 303.71 23.3202H300.12C298.17 23.3202 296.35 22.2102 295.59 20.4202C293.8 16.2502 290.22 14.1602 284.86 14.1602C281.74 14.1602 279.35 14.8002 277.7 16.0902C276.05 17.3802 275.22 19.1102 275.22 21.3002C275.22 22.9102 275.73 24.2602 276.75 25.3502C277.77 26.4402 279.39 27.3402 281.62 28.0502L296.67 32.8702C302.44 34.6702 306.64 37.1402 309.29 40.2902C311.93 43.4402 313.26 47.5502 313.26 52.6302C313.26 57.1302 312.16 61.0602 309.97 64.4402C307.78 67.8102 304.7 70.4502 300.73 72.3502C296.76 74.2402 292.11 75.1902 286.76 75.1902H286.74Z"
+                        fill="white"
+                      />
+                    </G>
+                    <Defs>
+                      <ClipPath id="clip0_1652_4784">
+                        <Rect width="313.24" height="75.19" fill="white" />
+                      </ClipPath>
+                    </Defs>
+                  </Svg>
+                </View>
+              </View>
+            </SafeAreaView>
+          ),
+        }}
       />
 
-      <SafeAreaView edges={['top']} className="flex-1 pt-16">
-        
-        {/* Logo */}
-        <View className="mt-4 items-center justify-center self-center">
-          <MainLogo width={116} height={162} />
-        </View>
-
-        {/* Título */}
-        <ThemedText
-          type="title"
-          className="mt-10 px-8 text-left text-neutralLight"
-        >
-          Insira os seus dados
-        </ThemedText>
-
-        {/* Inputs */}
-        <View className="w-full items-center">
-          <View className="mt-10 w-full gap-y-7 px-8">
-            
-            {/* Input E-mail */}
-            <TextInput
-              className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
-              placeholder="E-mail"
-              numberOfLines={1}
-              maxLength={60}
-              placeholderTextColor="#fbfbfb"
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-
-            {/* Input palavra-Passe */}
-            <TextInput
-              className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
-              placeholder="Palavra-Passe"
-              numberOfLines={1}
-              maxLength={40}
-              placeholderTextColor="#fbfbfb"
-              secureTextEntry={true} 
-            />
+      <SafeAreaView style={{ flex: 1 }} edges={['top']}>
+        <View className="flex-1 justify-center">
+          {/* Logo */}
+          <View className="mb-6 items-center">
+            <MainLogo width={116} height={162} />
           </View>
 
-          {/* Botão Login */}
-          <View className="mt-10 w-full px-16">
-             <Button
-                title="Login"
-                variant="transparent"
-                className="mt-6 border border-white rounded-3xl" 
-                onPress={() => {
-                    console.log("Login pressionado");
-                }}
-            />
-          </View>
+          <ThemedText
+            type="title"
+            className="mt-8 px-8 text-left text-neutralLight"
+          >
+            Insira os seus dados
+          </ThemedText>
 
+          {/* Inputs */}
+          <View className="mb-6 mt-8 w-full items-center">
+            <View className="w-full gap-y-7 px-8">
+              <TextInput
+                className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
+                placeholder="E-mail"
+                placeholderTextColor="#fbfbfb"
+              />
+
+              <TextInput
+                className="mb-6 h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
+                placeholder="Palavra-Passe"
+                placeholderTextColor="#fbfbfb"
+                secureTextEntry
+              />
+            </View>
+
+            <View className="w-2/3">
+              <Button title="Log in" variant="transparent" className="mt-7" />
+            </View>
+          </View>
         </View>
       </SafeAreaView>
-    </View>
+    </LinearGradient>
   );
 }
