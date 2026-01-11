@@ -21,12 +21,6 @@ export default function Index() {
           <Text className="text-2xl font-bold text-white">Sénior</Text>
         </TouchableOpacity>
       </Link>
-
-      <Link href="/navigation/shared/LoginPage" asChild>
-        <TouchableOpacity className="w-[70%] items-center rounded-full bg-[#9FBFA0] p-5 shadow-md active:opacity-80">
-          <Text className="text-2xl font-bold text-white">Log in</Text>
-        </TouchableOpacity>
-      </Link>
     </View>
   );
 }
