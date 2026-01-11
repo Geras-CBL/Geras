@@ -1,113 +1,104 @@
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import Animated, {
   Easing,
   interpolateColor,
   useAnimatedStyle,
   useSharedValue,
+  withRepeat,
+  withSequence,
+  withSpring,
   withTiming,
 } from 'react-native-reanimated';
-
-const GIFS = [
-  { id: 'gif1', source: require('../../../assets/images/loading1.gif') },
-  { id: 'gif2', source: require('../../../assets/images/loading2.gif') },
-];
+import { FontAwesome } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const STEPS = [
-  { id: 'step1', label: 'A processar o seu pedido' },
-  { id: 'step2', label: 'A procurar voluntários' },
-  { id: 'step3', label: 'Voluntário encontrado' },
+  { id: 'step1', label: 'A processar o seu pedido', icon: 'spinner' },
+  { id: 'step2', label: 'A procurar voluntários', icon: 'search' },
+  { id: 'step3', label: 'Voluntário encontrado!', icon: 'check' },
 ];
 
-interface BaseProps {
-  isActive: boolean;
-}
-
-interface AnimatedStepProps extends BaseProps {
-  label: string;
-}
-
-interface AnimatedGifProps extends BaseProps {
-  source: any;
-}
-
-const AnimatedStep: React.FC<AnimatedStepProps> = ({ label, isActive }) => {
+const CentralAnimation = ({ stepIndex }: { stepIndex: number }) => {
+  const rotation = useSharedValue(0);
   const scale = useSharedValue(1);
-  const colorProgress = useSharedValue(0);
 
   useEffect(() => {
-    scale.value = withTiming(isActive ? 1.8 : 1, {
-      duration: 20,
-      easing: Easing.inOut(Easing.quad),
-    });
+    // Reset
+    rotation.value = 0;
+    scale.value = 1;
 
-    colorProgress.value = withTiming(isActive ? 1 : 0, {
-      duration: 20,
-      easing: Easing.inOut(Easing.quad),
-    });
-  }, [colorProgress, isActive, scale]);
+    if (stepIndex === 0) {
+      // 🔵 Spinner a girar infinitamente
+      rotation.value = withRepeat(
+        withTiming(1, { duration: 1000, easing: Easing.linear }),
+        -1,
+        false,
+      );
+    }
+
+    if (stepIndex === 1) {
+      // 🔍 Lupa a pulsar
+      scale.value = withRepeat(
+        withSequence(
+          withTiming(1.15, { duration: 600 }),
+          withTiming(1.0, { duration: 600 }),
+        ),
+        -1,
+        false,
+      );
+    }
+
+    if (stepIndex === 2) {
+      // 🟢 Pop final
+      scale.value = withSpring(1.2, { damping: 10, stiffness: 100 }, () => {
+        scale.value = withSpring(1);
+      });
+    }
+  }, [rotation, scale, stepIndex]);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ scale: scale.value }],
-      transformOrigin: '0% 50%',
+      transform: [
+        { scale: scale.value },
+        { rotate: stepIndex === 0 ? `${rotation.value * 360}deg` : '0deg' },
+      ],
+    };
+  });
+
+  const currentIcon = STEPS[stepIndex]?.icon || 'question';
+  const iconColor = stepIndex === 2 ? '#4ADE80' : '#F5F5F5';
+
+  return (
+    <View className="mb-10 h-40 w-40 items-center justify-center rounded-full bg-white/10">
+      <Animated.View style={animatedStyle}>
+        <FontAwesome name={currentIcon as any} size={60} color={iconColor} />
+      </Animated.View>
+    </View>
+  );
+};
+
+const AnimatedStepText = ({ label, index, currentIndex }: any) => {
+  const isActive = index === currentIndex;
+  const isPast = index < currentIndex;
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: withTiming(isActive || isPast ? 1 : 0.4, { duration: 300 }),
+      transform: [{ translateX: withTiming(isActive ? 10 : 0) }],
       color: interpolateColor(
-        colorProgress.value,
+        isPast ? 1 : 0,
         [0, 1],
-        ['#9CA3AF', '#F5F5F5'],
+        [isActive ? '#F5F5F5' : '#9CA3AF', '#4ADE80'],
       ),
     };
   });
 
   return (
-    <Animated.Text
-      className="my-6 text-left text-lg font-bold"
-      style={animatedStyle}
-    >
+    <Animated.Text className="my-2 text-xl font-bold" style={animatedStyle}>
+      {isPast ? '✓ ' : ''}
       {label}
-    </Animated.Text>
-  );
-};
-
-const AnimatedGif: React.FC<AnimatedGifProps> = ({ source, isActive }) => {
-  const opacity = useSharedValue(0);
-
-  useEffect(() => {
-    opacity.value = withTiming(isActive ? 1 : 0, { duration: 10 });
-  }, [isActive, opacity]);
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return { opacity: opacity.value };
-  });
-
-  return (
-    <Animated.Image
-      source={source}
-      className="absolute h-64 w-64"
-      resizeMode="contain"
-      style={animatedStyle}
-    />
-  );
-};
-
-const AnimatedRedirect: React.FC<BaseProps> = ({ isActive }) => {
-  const opacity = useSharedValue(0);
-
-  useEffect(() => {
-    opacity.value = withTiming(isActive ? 1 : 0, { duration: 10 });
-  }, [isActive, opacity]);
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return { opacity: opacity.value };
-  });
-
-  return (
-    <Animated.Text
-      className="absolute text-lg font-medium text-neutralLight"
-      style={animatedStyle}
-    >
-      Redirecting...
     </Animated.Text>
   );
 };
@@ -117,39 +108,43 @@ export default function RequestDetails() {
 
   useEffect(() => {
     if (currentStepIndex < STEPS.length) {
+      const duration = currentStepIndex === 2 ? 2000 : 5000;
+
       const timeout = setTimeout(() => {
-        setCurrentStepIndex((prev) => prev + 1);
-      }, 5000);
+        if (currentStepIndex < STEPS.length - 1) {
+          setCurrentStepIndex((prev) => prev + 1);
+        } else {
+          router.replace('./RequestDetails');
+        }
+      }, duration);
 
       return () => clearTimeout(timeout);
-    } else {
-      router.replace('./RequestDetails');
     }
   }, [currentStepIndex]);
 
   return (
-    <View className="relative flex-1 items-start justify-start bg-primary px-10 pt-40">
-      <View className="z-10 w-full flex-col items-start">
+    <SafeAreaView
+      edges={['top']}
+      className="flex-1 justify-between bg-primary px-10 pb-20 pt-16"
+    >
+      <Text className="mb-2 pt-8 text-3xl font-bold text-neutralLight">
+        Aguarde...
+      </Text>
+
+      <View className="flex-1 items-center justify-center">
+        <CentralAnimation stepIndex={currentStepIndex} />
+      </View>
+
+      <View className="mb-20 w-full flex-col items-start">
         {STEPS.map((step, index) => (
-          <AnimatedStep
+          <AnimatedStepText
             key={step.id}
             label={step.label}
-            isActive={index === currentStepIndex}
+            index={index}
+            currentIndex={currentStepIndex}
           />
         ))}
       </View>
-
-      <View className="absolute bottom-96 left-0 right-0 items-center justify-center">
-        {GIFS.map((gif, index) => (
-          <AnimatedGif
-            key={gif.id}
-            source={gif.source}
-            isActive={index === currentStepIndex}
-          />
-        ))}
-
-        <AnimatedRedirect isActive={currentStepIndex === 2} />
-      </View>
-    </View>
+    </SafeAreaView>
   );
 }

@@ -83,6 +83,7 @@ export default function RootLayout() {
                       onRightPress={() =>
                         router.push('/navigation/senior/Settings')
                       }
+                      isWhite={false}
                     />
                   ),
                 }}

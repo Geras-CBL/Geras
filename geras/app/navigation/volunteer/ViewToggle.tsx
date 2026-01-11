@@ -52,14 +52,11 @@ export default function ViewToggle({
   return (
     <View
       onLayout={handleLayout}
-      className="flex-row h-9 rounded-full bg-neutralLight relative overflow-hidden shadow-sm w-full"
+      className="relative h-9 w-full flex-row overflow-hidden rounded-full bg-neutralLight shadow-sm"
     >
       <Animated.View
-        style={[
-          { width: '50%' },
-          animatedStyle,
-        ]}
-        className="absolute h-full bg-primary rounded-full top-0 left-0 bottom-0"
+        style={[{ width: '50%' }, animatedStyle]}
+        className="absolute bottom-0 left-0 top-0 h-full rounded-full bg-primary"
       />
 
       {options.map((option) => {
@@ -69,7 +66,7 @@ export default function ViewToggle({
           <Pressable
             key={option.value}
             onPress={() => onSelect(option.value)}
-            className="flex-1 items-center justify-center z-10"
+            className="z-10 flex-1 items-center justify-center"
           >
             <ThemedText
               type="body"
