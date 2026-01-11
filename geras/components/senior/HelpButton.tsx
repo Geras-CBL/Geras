@@ -18,7 +18,7 @@ import Button from '../shared/Button';
 import { ThemedText } from '../ThemedText';
 import { API_KEY } from '../../api/api';
 
-// Aqui, é onde configuramos o Gemini (usa a tua chave aqui)
+// Aqui, é onde configuramos o Gemini
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 // Aqui, é onde mapeamos os nomes amigáveis para as rotas reais da app
@@ -32,6 +32,8 @@ const SENIOR_SCREENS = {
   adicionar_compras: '/navigation/senior/AddGrocerieList',
   registar_saude: '/navigation/shared/AddHealthMetric',
   editar_perfil: '/navigation/shared/EditProfile',
+  ligar_cuidador: '/navigation/senior/CaretakerCall',
+  emergencia: '/navigation/senior/EmergencyCall',
 };
 
 export default function HelpButton() {
@@ -166,11 +168,13 @@ export const HelpContent = ({ toggleOpen }: { toggleOpen: () => void }) => {
                         - 'saude': Ver saúde/medicação.
                         - 'registar_saude': Registar tensão/dados.
                         - 'definicoes': Configurações.
-                        - 'pedir_ajuda': Emergência/Ajuda.
+                        - 'pedir_ajuda': Ajuda com tarefas.
                         - 'meus_pedidos': Ver pedidos.
                         - 'compras': Ver lista.
                         - 'adicionar_compras': Adicionar items à lista.
-                        - 'editar_perfil': Mudar perfil.`,
+                        - 'editar_perfil': Mudar perfil.
+                        - 'ligar_cuidador': Ligar para o cuidador e duvidas complexas.
+                        - 'emergencia': Ligar para o 112 em emergências.`,
                       enum: Object.keys(SENIOR_SCREENS),
                     },
                   },
