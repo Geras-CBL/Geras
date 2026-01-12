@@ -5,6 +5,7 @@ export type ThemedTextProps = TextProps & {
   type?:
     | 'title'
     | 'subtitle'
+    | 'bodytitle'
     | 'body'
     | 'bodyInfo'
     | 'bodySmall'
@@ -51,6 +52,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'MonoTrustDisplay',
     lineHeight: 22,
+  },
+  bodytitle: {
+    fontSize: 16,
+    fontFamily: 'MonoTrustDisplay',
+    lineHeight: 20,
   },
   body: {
     fontSize: 16,
