@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { View, Image, ScrollView } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
 import { ThemedText } from '@/components/ThemedText';
+import BottomActions from '@/components/senior/BottomActions';
+import Button from '@/components/shared/Button';
+import CommentBox from '@/components/shared/CommentBox';
+import ContainerVoluntario from '@/components/shared/ContainerVolunteer';
+import EvaluationTask from '@/components/shared/EvaluationTask';
 import { InfoPill } from '@/components/shared/InfoPill';
 import SectionTitle from '@/components/shared/SectionTitle';
-import ContainerVoluntario from '@/components/shared/ContainerVolunteer';
-import BottomActions from '@/components/senior/BottomActions';
-import EvaluationTask from '@/components/shared/EvaluationTask';
-import CommentBox from '@/components/shared/CommentBox';
-import Button from '@/components/shared/Button';
+import { useLocalSearchParams } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { Image, ScrollView, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type EvaluationTaskVariant =
   | 'sentiment_dissatisfied'
@@ -78,20 +77,22 @@ export default function RequestDetails() {
   };
 
   return (
-    <SafeAreaView edges={['top']} className="flex-1">
+    <SafeAreaView edges={['top']} className="flex-1 pt-24">
+      <View className="w-full px-4 pb-6">
+        <Image
+          source={image}
+          resizeMode="cover"
+          className="h-36 w-full rounded-2xl"
+        />
+      </View>
+
       <ScrollView
         contentContainerStyle={{
-          paddingHorizontal: 24,
           paddingBottom: 180,
-          paddingTop: 40,
         }}
         showsVerticalScrollIndicator={false}
       >
-        <View className="gap-6">
-          <View className="mt-8 items-center">
-            <Image source={image} style={{ height: 90 }} resizeMode="contain" />
-          </View>
-
+        <View className="gap-6 px-6">
           <View className="items-center gap-4">
             <ThemedText type="title">{title}</ThemedText>
             <InfoPill

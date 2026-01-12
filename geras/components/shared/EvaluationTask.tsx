@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { Image, View, Pressable } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { View, Pressable } from 'react-native';
 
 type EvaluationTaskVariant =
   | 'sentiment_dissatisfied'
@@ -14,9 +14,9 @@ interface EvaluationTaskProps {
 }
 
 const evaluationTaskSources: Record<EvaluationTaskVariant, any> = {
-  sentiment_dissatisfied: require('../../assets/images/sentiment_dissatisfied.png'),
-  sentiment_neutral: require('../../assets/images/sentiment_neutral.png'),
-  sentiment_satisfied: require('../../assets/images/sentiment_satisfied.png'),
+  sentiment_dissatisfied: 'emoticon-sad',
+  sentiment_neutral: 'emoticon-neutral',
+  sentiment_satisfied: 'emoticon-happy',
 };
 
 const backgroundColors: Record<EvaluationTaskVariant, string> = {
@@ -30,23 +30,23 @@ export default function EvaluationTask({
   selected,
   isAnySelected,
   onPress,
-}: EvaluationTaskProps) {
+}: Readonly<EvaluationTaskProps>) {
   const bgColor = backgroundColors[variant];
 
-  // Se algum botão estiver selecionado, diminui a opacidade dos não selecionados
-  const containerClasses = selected
-    ? `${bgColor} h-20 w-20 rounded-xl flex items-center justify-center`
-    : isAnySelected
-      ? `${bgColor} h-20 w-20 rounded-xl flex items-center justify-center opacity-50`
-      : `${bgColor} h-20 w-20 rounded-xl flex items-center justify-center`; // nenhum selecionado inicialmente
+  let containerClasses = `${bgColor} h-20 w-20 rounded-xl flex items-center justify-center`;
+  if (selected) {
+    containerClasses = `${bgColor} h-20 w-20 rounded-xl flex items-center justify-center`;
+  } else if (isAnySelected) {
+    containerClasses = `${bgColor} h-20 w-20 rounded-xl flex items-center justify-center opacity-50`;
+  }
 
   return (
     <Pressable onPress={onPress}>
       <View className={containerClasses}>
-        <Image
-          source={evaluationTaskSources[variant]}
-          resizeMode="contain"
-          className="h-10 w-10"
+        <MaterialCommunityIcons
+          name={evaluationTaskSources[variant]}
+          size={40}
+          color="#ffffff"
         />
       </View>
     </Pressable>
