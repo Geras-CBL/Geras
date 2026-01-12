@@ -14,7 +14,8 @@ import {
   View,
   KeyboardAvoidingView,
   Platform,
-} from 'react-native';import { SafeAreaView } from 'react-native-safe-area-context';
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type EvaluationTaskVariant =
   | 'sentiment_dissatisfied'
@@ -82,7 +83,7 @@ export default function RequestDetails() {
   };
 
   return (
-  <SafeAreaView edges={['top']} className="flex-1 pt-20">
+    <SafeAreaView edges={['top']} className="flex-1 pt-20">
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -102,78 +103,61 @@ export default function RequestDetails() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-            <View className="gap-6 px-6">
-              <View className="items-center gap-4">
-                <ThemedText type="title">{title}</ThemedText>
-                <InfoPill
-                  text={
-                    taskStatus === 'inProgress'
-                      ? 'Em progresso'
-                      : 'Completa'
-                  }
-                  variant={
-                    taskStatus === 'inProgress'
-                      ? 'secondary'
-                      : 'success'
-                  }
-                />
-              </View>
-
-              <SectionTitle title="Descrição do Pedido" />
-              <ThemedText type="body">{description}</ThemedText>
-
-              <SectionTitle title="Voluntário" />
-              <ContainerVoluntario {...volunteer} />
-
-              {taskStatus === 'complete' && (
-                <>
-                  <ThemedText type="title">
-                    Como correu a tarefa
-                  </ThemedText>
-
-                  <View className="flex-row gap-4">
-                    {(
-                      [
-                        'sentiment_dissatisfied',
-                        'sentiment_neutral',
-                        'sentiment_satisfied',
-                      ] as EvaluationTaskVariant[]
-                    ).map((variant) => (
-                      <EvaluationTask
-                        key={variant}
-                        variant={variant}
-                        selected={selectedVariant === variant}
-                        isAnySelected={!!selectedVariant}
-                        onPress={() =>
-                          setSelectedVariant(
-                            selectedVariant === variant
-                              ? null
-                              : variant,
-                          )
-                        }
-                      />
-                    ))}
-                  </View>
-                </>
-              )}
-
-              <SectionTitle title="Enviar Observação" />
-              <CommentBox
-                value={observation}
-                onChangeText={setObservation}
+          <View className="gap-6 px-6">
+            <View className="items-center gap-4">
+              <ThemedText type="title">{title}</ThemedText>
+              <InfoPill
+                text={taskStatus === 'inProgress' ? 'Em progresso' : 'Completa'}
+                variant={taskStatus === 'inProgress' ? 'secondary' : 'success'}
               />
-
-              {selectedVariant && (
-                <Button
-                  title="Submeter"
-                  className="mt-4"
-                  onPress={() =>
-                    console.log(selectedVariant, observation)
-                  }
-                />
-              )}
             </View>
-          </ScrollView>
+
+            <SectionTitle title="Descrição do Pedido" />
+            <ThemedText type="body">{description}</ThemedText>
+
+            <SectionTitle title="Voluntário" />
+            <ContainerVoluntario {...volunteer} />
+
+            {taskStatus === 'complete' && (
+              <>
+                <ThemedText type="title">Como correu a tarefa</ThemedText>
+
+                <View className="flex-row gap-4">
+                  {(
+                    [
+                      'sentiment_dissatisfied',
+                      'sentiment_neutral',
+                      'sentiment_satisfied',
+                    ] as EvaluationTaskVariant[]
+                  ).map((variant) => (
+                    <EvaluationTask
+                      key={variant}
+                      variant={variant}
+                      selected={selectedVariant === variant}
+                      isAnySelected={!!selectedVariant}
+                      onPress={() =>
+                        setSelectedVariant(
+                          selectedVariant === variant ? null : variant,
+                        )
+                      }
+                    />
+                  ))}
+                </View>
+              </>
+            )}
+
+            <SectionTitle title="Enviar Observação" />
+            <CommentBox value={observation} onChangeText={setObservation} />
+
+            {selectedVariant && (
+              <Button
+                title="Submeter"
+                className="mt-4"
+                onPress={() => console.log(selectedVariant, observation)}
+              />
+            )}
+          </View>
+        </ScrollView>
 
         {/* FIXO NO FUNDO */}
       </KeyboardAvoidingView>
