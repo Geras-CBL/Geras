@@ -4,6 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 interface FilterButtonProps {
   label: string;
+  isActive?: boolean;
   onPress?: () => void;
 }
 
