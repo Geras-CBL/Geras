@@ -8,8 +8,13 @@ import { InfoPill } from '@/components/shared/InfoPill';
 import SectionTitle from '@/components/shared/SectionTitle';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  Image,
+  ScrollView,
+  View,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';import { SafeAreaView } from 'react-native-safe-area-context';
 
 type EvaluationTaskVariant =
   | 'sentiment_dissatisfied'
@@ -77,76 +82,101 @@ export default function RequestDetails() {
   };
 
   return (
-    <SafeAreaView edges={['top']} className="flex-1 pt-24">
-      <View className="w-full px-4 pb-6">
-        <Image
-          source={image}
-          resizeMode="cover"
-          className="h-36 w-full rounded-2xl"
-        />
-      </View>
-
-      <ScrollView
-        contentContainerStyle={{
-          paddingBottom: 180,
-        }}
-        showsVerticalScrollIndicator={false}
+  <SafeAreaView edges={['top']} className="flex-1 pt-20">
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
       >
-        <View className="gap-6 px-6">
-          <View className="items-center gap-4">
-            <ThemedText type="title">{title}</ThemedText>
-            <InfoPill
-              text={taskStatus === 'inProgress' ? 'Em progresso' : 'Completa'}
-              variant={taskStatus === 'inProgress' ? 'secondary' : 'success'}
-            />
-          </View>
-
-          <SectionTitle title="Descrição do Pedido" />
-          <ThemedText type="body">{description}</ThemedText>
-
-          <SectionTitle title="Voluntário" />
-          <ContainerVoluntario {...volunteer} />
-
-          {taskStatus === 'complete' && (
-            <>
-              <ThemedText type="title">Como correu a tarefa</ThemedText>
-              <View className="flex-row gap-4">
-                {(
-                  [
-                    'sentiment_dissatisfied',
-                    'sentiment_neutral',
-                    'sentiment_satisfied',
-                  ] as EvaluationTaskVariant[]
-                ).map((variant) => (
-                  <EvaluationTask
-                    key={variant}
-                    variant={variant}
-                    selected={selectedVariant === variant}
-                    isAnySelected={!!selectedVariant}
-                    onPress={() =>
-                      setSelectedVariant(
-                        selectedVariant === variant ? null : variant,
-                      )
-                    }
-                  />
-                ))}
-              </View>
-            </>
-          )}
-
-          <SectionTitle title="Enviar Observação" />
-          <CommentBox value={observation} onChangeText={setObservation} />
-
-          {selectedVariant && (
-            <Button
-              title="Submeter"
-              className="mt-4"
-              onPress={() => console.log(selectedVariant, observation)}
-            />
-          )}
+        <View className="w-full px-6 pb-6">
+          <Image
+            source={image}
+            resizeMode="cover"
+            className="h-36 w-full rounded-2xl"
+          />
         </View>
-      </ScrollView>
 
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{ paddingBottom: 120 }}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+            <View className="gap-6 px-6">
+              <View className="items-center gap-4">
+                <ThemedText type="title">{title}</ThemedText>
+                <InfoPill
+                  text={
+                    taskStatus === 'inProgress'
+                      ? 'Em progresso'
+                      : 'Completa'
+                  }
+                  variant={
+                    taskStatus === 'inProgress'
+                      ? 'secondary'
+                      : 'success'
+                  }
+                />
+              </View>
+
+              <SectionTitle title="Descrição do Pedido" />
+              <ThemedText type="body">{description}</ThemedText>
+
+              <SectionTitle title="Voluntário" />
+              <ContainerVoluntario {...volunteer} />
+
+              {taskStatus === 'complete' && (
+                <>
+                  <ThemedText type="title">
+                    Como correu a tarefa
+                  </ThemedText>
+
+                  <View className="flex-row gap-4">
+                    {(
+                      [
+                        'sentiment_dissatisfied',
+                        'sentiment_neutral',
+                        'sentiment_satisfied',
+                      ] as EvaluationTaskVariant[]
+                    ).map((variant) => (
+                      <EvaluationTask
+                        key={variant}
+                        variant={variant}
+                        selected={selectedVariant === variant}
+                        isAnySelected={!!selectedVariant}
+                        onPress={() =>
+                          setSelectedVariant(
+                            selectedVariant === variant
+                              ? null
+                              : variant,
+                          )
+                        }
+                      />
+                    ))}
+                  </View>
+                </>
+              )}
+
+              <SectionTitle title="Enviar Observação" />
+              <CommentBox
+                value={observation}
+                onChangeText={setObservation}
+              />
+
+              {selectedVariant && (
+                <Button
+                  title="Submeter"
+                  className="mt-4"
+                  onPress={() =>
+                    console.log(selectedVariant, observation)
+                  }
+                />
+              )}
+            </View>
+          </ScrollView>
+
+        {/* FIXO NO FUNDO */}
+      </KeyboardAvoidingView>
       <BottomActions />
     </SafeAreaView>
   );
