@@ -16,9 +16,8 @@ import Animated, {
 import HelpShape from '../../assets/images/HelpShape.png';
 import Button from '../shared/Button';
 import { ThemedText } from '../ThemedText';
-import { API_KEY } from '../../api/api';
+import { API_KEY } from '@env';
 
-// Aqui, é onde configuramos o Gemini
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 // Aqui, é onde mapeamos os nomes amigáveis para as rotas reais da app
