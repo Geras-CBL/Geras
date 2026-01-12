@@ -144,7 +144,7 @@ export default function Requests() {
           title={'Fazer Pedido'}
           variant="outlined"
           className="w-2/3"
-          onPress={() => router.push('./RequestDetails')}
+          onPress={() => router.push('./RequestLoading')}
         />
       );
     }
@@ -163,7 +163,7 @@ export default function Requests() {
           title={'Fazer pedido'}
           variant="outlined"
           className="w-full"
-          onPress={() => router.push('./RequestDetails')}
+          onPress={() => router.push('./RequestLoading')}
         />
       </View>
     );

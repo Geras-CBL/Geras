@@ -5,6 +5,7 @@ export type ThemedTextProps = TextProps & {
   type?:
     | 'title'
     | 'subtitle'
+    | 'bodytitle'
     | 'body'
     | 'bodyInfo'
     | 'bodySmall'
@@ -26,6 +27,10 @@ export function ThemedText({
 
   const dynamicStyle = {
     fontSize: (flattenedBase.fontSize || 16) * scale,
+
+    lineHeight: flattenedBase.lineHeight
+      ? flattenedBase.lineHeight * scale
+      : undefined,
   };
 
   return (
@@ -48,6 +53,11 @@ const styles = StyleSheet.create({
     fontFamily: 'MonoTrustDisplay',
     lineHeight: 22,
   },
+  bodytitle: {
+    fontSize: 16,
+    fontFamily: 'MonoTrustDisplay',
+    lineHeight: 20,
+  },
   body: {
     fontSize: 16,
     fontFamily: 'Rubik',
@@ -57,11 +67,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'Rubik',
     fontWeight: 'bold',
+    lineHeight: 28,
   },
   bodyBold: {
     fontSize: 16,
     fontFamily: 'Rubik',
     fontWeight: '700',
+    lineHeight: 24,
   },
   bodySmall: {
     fontSize: 12,
