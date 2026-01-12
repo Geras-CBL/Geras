@@ -27,6 +27,10 @@ export function ThemedText({
 
   const dynamicStyle = {
     fontSize: (flattenedBase.fontSize || 16) * scale,
+
+    lineHeight: flattenedBase.lineHeight
+      ? flattenedBase.lineHeight * scale
+      : undefined,
   };
 
   return (
@@ -63,11 +67,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'Rubik',
     fontWeight: 'bold',
+    lineHeight: 28,
   },
   bodyBold: {
     fontSize: 16,
     fontFamily: 'Rubik',
     fontWeight: '700',
+    lineHeight: 24,
   },
   bodySmall: {
     fontSize: 12,
