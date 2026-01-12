@@ -41,11 +41,10 @@ export default function CardPedidos({
   return (
     <Pressable
       onPress={onPress}
-      className={`relative w-full gap-4 overflow-hidden rounded-3xl p-6 shadow-sm ${cardBackgroundColor}`}
+      className={`relative w-full flex-row items-center justify-between gap-4 overflow-hidden rounded-3xl p-6 shadow-sm ${cardBackgroundColor}`}
     >
-      {/* Top Section: Info & Image */}
-      <View className="w-full flex-row items-start justify-between gap-4">
-        <View className="flex-1 gap-2">
+      <View className="flex-1 gap-4">
+        <View className="gap-2">
           <View>
             <ThemedText
               type="bodyBold"
@@ -66,43 +65,44 @@ export default function CardPedidos({
           </ThemedText>
         </View>
 
-        <Image
-          resizeMode="cover"
-          className="h-24 w-24 rounded-xl bg-gray-200"
-          source={{ uri: imageUrl }}
-        />
-      </View>
-
-      {/* Variante Home: History */}
-
-      {variant === 'home' ? (
-        <View className="mt-2 flex-row gap-3">
-          <View
-            className={`items-center justify-center rounded-full border bg-neutralLight px-4 py-1.5 ${statusBorderColor}`}
-          >
-            <ThemedText
-              type="bodyInfo"
-              className={`font-bold ${statusTextColor}`}
+        {variant === 'home' ? (
+          <View className="flex-row gap-3">
+            <View
+              className={`items-center justify-center rounded-full border bg-neutralLight px-4 py-1.5 ${statusBorderColor}`}
             >
-              {statusLabel}
-            </ThemedText>
-          </View>
-
-          {isNew && (
-            <View className="items-center justify-center rounded-full border border-[#A17C48] px-4 py-1.5">
-              <ThemedText type="bodyInfo" className="font-bold text-[#A17C48]">
-                Novo
+              <ThemedText
+                type="bodyInfo"
+                className={`font-bold ${statusTextColor}`}
+              >
+                {statusLabel}
               </ThemedText>
             </View>
-          )}
-        </View>
-      ) : (
-        <View className="mt-2">
-          <ThemedText type="bodyInfo" className="text-primary">
-            {date} {time}
-          </ThemedText>
-        </View>
-      )}
+
+            {isNew && (
+              <View className="items-center justify-center rounded-full border border-[#A17C48] px-4 py-1.5">
+                <ThemedText
+                  type="bodyInfo"
+                  className="font-bold text-[#A17C48]"
+                >
+                  Novo
+                </ThemedText>
+              </View>
+            )}
+          </View>
+        ) : (
+          <View>
+            <ThemedText type="bodyInfo" className="text-primary">
+              {date} {time}
+            </ThemedText>
+          </View>
+        )}
+      </View>
+
+      <Image
+        resizeMode="cover"
+        className="h-24 w-24 rounded-xl bg-gray-200"
+        source={{ uri: imageUrl }}
+      />
     </Pressable>
   );
 }

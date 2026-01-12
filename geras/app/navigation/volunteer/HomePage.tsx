@@ -41,7 +41,7 @@ export default function Home() {
   return (
     <View className="flex-1">
       <SafeAreaView edges={['top']} className="flex-1 px-6 pt-24">
-        <View className="flex-1 gap-6">
+        <View className="flex-1 gap-2">
           {/* Título */}
           <SectionTitle title="Pedidos" />
 
@@ -55,22 +55,24 @@ export default function Home() {
             ]}
           />
 
-          <View className="items-left flex-row justify-start gap-4">
-            {/* Filtros */}
-            <FilterButton
-              label={statusLabel}
-              isActive={statusFilter !== 'todos'}
-              onPress={handleStatusFilterPress}
-            />
-            <FilterButton
-              label={seniorLabel}
-              isActive={!!seniorFilter}
-              onPress={handleSeniorFilterPress}
-            />
-          </View>
-
           {/* Conteúdo  - Páginas Lista/Mapa*/}
           <View className="flex-1">
+            {tab === 'Lista' && (
+              <View className="items-left mb-6 flex-row justify-start gap-6">
+                {/* Filtros */}
+                <FilterButton
+                  label={statusLabel}
+                  isActive={statusFilter !== 'todos'}
+                  onPress={handleStatusFilterPress}
+                />
+                <FilterButton
+                  label={seniorLabel}
+                  isActive={!!seniorFilter}
+                  onPress={handleSeniorFilterPress}
+                />
+              </View>
+            )}
+
             {tab === 'Lista' && (
               <PedidosHomePage
                 filterStatus={statusFilter}

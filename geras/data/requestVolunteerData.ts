@@ -11,6 +11,8 @@ export interface RequestData {
   distance?: string;
   location?: string;
   imageUrl?: string;
+  latitude: number;
+  longitude: number;
 }
 
 export const REQUESTS_DATA: RequestData[] = [
@@ -26,6 +28,8 @@ export const REQUESTS_DATA: RequestData[] = [
     age: '73 anos',
     distance: '2.3 Km',
     location: 'Rua João Pereira Almeida 76, Safira',
+    latitude: 40.6412,
+    longitude: -8.635,
   },
   {
     id: '2',
@@ -39,6 +43,8 @@ export const REQUESTS_DATA: RequestData[] = [
     age: '68 anos',
     distance: '1.5 Km',
     location: 'Av. da Liberdade, 10',
+    latitude: 40.6434,
+    longitude: -8.653,
   },
   {
     id: '3',
@@ -52,6 +58,8 @@ export const REQUESTS_DATA: RequestData[] = [
     age: '80 anos',
     distance: '5.0 Km',
     location: 'Rua do Centro de Saúde',
+    latitude: 40.6336,
+    longitude: -8.655,
   },
   {
     id: '4',
@@ -65,5 +73,7 @@ export const REQUESTS_DATA: RequestData[] = [
     age: '55 anos',
     distance: '0.5 Km',
     location: 'Parque da Cidade',
+    latitude: 40.6364,
+    longitude: -8.6531,
   },
 ];
