@@ -99,7 +99,7 @@ export default function RequestDetails() {
 
         <ScrollView
           style={{ flex: 1 }}
-          contentContainerStyle={{ paddingBottom: 120 }}
+          contentContainerStyle={{ paddingBottom: 180 }}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
