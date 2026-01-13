@@ -9,7 +9,7 @@ export const sensorCardInfoData: Record<
     subtitle: (count?: number) => `E há ${count ?? 0} sensor(es) ligado(s)`,
   },
   noMotion: {
-    title: 'SEM MOVIMENTO NA SALA',
+    title: 'SEM MOVIMENTO NO QUARTO',
     subtitle: () => 'Sem sensores ativos',
   },
   warning: {
