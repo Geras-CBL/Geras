@@ -8,11 +8,11 @@ interface AvatarProps {
 
 const Avatar = ({ uri }: AvatarProps) => {
   return (
-    <View className="relative h-32 w-32 items-center justify-center rounded-full border border-secondary bg-secondary/50 overflow-hidden">
+    <View className="relative h-32 w-32 items-center justify-center overflow-hidden rounded-full border border-secondary bg-secondary/50">
       {uri ? (
-        <Image 
-          source={{ uri }} 
-          className="h-full w-full rounded-full" 
+        <Image
+          source={{ uri }}
+          className="h-full w-full rounded-full"
           resizeMode="cover"
         />
       ) : (
@@ -21,7 +21,7 @@ const Avatar = ({ uri }: AvatarProps) => {
         </ThemedText>
       )}
 
-      <View className="absolute bottom-2 right-2 h-8 w-8 items-center justify-center rounded-full border border-white bg-neutral z-10">
+      <View className="absolute bottom-2 right-2 z-10 h-8 w-8 items-center justify-center rounded-full border border-white bg-neutral">
         <MaterialIcons name="photo-camera" size={16} color="white" />
       </View>
     </View>
