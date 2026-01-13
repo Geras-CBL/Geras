@@ -70,8 +70,16 @@ export default function HomePage() {
 
         <View className="pt-6">
           <SectionTitle title="Sensores">
-            <SensorCardInfo status="motion" sensorCount={3} />
-            <SensorCardInfo status="noMotion" sensorCount={2} />
+            <SensorCardInfo
+              status="motion"
+              sensorCount={3}
+              onPress={() => router.push('./Sensors')}
+            />
+            <SensorCardInfo
+              status="noMotion"
+              sensorCount={2}
+              onPress={() => router.push('./Sensors')}
+            />
           </SectionTitle>
         </View>
       </ScrollView>
