@@ -1,7 +1,7 @@
 import { ThemedText } from '@/components/ThemedText';
 import Button from '@/components/shared/Button';
 import CommentBox from '@/components/shared/CommentBox';
-import ContainerSenior from '@/components/volunteer/ContainerSenior';
+import ContainerSenior from '@/components/shared/Container';
 import EvaluationTask from '@/components/shared/EvaluationTask';
 import { InfoPill } from '@/components/shared/InfoPill';
 import SectionTitle from '@/components/shared/SectionTitle';
