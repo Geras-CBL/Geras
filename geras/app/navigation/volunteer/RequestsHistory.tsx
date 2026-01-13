@@ -4,6 +4,7 @@ import SectionTitle from '@/components/shared/SectionTitle';
 import CardPedidos from '@/components/volunteer/CardPedidos';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { REQUESTS_DATA } from '@/data/requestVolunteerData';
+import { router } from 'expo-router';
 
 export default function Home() {
   return (
@@ -27,8 +28,17 @@ export default function Home() {
               isNew={item.isNew}
               date={item.date}
               time={item.time}
+              type={item.type}
+              category={item.category || ''}
               variant="history"
-              onPress={() => console.log('Open', item.id)}
+              onPress={() =>
+                router.push({
+                  pathname: '/navigation/volunteer/RequestDetails',
+                  params: {
+                      type: item.type, 
+                  },
+                })
+              }
             />
           )}
           ListEmptyComponent={() => (

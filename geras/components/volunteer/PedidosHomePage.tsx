@@ -83,15 +83,14 @@ export default function PedidosHomePage({
         renderItem={({ item }) => (
           <CardPedidos
             name={item.name}
-            category={item.category}
+            category={item.category || ''}
             task={item.task}
             state={item.state}
             isNew={item.isNew}
             date={item.date}
             time={item.time}
             variant="home"
-            onPress={() => handleCardPress(item)}
-          />
+            onPress={() => handleCardPress(item)} type={String(item.type)} />
         )}
         ListEmptyComponent={() => (
           <View className="mt-10 items-center justify-center">
