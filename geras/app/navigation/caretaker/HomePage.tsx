@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ScrollView, View } from 'react-native';
+import { Linking, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProfilePicker from '@/components/caretaker/ProfilePicker';
 import Resume from '@/components/caretaker/Resume';
@@ -11,9 +11,11 @@ import {
 } from '@/components/shared/Notification';
 import ProfileBottomSheet from '@/components/caretaker/ProfileBottomSheet';
 import { profilesData, SeniorProfile } from '@/data/profilesData';
+import { useRouter } from 'expo-router';
 
 export default function HomePage() {
   const sheetRef = React.useRef<any>(null);
+  const router = useRouter();
 
   const [selectedProfile, setSelectedProfile] = React.useState<SeniorProfile>(
     profilesData.find((p) => p.selected) || profilesData[0],
@@ -48,8 +50,18 @@ export default function HomePage() {
               description="Queda na sala há 4 min"
               rightContent={
                 <>
-                  <ActionButton icon="call" />
-                  <ActionButton icon="videocam" />
+                  <ActionButton
+                    icon="call"
+                    onPress={() => {
+                      Linking.openURL(`tel:${963744454}`);
+                    }}
+                  />
+                  <ActionButton
+                    icon="videocam"
+                    onPress={() => {
+                      router.push('./Sensors');
+                    }}
+                  />
                 </>
               }
             />
