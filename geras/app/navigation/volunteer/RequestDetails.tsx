@@ -57,7 +57,6 @@ export default function RequestDetails() {
 
   const { title, image, description } = requestConfig[requestType];
 
-
   const [selectedVariant, setSelectedVariant] =
     useState<EvaluationTaskVariant | null>(null);
 
@@ -84,7 +83,6 @@ export default function RequestDetails() {
           />
         </View>
 
-
         <ScrollView
           style={{ flex: 1 }}
           contentContainerStyle={{ paddingBottom: 100 }}
@@ -102,31 +100,31 @@ export default function RequestDetails() {
 
             <ContainerSenior {...volunteer} />
 
-              <>
-                <ThemedText type="title">Como correu a tarefa</ThemedText>
+            <>
+              <ThemedText type="title">Como correu a tarefa</ThemedText>
 
-                <View className="flex-row gap-4">
-                  {(
-                    [
-                      'sentiment_dissatisfied',
-                      'sentiment_neutral',
-                      'sentiment_satisfied',
-                    ] as EvaluationTaskVariant[]
-                  ).map((variant) => (
-                    <EvaluationTask
-                      key={variant}
-                      variant={variant}
-                      selected={selectedVariant === variant}
-                      isAnySelected={!!selectedVariant}
-                      onPress={() =>
-                        setSelectedVariant(
-                          selectedVariant === variant ? null : variant,
-                        )
-                      }
-                    />
-                  ))}
-                </View>
-              </>
+              <View className="flex-row gap-4">
+                {(
+                  [
+                    'sentiment_dissatisfied',
+                    'sentiment_neutral',
+                    'sentiment_satisfied',
+                  ] as EvaluationTaskVariant[]
+                ).map((variant) => (
+                  <EvaluationTask
+                    key={variant}
+                    variant={variant}
+                    selected={selectedVariant === variant}
+                    isAnySelected={!!selectedVariant}
+                    onPress={() =>
+                      setSelectedVariant(
+                        selectedVariant === variant ? null : variant,
+                      )
+                    }
+                  />
+                ))}
+              </View>
+            </>
 
             <SectionTitle title="Enviar Observação" />
             <CommentBox value={observation} onChangeText={setObservation} />

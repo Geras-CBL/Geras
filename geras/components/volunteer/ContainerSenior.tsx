@@ -9,19 +9,12 @@ type ContainerSeniorProps = {
   avatarUri?: string;
 };
 
-const ContainerSenior = ({
-  name,
-  age,
-  avatarUri,
-}: ContainerSeniorProps) => {
+const ContainerSenior = ({ name, age, avatarUri }: ContainerSeniorProps) => {
   return (
     <View className="h-32 w-full flex-row items-center rounded-2xl bg-white px-4 shadow-md">
       {avatarUri ? (
         <View className="h-20 w-20 overflow-hidden rounded-full">
-          <Image
-            source={{ uri: avatarUri }}
-            className="h-full w-full"
-          />
+          <Image source={{ uri: avatarUri }} className="h-full w-full" />
         </View>
       ) : (
         <View className="h-20 w-20 items-center justify-center rounded-lg bg-neutral/10">

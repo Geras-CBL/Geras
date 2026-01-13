@@ -35,7 +35,7 @@ export default function Home() {
                 router.push({
                   pathname: '/navigation/volunteer/RequestDetails',
                   params: {
-                      type: item.type, 
+                    type: item.type,
                   },
                 })
               }
