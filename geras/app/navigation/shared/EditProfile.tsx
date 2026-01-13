@@ -41,13 +41,11 @@ export default function EditProfile() {
   const [birthDate, setBirthDate] = useState(activeProfile.birthDate);
   const [country, setCountry] = useState(activeProfile.country);
 
-  // State to hold the captured image URI
   const [image, setImage] = useState<string | null>(null);
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showCountryPicker, setShowCountryPicker] = useState(false);
 
-  // Function to open camera
   const takePhoto = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
@@ -59,7 +57,7 @@ export default function EditProfile() {
     const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [1, 1], // Square aspect ratio for the circle
+      aspect: [1, 1],
       quality: 1,
     });
 
@@ -76,7 +74,7 @@ export default function EditProfile() {
       password,
       birthDate,
       country,
-      image, // Save the image URI
+      image,
     };
     router.back();
     console.log('Guardar perfil:', updatedProfile);
