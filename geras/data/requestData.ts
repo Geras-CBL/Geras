@@ -12,12 +12,12 @@ export const pedidosData: Pedido[] = [
   },
   {
     id: '2',
-    title: 'PRECISA DE COMPRAS',
-    subtitle: 'António Silva',
+    title: 'PRECISA DE AJUDA MÉDICA',
+    subtitle: 'Maria Fernandes',
   },
   {
     id: '3',
-    title: 'PRECISA DE COMPRAS',
-    subtitle: 'António Silva',
+    title: 'PRECISA DE COMPANHIA',
+    subtitle: 'João Pereira',
   },
 ];
