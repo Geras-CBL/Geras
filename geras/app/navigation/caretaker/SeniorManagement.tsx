@@ -1,28 +1,62 @@
-import { View, ScrollView } from 'react-native';
+import {
+  View,
+  ScrollView,
+  Alert,
+  Linking,
+  TouchableOpacity,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
+import { Checkbox } from '@futurejj/react-native-checkbox';
 
 import SectionTitle from '@/components/shared/SectionTitle';
 import MedicationCard, {
   AddMedicationCard,
 } from '@/components/shared/MedicationCard';
-import { ListItem } from '@/components/caretaker/ListItem';
 import Button from '@/components/shared/Button';
 import { fetchItems, ItemDTO } from '@/data/items';
 import { NotificationCard } from '@/components/shared/Notification';
 import ClockPill from '@/components/shared/InfoPill';
+import { ThemedText } from '@/components/ThemedText';
+
+interface GroceryItemState extends ItemDTO {
+  checked?: boolean;
+}
 
 export default function SeniorManagement() {
-  const [items, setItems] = useState<ItemDTO[]>([]);
+  const [items, setItems] = useState<GroceryItemState[]>([]);
+  const [showMedication, setShowMedication] = useState(true);
 
   useEffect(() => {
     async function loadItems() {
       const data = await fetchItems();
-      setItems(data);
+      // Initialize items with checked: false
+      setItems(data.map((item) => ({ ...item, checked: false })));
     }
     loadItems();
   }, []);
+
+  const toggleCheckbox = (id: string) => {
+    setItems((currentItems) =>
+      currentItems.map((item) =>
+        item.id === id ? { ...item, checked: !item.checked } : item,
+      ),
+    );
+  };
+
+  const handleIgnore = () => {
+    Alert.alert('Notificação ignorada');
+    setShowMedication(false);
+  };
+
+  const handleWarn = () => {
+    Alert.alert('António avisado');
+  };
+
+  const handleCall = () => {
+    Linking.openURL(`tel:${963744454}`);
+  };
 
   return (
     <SafeAreaView edges={['top']} className="flex-1">
@@ -33,42 +67,49 @@ export default function SeniorManagement() {
       >
         <SectionTitle title="Gestão de António Silva" />
 
-        <View className="mt-12">
-          <SectionTitle title="Medicação">
-            <NotificationCard
-              variant="reminder"
-              title="Flexofytol Plus - por tomar"
-              rightContent={<ClockPill time="14:00" />}
-              bottomContent={
-                <>
-                  <Button
-                    title="Ignorar"
-                    variant="outlined"
-                    className="flex-1"
-                  />
-                  <Button
-                    title="Avisar"
-                    variant="warning"
-                    icon={
-                      <MaterialIcons
-                        name="warning-amber"
-                        size={20}
-                        color="#db6536"
-                      />
-                    }
-                    className="flex-1"
-                  />
-                  <Button
-                    title="Ligar"
-                    className="flex-1"
-                    icon={<MaterialIcons name="call" size={20} color="white" />}
-                  />
-                </>
-              }
-              route="/senior/appointments/123"
-            />
-          </SectionTitle>
-        </View>
+        {showMedication && (
+          <View className="mt-12">
+            <SectionTitle title="Medicação">
+              <NotificationCard
+                variant="reminder"
+                title="Flexofytol Plus - por tomar"
+                rightContent={<ClockPill time="14:00" />}
+                bottomContent={
+                  <>
+                    <Button
+                      title="Ignorar"
+                      variant="outlined"
+                      className="flex-1"
+                      onPress={handleIgnore}
+                    />
+                    <Button
+                      title="Avisar"
+                      variant="warning"
+                      icon={
+                        <MaterialIcons
+                          name="warning-amber"
+                          size={20}
+                          color="#db6536"
+                        />
+                      }
+                      className="flex-1"
+                      onPress={handleWarn}
+                    />
+                    <Button
+                      title="Ligar"
+                      className="flex-1"
+                      icon={
+                        <MaterialIcons name="call" size={20} color="white" />
+                      }
+                      onPress={handleCall}
+                    />
+                  </>
+                }
+                route="/senior/appointments/123"
+              />
+            </SectionTitle>
+          </View>
+        )}
 
         <View className="mt-12">
           <SectionTitle title="Monitorização">
@@ -110,12 +151,27 @@ export default function SeniorManagement() {
           </SectionTitle>
         </View>
 
-        <View className="mt-12">
+        <View className="mt-12 w-full">
           <SectionTitle title="Mercearias em falta">
-            <View className="flex-col gap-3">
-              {items.map((item) => (
-                <ListItem key={item.id} label={item.name} />
-              ))}
+            <View className="w-full flex-col gap-3">
+              <View className="w-full">
+                {items.map((item) => (
+                  <TouchableOpacity
+                    key={item.id}
+                    className="mb-3 flex-row items-center rounded-2xl border border-gray-100 bg-white p-3 shadow-lg"
+                    onPress={() => toggleCheckbox(item.id)}
+                  >
+                    <Checkbox
+                      status={item.checked ? 'checked' : 'unchecked'}
+                      onPress={() => toggleCheckbox(item.id)}
+                      color={item.checked ? '#205a2d' : '#969696'}
+                    />
+                    <ThemedText className={`ml-2 text-base text-neutral`}>
+                      {item.name}
+                    </ThemedText>
+                  </TouchableOpacity>
+                ))}
+              </View>
 
               <View className="flex-row gap-4 p-4 pt-2">
                 <Button
