@@ -46,7 +46,7 @@ export default function PedidosHomePage({
     } else {
       router.push({
         pathname: '/navigation/volunteer/RequestDetails',
-        params: { category: item.category }, 
+        params: { type: String(item.type) },
       });
     }
   }, []);
@@ -80,18 +80,25 @@ export default function PedidosHomePage({
         showsVerticalScrollIndicator={false}
         className="flex-1"
         contentContainerClassName="gap-4 p-4 -m-4"
-        renderItem={({ item }) => (
-          <CardPedidos
-            name={item.name}
-            category={item.category || ''}
-            task={item.task}
-            state={item.state}
-            isNew={item.isNew}
-            date={item.date}
-            time={item.time}
-            variant="home"
-            onPress={() => handleCardPress(item)} type={String(item.type)} />
-        )}
+        renderItem={({ item }) => {
+          return (
+            <View className="mb-4">
+              {/* Card do pedido */}
+              <CardPedidos
+                name={item.name}
+                category={item.category || ''}
+                task={item.task}
+                state={item.state}
+                isNew={item.isNew}
+                date={item.date}
+                time={item.time}
+                variant="home"
+                onPress={() => handleCardPress(item)}
+                type={String(item.type)}
+              />
+            </View>
+          );
+        }}
         ListEmptyComponent={() => (
           <View className="mt-10 items-center justify-center">
             <ThemedText type="bodyInfo" className="text-neutral">
