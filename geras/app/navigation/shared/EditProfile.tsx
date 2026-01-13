@@ -6,9 +6,11 @@ import {
   TouchableOpacity,
   Text,
   FlatList,
+  Alert,
 } from 'react-native';
 import { useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import * as ImagePicker from 'expo-image-picker'; // Import ImagePicker
 
 import SectionTitle from '@/components/shared/SectionTitle';
 import { FormField } from '@/components/shared/FormField';
@@ -39,8 +41,32 @@ export default function EditProfile() {
   const [birthDate, setBirthDate] = useState(activeProfile.birthDate);
   const [country, setCountry] = useState(activeProfile.country);
 
+  // State to hold the captured image URI
+  const [image, setImage] = useState<string | null>(null);
+
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showCountryPicker, setShowCountryPicker] = useState(false);
+
+  // Function to open camera
+  const takePhoto = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      Alert.alert('Erro', 'É necessário permitir o acesso à câmara.');
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1], // Square aspect ratio for the circle
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
 
   const handleSave = () => {
     const updatedProfile = {
@@ -50,6 +76,7 @@ export default function EditProfile() {
       password,
       birthDate,
       country,
+      image, // Save the image URI
     };
     router.back();
     console.log('Guardar perfil:', updatedProfile);
@@ -61,6 +88,7 @@ export default function EditProfile() {
     setPassword(activeProfile.password);
     setBirthDate(activeProfile.birthDate);
     setCountry(activeProfile.country);
+    setImage(null);
     router.back();
     console.log('Edição cancelada');
   };
@@ -84,9 +112,10 @@ export default function EditProfile() {
       contentContainerStyle={{ padding: 20, paddingBottom: 130 }}
       keyboardShouldPersistTaps="handled"
     >
-      {/* Avatar */}
       <View className="mb-6 items-center">
-        <Avatar />
+        <TouchableOpacity onPress={takePhoto}>
+          <Avatar uri={image} />
+        </TouchableOpacity>
       </View>
 
       {/* FORM */}
