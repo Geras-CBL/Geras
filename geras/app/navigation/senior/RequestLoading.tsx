@@ -1,6 +1,6 @@
-import { router, useLocalSearchParams } from 'expo-router';
+import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Easing } from 'react-native';
 import Animated, {
   interpolateColor,
   useAnimatedStyle,
@@ -119,7 +119,7 @@ export default function RequestDetails() {
 
       return () => clearTimeout(timeout);
     }
-  }, [currentStepIndex, type]);
+  }, [currentStepIndex]);
 
   return (
     <SafeAreaView
