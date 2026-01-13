@@ -5,10 +5,11 @@ import CardPedidos from '@/components/volunteer/CardPedidos';
 import { ThemedText } from '@/components/ThemedText';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import RequestDetailsBottomSheet from '@/components/volunteer/RequestsBottomSheet';
+import { router } from 'expo-router';
 
 interface PedidosHomePageProps {
   filterStatus: 'todos' | 'disponivel' | 'decorrer';
-  filterSenior: string | null; // Nome do sénior ou null se não houver filtro
+  filterSenior: string | null;
 }
 
 export default function PedidosHomePage({
@@ -39,8 +40,15 @@ export default function PedidosHomePage({
   }, [requests, filterStatus, filterSenior]);
 
   const handleCardPress = useCallback((item: RequestData) => {
-    setSelectedRequest(item);
-    bottomSheetModalRef.current?.present();
+    if (item.state === false) {
+      setSelectedRequest(item);
+      bottomSheetModalRef.current?.present();
+    } else {
+      router.push({
+        pathname: '/navigation/volunteer/RequestDetails',
+        params: { category: item.category }, 
+      });
+    }
   }, []);
 
   const handleAcceptRequest = () => {
