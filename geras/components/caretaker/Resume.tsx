@@ -4,10 +4,7 @@ import { ThemedText } from '@/components/ThemedText';
 
 const Resume = () => {
   return (
-    <View
-      className="w-full flex-row items-center rounded-2xl bg-neutralLight px-4 py-2"
-      style={{ elevation: 6 }}
-    >
+    <View className="w-full flex-row items-center rounded-2xl bg-neutralLight px-4 py-2 shadow-lg">
       <View className="flex-1 flex-row">
         <View className="justify-center self-stretch px-1 py-2">
           <ThemedText>
