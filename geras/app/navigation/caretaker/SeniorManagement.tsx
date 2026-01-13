@@ -19,6 +19,7 @@ import { fetchItems, ItemDTO } from '@/data/items';
 import { NotificationCard } from '@/components/shared/Notification';
 import ClockPill from '@/components/shared/InfoPill';
 import { ThemedText } from '@/components/ThemedText';
+import { useRouter } from 'expo-router';
 
 interface GroceryItemState extends ItemDTO {
   checked?: boolean;
@@ -27,11 +28,11 @@ interface GroceryItemState extends ItemDTO {
 export default function SeniorManagement() {
   const [items, setItems] = useState<GroceryItemState[]>([]);
   const [showMedication, setShowMedication] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     async function loadItems() {
       const data = await fetchItems();
-      // Initialize items with checked: false
       setItems(data.map((item) => ({ ...item, checked: false })));
     }
     loadItems();
@@ -178,12 +179,14 @@ export default function SeniorManagement() {
                   title="Adicionar"
                   variant="outlined"
                   className="flex-1"
+                  onPress={() => router.push('../senior/AddGrocerieList')}
                   icon={<MaterialIcons name="add" size={20} color="#205a2d" />}
                 />
 
                 <Button
                   title="Comprar"
                   className="flex-1"
+                  onPress={() => router.push('../senior/RequestLoading')}
                   icon={
                     <MaterialIcons
                       name="shopping-cart"
