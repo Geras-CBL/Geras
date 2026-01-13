@@ -21,14 +21,12 @@ const requestConfig: Record<
   food: {
     title: 'Pedido de Compras',
     image: require('@/assets/images/food.png'),
-    description:
-      'Auxílio para realizar compras de alimentos essenciais.',
+    description: 'Auxílio para realizar compras de alimentos essenciais.',
   },
   pharmacy: {
     title: 'Pedido de Farmácia',
     image: require('@/assets/images/medicine.png'),
-    description:
-      'Auxílio para buscar medicamentos na farmácia.',
+    description: 'Auxílio para buscar medicamentos na farmácia.',
   },
   cleaning: {
     title: 'Tarefa Doméstica',
@@ -39,8 +37,7 @@ const requestConfig: Record<
   other: {
     title: 'Pedido Personalizado',
     image: require('@/assets/images/domestic-tasks.png'),
-    description:
-      'Pedido personalizado que necessita de apoio.',
+    description: 'Pedido personalizado que necessita de apoio.',
   },
 };
 
@@ -84,15 +81,17 @@ export default function RequestDetails() {
             </View>
 
             <SectionTitle title="Descrição do Pedido" />
-            <View className='-mt-4 pb-6'>
-                <ThemedText type="body">{description}</ThemedText>
+            <View className="-mt-4 pb-6">
+              <ThemedText type="body">{description}</ThemedText>
             </View>
 
             <SectionTitle title="Voluntári@" />
             <Container {...volunteer} />
 
-            <View className='mt-6'>
-                <ThemedText type="title">Classificação de António Silva</ThemedText>
+            <View className="mt-6">
+              <ThemedText type="title">
+                Classificação de António Silva
+              </ThemedText>
             </View>
 
             <View className="items-start">

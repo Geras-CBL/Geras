@@ -5,7 +5,6 @@ export interface Pedido {
   title: string;
   subtitle: string;
   type: RequestType;
-
 }
 
 export const pedidosData: Pedido[] = [
