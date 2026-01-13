@@ -68,6 +68,26 @@ export default function RootLayout() {
                   ),
                 }}
               />
+
+              <Stack.Screen
+                name="navigation/senior/RequestLoading"
+                options={{
+                  headerShown: true,
+                  headerTransparent: true,
+                  contentStyle: { backgroundColor: '#fbfbfb' },
+                  header: () => (
+                    <Header
+                      leftIconName="home"
+                      rightIconName="settings"
+                      onLeftPress={() => {}}
+                      onRightPress={() =>
+                        router.push('/navigation/senior/Settings')
+                      }
+                      isWhite={false}
+                    />
+                  ),
+                }}
+              />
               <Stack.Screen
                 name="navigation/senior/Health"
                 options={{
