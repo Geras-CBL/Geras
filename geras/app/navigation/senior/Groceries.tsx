@@ -90,7 +90,7 @@ export default function Groceries() {
             }
             title={'Comprar'}
             onPress={() =>
-              router.push('../../navigation/senior/RequestDetails')
+              router.push('../../navigation/senior/RequestLoading?type=food')
             }
           />
         </View>

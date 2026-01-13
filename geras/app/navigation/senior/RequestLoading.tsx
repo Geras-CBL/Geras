@@ -1,8 +1,7 @@
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import Animated, {
-  Easing,
   interpolateColor,
   useAnimatedStyle,
   useSharedValue,
@@ -10,6 +9,7 @@ import Animated, {
   withSequence,
   withSpring,
   withTiming,
+  Easing,
 } from 'react-native-reanimated';
 import { FontAwesome } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -25,12 +25,10 @@ const CentralAnimation = ({ stepIndex }: { stepIndex: number }) => {
   const scale = useSharedValue(1);
 
   useEffect(() => {
-    // Reset
     rotation.value = 0;
     scale.value = 1;
 
     if (stepIndex === 0) {
-      // 🔵 Spinner a girar infinitamente
       rotation.value = withRepeat(
         withTiming(1, { duration: 1000, easing: Easing.linear }),
         -1,
@@ -39,7 +37,6 @@ const CentralAnimation = ({ stepIndex }: { stepIndex: number }) => {
     }
 
     if (stepIndex === 1) {
-      // 🔍 Lupa a pulsar
       scale.value = withRepeat(
         withSequence(
           withTiming(1.15, { duration: 600 }),
@@ -51,21 +48,18 @@ const CentralAnimation = ({ stepIndex }: { stepIndex: number }) => {
     }
 
     if (stepIndex === 2) {
-      // 🟢 Pop final
       scale.value = withSpring(1.2, { damping: 10, stiffness: 100 }, () => {
         scale.value = withSpring(1);
       });
     }
   }, [rotation, scale, stepIndex]);
 
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        { scale: scale.value },
-        { rotate: stepIndex === 0 ? `${rotation.value * 360}deg` : '0deg' },
-      ],
-    };
-  });
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { scale: scale.value },
+      { rotate: stepIndex === 0 ? `${rotation.value * 360}deg` : '0deg' },
+    ],
+  }));
 
   const currentIcon = STEPS[stepIndex]?.icon || 'question';
   const iconColor = stepIndex === 2 ? '#4ADE80' : '#F5F5F5';
@@ -79,21 +73,27 @@ const CentralAnimation = ({ stepIndex }: { stepIndex: number }) => {
   );
 };
 
-const AnimatedStepText = ({ label, index, currentIndex }: any) => {
+const AnimatedStepText = ({
+  label,
+  index,
+  currentIndex,
+}: {
+  label: string;
+  index: number;
+  currentIndex: number;
+}) => {
   const isActive = index === currentIndex;
   const isPast = index < currentIndex;
 
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      opacity: withTiming(isActive || isPast ? 1 : 0.4, { duration: 300 }),
-      transform: [{ translateX: withTiming(isActive ? 10 : 0) }],
-      color: interpolateColor(
-        isPast ? 1 : 0,
-        [0, 1],
-        [isActive ? '#F5F5F5' : '#9CA3AF', '#4ADE80'],
-      ),
-    };
-  });
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: withTiming(isActive || isPast ? 1 : 0.4, { duration: 300 }),
+    transform: [{ translateX: withTiming(isActive ? 10 : 0) }],
+    color: interpolateColor(
+      isPast ? 1 : 0,
+      [0, 1],
+      [isActive ? '#F5F5F5' : '#9CA3AF', '#4ADE80'],
+    ),
+  }));
 
   return (
     <Animated.Text className="my-2 text-xl font-bold" style={animatedStyle}>
@@ -103,24 +103,26 @@ const AnimatedStepText = ({ label, index, currentIndex }: any) => {
   );
 };
 
-export default function RequestDetails() {
+export default function RequestLoading() {
+  const { type } = useLocalSearchParams<{ type?: string }>();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
   useEffect(() => {
-    if (currentStepIndex < STEPS.length) {
-      const duration = currentStepIndex === 2 ? 2000 : 5000;
+    const duration = currentStepIndex === 2 ? 2000 : 5000;
 
-      const timeout = setTimeout(() => {
-        if (currentStepIndex < STEPS.length - 1) {
-          setCurrentStepIndex((prev) => prev + 1);
-        } else {
-          router.replace('./RequestDetails');
-        }
-      }, duration);
+    const timeout = setTimeout(() => {
+      if (currentStepIndex < STEPS.length - 1) {
+        setCurrentStepIndex((prev) => prev + 1);
+      } else {
+        router.replace({
+          pathname: './RequestDetails',
+          params: { type },
+        });
+      }
+    }, duration);
 
-      return () => clearTimeout(timeout);
-    }
-  }, [currentStepIndex]);
+    return () => clearTimeout(timeout);
+  }, [currentStepIndex, type]);
 
   return (
     <SafeAreaView
