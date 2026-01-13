@@ -83,6 +83,7 @@ export default function RootLayout() {
                       onRightPress={() =>
                         router.push('/navigation/senior/Settings')
                       }
+                      isWhite={false}
                     />
                   ),
                 }}
@@ -103,6 +104,24 @@ export default function RootLayout() {
                       onRightPress={() =>
                         router.push('/navigation/senior/Settings')
                       }
+                    />
+                  ),
+                }}
+              />
+              <Stack.Screen
+                name="navigation/senior/Settings"
+                options={{
+                  headerShown: true,
+                  headerTransparent: true,
+                  contentStyle: { backgroundColor: '#fbfbfb' },
+                  header: () => (
+                    <Header
+                      leftIconName="home"
+                      rightIconName="settings"
+                      onLeftPress={() =>
+                        router.push('/navigation/senior/HomePage')
+                      }
+                      onRightPress={() => {}}
                     />
                   ),
                 }}
@@ -308,6 +327,27 @@ export default function RootLayout() {
                       }}
                       onRightPress={() =>
                         router.push('../caretaker/Notifications')
+                      }
+                    />
+                  ),
+                }}
+              />
+              {/* Shared */}
+              <Stack.Screen
+                name="navigation/shared/AddHealthMetric"
+                options={{
+                  headerShown: true,
+                  headerTransparent: true,
+                  contentStyle: { backgroundColor: '#fbfbfb' },
+                  header: () => (
+                    <Header
+                      leftIconName="home"
+                      rightIconName="settings"
+                      onLeftPress={() =>
+                        router.push('/navigation/senior/HomePage')
+                      }
+                      onRightPress={() =>
+                        router.push('/navigation/senior/Settings')
                       }
                     />
                   ),

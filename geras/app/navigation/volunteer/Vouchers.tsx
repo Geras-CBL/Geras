@@ -1,12 +1,38 @@
 import { View } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import SectionTitle from '@/components/shared/SectionTitle';
+import ViewToggle from '@/components/volunteer/ViewToggle';
+import ActionVouchers from '@/components/volunteer/ActiveVouchers';
+import UsedVouchers from '@/components/volunteer/UsedVouchers';
+import React from 'react';
 
-export default function Home() {
+export default function Vouchers() {
+  const [tab, setTab] = React.useState('disponíveis');
+
   return (
-    <View className="flex-1 items-center justify-center">
-      <ThemedText type="title" className="text-primary">
-        Vouchers do Voluntário
-      </ThemedText>
+    <View className="flex-1">
+      <SafeAreaView edges={['top']} className="flex-1 px-6 pt-24">
+        <View className="gap-6">
+          {/* Título */}
+          <SectionTitle title="Vouchers" />
+
+          {/* Tabs / Botões */}
+          <ViewToggle
+            currentValue={tab}
+            onSelect={setTab}
+            options={[
+              { label: 'disponíveis', value: 'disponíveis' },
+              { label: 'usados', value: 'usados' },
+            ]}
+          />
+
+          {/* Vouchers Ativos */}
+          {tab === 'disponíveis' && <ActionVouchers />}
+
+          {/* Vouchers Usados */}
+          {tab === 'usados' && <UsedVouchers />}
+        </View>
+      </SafeAreaView>
     </View>
   );
 }

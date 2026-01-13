@@ -1,22 +1,12 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
-import { useRouter } from 'expo-router';
 
 export default function Home() {
-  const router = useRouter();
-
   return (
-    <View className="flex-1 items-center justify-center gap-8">
+    <View className="flex-1 items-center justify-center">
       <ThemedText type="title" className="text-primary">
-        Homepage do Voluntário
+        HomePage
       </ThemedText>
-
-      <Pressable
-        onPress={() => router.push('./ErrorPage')}
-        className="rounded-xl bg-secondary p-4"
-      >
-        <ThemedText type="subtitle">Go to ErrorPage</ThemedText>
-      </Pressable>
     </View>
   );
 }
