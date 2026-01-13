@@ -9,9 +9,9 @@ import MedicationCard, {
 } from '@/components/shared/MedicationCard';
 import { ListItem } from '@/components/caretaker/ListItem';
 import Button from '@/components/shared/Button';
-import { ThemedText } from '@/components/ThemedText';
 import { fetchItems, ItemDTO } from '@/data/items';
 import { NotificationCard } from '@/components/shared/Notification';
+import ClockPill from '@/components/shared/InfoPill';
 
 export default function SeniorManagement() {
   const [items, setItems] = useState<ItemDTO[]>([]);
@@ -36,33 +36,28 @@ export default function SeniorManagement() {
         <View className="mt-12">
           <SectionTitle title="Medicação">
             <NotificationCard
-              variant="medication"
+              variant="reminder"
               title="Flexofytol Plus - por tomar"
-              time={
-                <View className="flex-row items-center gap-1">
-                  <ThemedText type="bodyInfo" className="text-primary">
-                    07:00
-                  </ThemedText>
-                  <MaterialIcons name="schedule" size={20} color="#205a2d" />
-                </View>
-              }
-              actions={
+              rightContent={<ClockPill time="14:00" />}
+              bottomContent={
                 <>
                   <Button
                     title="Ignorar"
                     variant="outlined"
                     className="flex-1"
                   />
-
                   <Button
                     title="Avisar"
                     variant="warning"
-                    className="flex-1"
                     icon={
-                      <MaterialIcons name="warning" size={20} color="#db6536" />
+                      <MaterialIcons
+                        name="warning-amber"
+                        size={20}
+                        color="#db6536"
+                      />
                     }
+                    className="flex-1"
                   />
-
                   <Button
                     title="Ligar"
                     className="flex-1"
@@ -70,6 +65,7 @@ export default function SeniorManagement() {
                   />
                 </>
               }
+              route="/senior/appointments/123"
             />
           </SectionTitle>
         </View>
