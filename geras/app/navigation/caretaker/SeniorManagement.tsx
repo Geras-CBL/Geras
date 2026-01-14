@@ -65,9 +65,9 @@ export default function SeniorManagement() {
   const handleCall = () => Linking.openURL(`tel:${963744454}`);
 
   return (
-    <SafeAreaView edges={['top']} className="flex-1">
+    <SafeAreaView edges={['top']} className="flex-1 pt-24">
       <ScrollView
-        className="flex-1 px-6 pt-24"
+        className="flex-1 px-6"
         showsVerticalScrollIndicator={false}
         contentContainerClassName="flex-col pb-60 gap-6"
       >
