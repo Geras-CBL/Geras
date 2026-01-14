@@ -39,8 +39,8 @@ export default function BottomActions() {
     }
   };
 
-  const BTN_WIDTH = 180;
-  const BTN_HEIGHT = 100;
+  const BTN_WIDTH = 200;
+  const BTN_HEIGHT = 120;
 
   return (
     <>
@@ -80,7 +80,7 @@ export default function BottomActions() {
                 style={{ width: BTN_WIDTH, height: BTN_HEIGHT }}
                 resizeMode="contain"
               />
-              <View className="absolute inset-0 justify-center pb-2 pl-12">
+              <View className="absolute inset-0 justify-center pl-8">
                 <ThemedText
                   type="subtitle"
                   className="text-center"
@@ -101,13 +101,13 @@ export default function BottomActions() {
                 style={{ width: BTN_WIDTH, height: BTN_HEIGHT }}
                 resizeMode="contain"
               />
-              <View className="absolute inset-0 justify-center pb-2 pr-12">
+              <View className="absolute inset-0 justify-center pb-1 pr-8">
                 <ThemedText
                   type="subtitle"
                   className="text-center"
                   style={{ fontSize: 16 }}
                 >
-                  Tenho{'\n'}dúvidas
+                  Tenho{'\n'}Dúvidas
                 </ThemedText>
               </View>
             </TouchableOpacity>
