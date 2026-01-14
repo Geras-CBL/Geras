@@ -5,10 +5,11 @@ import CardPedidos from '@/components/volunteer/CardPedidos';
 import { ThemedText } from '@/components/ThemedText';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import RequestDetailsBottomSheet from '@/components/volunteer/RequestsBottomSheet';
+import { router } from 'expo-router';
 
 interface PedidosHomePageProps {
   filterStatus: 'todos' | 'disponivel' | 'decorrer';
-  filterSenior: string | null; // Nome do sénior ou null se não houver filtro
+  filterSenior: string | null;
 }
 
 export default function PedidosHomePage({
@@ -39,8 +40,15 @@ export default function PedidosHomePage({
   }, [requests, filterStatus, filterSenior]);
 
   const handleCardPress = useCallback((item: RequestData) => {
-    setSelectedRequest(item);
-    bottomSheetModalRef.current?.present();
+    if (item.state === false) {
+      setSelectedRequest(item);
+      bottomSheetModalRef.current?.present();
+    } else {
+      router.push({
+        pathname: '/navigation/volunteer/RequestDetails',
+        params: { type: String(item.type) },
+      });
+    }
   }, []);
 
   const handleAcceptRequest = () => {
@@ -72,19 +80,25 @@ export default function PedidosHomePage({
         showsVerticalScrollIndicator={false}
         className="flex-1"
         contentContainerClassName="gap-4 p-4 -m-4"
-        renderItem={({ item }) => (
-          <CardPedidos
-            name={item.name}
-            category={item.category}
-            task={item.task}
-            state={item.state}
-            isNew={item.isNew}
-            date={item.date}
-            time={item.time}
-            variant="home"
-            onPress={() => handleCardPress(item)}
-          />
-        )}
+        renderItem={({ item }) => {
+          return (
+            <View className="mb-4">
+              {/* Card do pedido */}
+              <CardPedidos
+                name={item.name}
+                category={item.category || ''}
+                task={item.task}
+                state={item.state}
+                isNew={item.isNew}
+                date={item.date}
+                time={item.time}
+                variant="home"
+                onPress={() => handleCardPress(item)}
+                type={String(item.type)}
+              />
+            </View>
+          );
+        }}
         ListEmptyComponent={() => (
           <View className="mt-10 items-center justify-center">
             <ThemedText type="bodyInfo" className="text-neutral">

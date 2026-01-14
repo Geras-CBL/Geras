@@ -3,8 +3,9 @@ import { ThemedText } from '@/components/ThemedText';
 
 interface CardPedidosProps {
   name: string;
-  category?: string;
   task: string;
+  type: string | number | (string | number)[] | null | undefined;
+  category: string;
   state: boolean; // true: a decorrer | false: disponível
   isNew: boolean;
   date?: string;
@@ -16,8 +17,9 @@ interface CardPedidosProps {
 
 export default function CardPedidos({
   name,
-  category = 'TAREFA DOMÉSTICA',
   task,
+  type,
+  category,
   state,
   isNew,
   date,

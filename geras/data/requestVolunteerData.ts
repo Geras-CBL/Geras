@@ -3,6 +3,7 @@ export interface RequestData {
   name: string;
   category?: string;
   task: string;
+  type: string | number | (string | number)[] | null | undefined;
   state: boolean;
   isNew: boolean;
   date: string;
@@ -20,6 +21,7 @@ export const REQUESTS_DATA: RequestData[] = [
     id: '1',
     name: 'António Silva',
     category: 'Tarefa doméstica',
+    type: 'cleaning',
     task: 'Limpeza de casa',
     state: false,
     isNew: false,
@@ -35,6 +37,7 @@ export const REQUESTS_DATA: RequestData[] = [
     id: '2',
     name: 'Maria Santos',
     category: 'Compras',
+    type: 'food',
     task: 'Compras de supermercado',
     state: false,
     isNew: true,
@@ -50,6 +53,7 @@ export const REQUESTS_DATA: RequestData[] = [
     id: '3',
     name: 'José Costa',
     category: 'Saúde',
+    type: 'other',
     task: 'Acompanhamento médico',
     state: false,
     isNew: false,
@@ -65,6 +69,7 @@ export const REQUESTS_DATA: RequestData[] = [
     id: '4',
     name: 'Ana Pereira',
     category: 'Companhia',
+    type: 'other',
     task: 'Passear o cão',
     state: false,
     isNew: false,
