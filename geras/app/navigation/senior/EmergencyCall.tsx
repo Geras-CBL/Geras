@@ -57,8 +57,8 @@ export default function EmergencyCall() {
       <View className="flex-1 items-center justify-center gap-10">
         {/* Header Text - Now Bigger and Centered */}
         <View className="w-full items-center">
-          <Text className="text-center text-5xl font-black uppercase tracking-widest text-red-600">
-            Emergencia
+          <Text className="text-center text-4xl font-black uppercase tracking-widest text-red-600">
+            Emergência
           </Text>
           <Text className="mt-4 text-center text-2xl font-semibold text-gray-600">
             A ligar ao 112 em...
