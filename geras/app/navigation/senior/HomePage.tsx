@@ -22,7 +22,14 @@ export default function Home() {
             title="Lucas Wiliam"
             imageSource={require('../../../assets/images/hottie.png')}
             description={<InfoPill text="A 5 minutos de dist..." />}
-            rightContent={<ActionButton icon="call" />}
+            rightContent={
+              <ActionButton
+                icon="call"
+                onPress={() => {
+                  Linking.openURL(`tel:${963744454}`);
+                }}
+              />
+            }
             route="../../navigation/senior/RequestDetails"
           />
           {/* no notification */}

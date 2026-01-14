@@ -10,7 +10,7 @@ export interface Pedido {
 export const pedidosData: Pedido[] = [
   {
     id: '1',
-    title: 'PRECISA DE COMPRAS',
+    title: 'COMPRAS',
     subtitle: 'António Silva',
     type: 'food',
   },
@@ -22,7 +22,7 @@ export const pedidosData: Pedido[] = [
   },
   {
     id: '3',
-    title: 'PRECISA DE MEDICAMENTOS',
+    title: 'MEDICAMENTOS',
     subtitle: 'António Silva',
     type: 'pharmacy',
   },

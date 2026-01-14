@@ -1,14 +1,24 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
 import SectionTitle from '@/components/shared/SectionTitle';
 import { Card } from '@/components/shared/ProfileCard';
 import Button from '@/components/shared/Button';
+import { ThemedText } from '@/components/ThemedText';
 
 export default function Profile() {
   const router = useRouter();
+
+  const openTerms = () => {
+    Linking.openURL('https://www.ua.pt/pt/termos-de-utilizacao');
+  };
+
+  const openPrivacy = () => {
+    Linking.openURL('https://www.ua.pt/pt/rgpd/politicas-de-privacidade');
+  };
+
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-16">
       <ScrollView
@@ -32,16 +42,14 @@ export default function Profile() {
         </View>
 
         <View className="mt-2 gap-4">
-          <Button title="Termos e condições" onPress={() => {}} />
+          <Button title="Termos e condições" onPress={openTerms} />
 
-          <Button title="Política de privacidade" onPress={() => {}} />
+          <Button title="Política de privacidade" onPress={openPrivacy} />
 
-          <View className="mt-12">
-            <Button
-              title="Eliminar conta"
-              variant="destructive"
-              onPress={() => {}}
-            />
+          <View className="mt-12 items-center">
+            <ThemedText type="bodyBold" className="text-tertiary">
+              Eliminar conta
+            </ThemedText>
           </View>
         </View>
       </ScrollView>

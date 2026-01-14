@@ -23,7 +23,7 @@ const SensorCardInfo = ({
   return (
     <Pressable
       onPress={onPress}
-      className="w-full flex-row items-center justify-between gap-[15px] rounded-2xl bg-neutralLight p-4"
+      className="w-full flex-row items-center justify-between gap-[15px] rounded-2xl bg-neutralLight p-4 shadow-lg"
     >
       <View className="h-20 flex-row">
         <View className="justify-center gap-2 self-stretch px-1 py-2">

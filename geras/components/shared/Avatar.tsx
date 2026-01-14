@@ -1,16 +1,27 @@
-import React from 'react';
-import { View } from 'react-native';
+import { View, Image } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
 
-const Avatar = () => {
-  return (
-    <View className="relative h-32 w-32 items-center justify-center rounded-full border border-secondary bg-secondary/50">
-      <ThemedText type="title" className="momo font-bold text-neutral">
-        AS
-      </ThemedText>
+interface AvatarProps {
+  uri?: string | null;
+}
 
-      <View className="absolute bottom-0 right-0 h-8 w-8 items-center justify-center rounded-full border border-white bg-neutral">
+const Avatar = ({ uri }: AvatarProps) => {
+  return (
+    <View className="relative h-32 w-32 items-center justify-center overflow-hidden rounded-full border border-secondary bg-secondary/50">
+      {uri ? (
+        <Image
+          source={{ uri }}
+          className="h-full w-full rounded-full"
+          resizeMode="cover"
+        />
+      ) : (
+        <ThemedText type="title" className="momo font-bold text-neutral">
+          AS
+        </ThemedText>
+      )}
+
+      <View className="absolute bottom-2 right-2 z-10 h-8 w-8 items-center justify-center rounded-full border border-white bg-neutral">
         <MaterialIcons name="photo-camera" size={16} color="white" />
       </View>
     </View>
