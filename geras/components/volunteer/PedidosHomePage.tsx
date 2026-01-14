@@ -6,6 +6,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import RequestDetailsBottomSheet from '@/components/volunteer/RequestsBottomSheet';
 import { router } from 'expo-router';
+import srAntonio from '@/assets/images/srAntonio.png';
 
 interface PedidosHomePageProps {
   filterStatus: 'todos' | 'disponivel' | 'decorrer';
@@ -99,6 +100,7 @@ export default function PedidosHomePage({
                 date={item.date}
                 time={item.time}
                 variant="home"
+                imageUrl={srAntonio}
                 onPress={() => handleCardPress(item)}
                 type={String(item.type)}
               />
