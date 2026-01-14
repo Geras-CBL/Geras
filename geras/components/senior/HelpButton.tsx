@@ -26,6 +26,7 @@ const SENIOR_SCREENS = {
   saude: '/navigation/senior/Health',
   definicoes: '/navigation/senior/Settings',
   pedir_ajuda: '/navigation/senior/RequestHelp',
+  detalhes_pedido: '/navigation/senior/RequestDetails',
   meus_pedidos: '/navigation/senior/Requests',
   compras: '/navigation/senior/Groceries',
   adicionar_compras: '/navigation/senior/AddGrocerieList',
@@ -173,7 +174,8 @@ export const HelpContent = ({ toggleOpen }: { toggleOpen: () => void }) => {
                         - 'adicionar_compras': Adicionar items à lista.
                         - 'editar_perfil': Mudar perfil.
                         - 'ligar_cuidador': Ligar para o cuidador e duvidas complexas.
-                        - 'emergencia': Ligar para o 112 em emergências.`,
+                        - 'emergencia': Ligar para o 112 em emergências.
+                        - 'detalhes_pedido': Ver detalhes de qualquer pedido.`,
                       enum: Object.keys(SENIOR_SCREENS),
                     },
                   },
