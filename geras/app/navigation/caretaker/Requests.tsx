@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { View, ScrollView, Alert } from 'react-native';
+import { View, ScrollView, Alert, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/ThemedText';
 import { pedidosData, type Pedido } from '@/data/requestData';
 import SectionTitle from '@/components/shared/SectionTitle';
 import SearchBar from '@/components/caretaker/SearchBar';
 import Button from '@/components/shared/Button';
+import { router } from 'expo-router';
 
 export default function Requests() {
   const [requests, setRequests] = useState<Pedido[]>(pedidosData);
@@ -45,13 +46,20 @@ export default function Requests() {
 
         <View className="gap-6">
           {filteredRequests.map((request) => (
-            <View
+            <Pressable
               key={request.id}
               className="rounded-2xl bg-white p-5 shadow-md"
+              onPress={() =>
+                router.push({
+                  pathname: '/navigation/caretaker/RequestDetails',
+                  params: {
+                    type: request.type,
+                  },
+                })
+              }
             >
               <View className="mb-6 gap-1">
                 <ThemedText type="bodyBold">{request.title}</ThemedText>
-
                 <ThemedText type="bodySmall">{request.subtitle}</ThemedText>
               </View>
 
@@ -69,7 +77,7 @@ export default function Requests() {
                   onPress={() => handleAccept(request.id)}
                 />
               </View>
-            </View>
+            </Pressable>
           ))}
 
           {filteredRequests.length === 0 && (
