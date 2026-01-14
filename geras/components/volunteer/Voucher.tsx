@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -33,21 +33,40 @@ const Voucher = ({
   onPress,
 }: VoucherProps) => {
   // Percentage calculation
-  const progressPercentage = Math.min((currentTasks / totalTasks) * 100, 100);
+  const progressRatio = currentTasks / totalTasks;
+  const progressPercentage = Math.min(progressRatio * 100, 100);
+
+  // Determine Colors based on progress
+  let progressBgClass = 'bg-primary';
+
+  if (progressRatio < 1 / 3) {
+    progressBgClass = 'bg-tertiary';
+  } else if (progressRatio < 2 / 3) {
+    progressBgClass = 'bg-secondary';
+  }
+  // Default is primary (>= 2/3)
 
   // Animation logic
   const rotation = useSharedValue(0);
 
   useEffect(() => {
-    if (isCompleted) {
+    const handleCompletedAnimation = () => {
       rotation.value = withRepeat(
         withTiming(360, { duration: 3000, easing: Easing.linear }),
-        -1 // Infinite loop
+        -1,
       );
+    };
+
+    const handleIncompleteAnimation = () => {
+      rotation.value = 0;
+    };
+
+    if (isCompleted) {
+      handleCompletedAnimation();
     } else {
-        rotation.value = 0;
+      handleIncompleteAnimation();
     }
-  }, [isCompleted]);
+  }, [isCompleted, rotation]);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -58,8 +77,7 @@ const Voucher = ({
   return (
     <Pressable
       onPress={onPress}
-      // We keep the shape and shadow here, but remove padding/bg to handle the border effect
-      className={`w-full relative overflow-hidden rounded-xl shadow-md ${
+      className={`relative w-full overflow-hidden rounded-xl shadow-md ${
         !isCompleted ? 'bg-neutralLight' : ''
       }`}
     >
@@ -69,13 +87,16 @@ const Voucher = ({
           colors={['#B8860B', '#FFD700', '#FFE5B4', '#FFD700', '#B8860B']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={[StyleSheet.absoluteFill, animatedStyle, { width: '150%', height: '150%', left: '-25%', top: '-25%' }]}
+          style={[
+            StyleSheet.absoluteFill,
+            animatedStyle,
+            { width: '150%', height: '150%', left: '-25%', top: '-25%' },
+          ]}
         />
       )}
 
       {/* --- Main Content Container --- */}
-      {/* We add a small margin (m-[2px]) when completed to create the "border" effect */}
-      <View 
+      <View
         className={`gap-6 p-4 ${
           isCompleted ? 'm-[2px] rounded-[10px] bg-neutralLight' : ''
         }`}
@@ -87,10 +108,12 @@ const Voucher = ({
             <ThemedText type="subtitle" className="uppercase text-neutral">
               {name_store}
             </ThemedText>
-            <ThemedText className="capitalize text-neutral">{address}</ThemedText>
+            <ThemedText className="capitalize text-neutral">
+              {address}
+            </ThemedText>
           </View>
 
-          {/* Chip de Valor (Direita) */}
+          {/* Chip de Valor (Direita) - Keeps Primary color as per standard design, or change to progressTextClass if preferred */}
           <View className="items-center justify-center rounded-full border border-primary px-4 py-2">
             <ThemedText className="text-primary">{value}</ThemedText>
           </View>
@@ -99,7 +122,8 @@ const Voucher = ({
         {/* --- Secção Inferior: Progresso --- */}
         <View className="w-full gap-2">
           <View className="flex-row justify-between">
-            <ThemedText type="bodyBold" className="text-left text-primary">
+            {/* Dynamic Text Color */}
+            <ThemedText type="bodyBold" className={`text-left text-neutral`}>
               {currentTasks}/{totalTasks}
             </ThemedText>
             <ThemedText className="text-right text-base text-neutral">
@@ -109,8 +133,9 @@ const Voucher = ({
 
           {/* Barra de Progresso */}
           <View className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
+            {/* Dynamic Bar Color */}
             <View
-              className="h-full rounded-full bg-primary"
+              className={`h-full rounded-full ${progressBgClass}`}
               style={{ width: `${progressPercentage}%` }}
             />
           </View>
