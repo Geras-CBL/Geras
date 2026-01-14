@@ -21,7 +21,6 @@ jobs:
         with:
           node-version: 20
           cache: "npm"
-          cache: "npm"
           cache-dependency-path: ./geras/package-lock.json
 
       - name: Install dependencies
@@ -35,7 +34,6 @@ jobs:
 
       - name: Create .env file
         run: echo "API_KEY=${{ secrets.API_KEY }}" > .env
-
 
   build_android:
     if: github.ref == 'refs/heads/main'
