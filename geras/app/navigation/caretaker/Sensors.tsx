@@ -1,13 +1,19 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { View, ScrollView } from 'react-native';
 import SensorComponent from '@/components/caretaker/SensorComponent';
 import Button from '@/components/shared/Button';
 import { sensorsData, type Sensor } from '@/data/sensorsData';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SectionTitle from '@/components/shared/SectionTitle';
+import ProfilePicker from '@/components/caretaker/ProfilePicker';
+import ProfileBottomSheet from '@/components/caretaker/ProfileBottomSheet';
+import { useProfile } from '@/context/ProfileContext';
 
 export default function Sensors() {
   const [sensors, setSensors] = useState<Sensor[]>(sensorsData);
+
+  const sheetRef = useRef<any>(null);
+  const { selectedProfile, handleSelectProfile } = useProfile();
 
   const toggleSensor = (id: string) => {
     setSensors((currentSensors) =>
@@ -17,10 +23,16 @@ export default function Sensors() {
     );
   };
 
+  const handleOpenSheet = () => sheetRef.current?.present();
+
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-24">
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-        <SectionTitle title={'Sensores de António Silva'}>
+        <View className="mb-6">
+          <ProfilePicker onPress={handleOpenSheet} profile={selectedProfile} />
+        </View>
+
+        <SectionTitle title="Sensores">
           <View className="mb-10 mt-4 flex-row flex-wrap justify-between">
             {sensors.map((sensor) => (
               <SensorComponent
@@ -42,6 +54,11 @@ export default function Sensors() {
 
         <View className="h-40" />
       </ScrollView>
+
+      <ProfileBottomSheet
+        ref={sheetRef}
+        onSelectProfile={handleSelectProfile}
+      />
     </SafeAreaView>
   );
 }

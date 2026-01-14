@@ -7,9 +7,7 @@ export interface Sensor {
 }
 
 export const sensorsData: Sensor[] = [
-  { id: '1', name: 'Luz Sala', icon: 'lightbulb', active: false },
-  { id: '2', name: 'Câmara', icon: 'videocam', active: false },
+  { id: '2', name: 'Câmara Entrada', icon: 'videocam', active: false },
   { id: '3', name: 'Medicação', icon: 'medical-services', active: false },
-  { id: '4', name: 'Sala', icon: 'home', active: false },
-  { id: '5', name: 'Home', icon: 'home', active: false },
+  { id: '5', name: 'Câmara Sala', icon: 'home', active: false },
 ];
