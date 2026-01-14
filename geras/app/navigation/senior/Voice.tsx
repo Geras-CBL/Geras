@@ -93,7 +93,6 @@ export default function VoicePage() {
       <View className="items-center">
         <Button
           title="Fazer Pedido"
-          variant="outlined"
           className="w-2/3 border-primary text-primary"
           onPress={() => {
             router.push('./RequestLoading');

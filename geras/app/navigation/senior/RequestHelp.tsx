@@ -19,25 +19,25 @@ export default function RequestHelp() {
 
         <RequestHelpButton
           iconName="shopping-cart"
-          label="Compras mercado"
+          label="Compras Mercado"
           route={'../../navigation/senior/Groceries'}
         />
 
         <RequestHelpButton
           iconName="local-pharmacy"
-          label="Compras farmácia"
+          label="Compras Farmácia"
           route={'../../navigation/senior/Requests?type=pharmacy'}
         />
 
         <RequestHelpButton
           iconName="cleaning-services"
-          label="Tarefas domésticas"
+          label="Tarefas Domésticas"
           route={'../../navigation/senior/Requests?type=cleaning'}
         />
 
         <RequestHelpButton
           iconName="construction"
-          label="Outros pedidos"
+          label="Outros Pedidos"
           route={'../../navigation/senior/Requests?type=other'}
         />
       </View>

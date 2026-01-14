@@ -1,5 +1,6 @@
 import { View, Pressable, Image, ImageSourcePropType } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
+import srAntonio from '@/assets/images/srAntonio.png';
 
 interface CardPedidosProps {
   name: string;
@@ -105,7 +106,7 @@ export default function CardPedidos({
       <Image
         resizeMode="cover"
         className="h-24 w-24 rounded-xl bg-gray-200"
-        source={imageSource}
+        source={srAntonio}
       />
     </Pressable>
   );

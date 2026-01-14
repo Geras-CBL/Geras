@@ -30,9 +30,10 @@ export default function VoicePage() {
 
         <Button
           title={'Pressione Para Falar'}
+          variant='outlined'
           className="w-2/3 items-center self-center"
           icon={
-            <MaterialIcons name="record-voice-over" size={24} color="#ffff" />
+            <MaterialIcons name="record-voice-over" size={24} color="#205a2d" />
           }
           onPress={() => router.push('./Voice')}
         />

@@ -1,11 +1,11 @@
 import BigButton from '@/components/senior/BigButton';
 import HelpButton from '@/components/senior/HelpButton';
-import { InfoPill } from '@/components/shared/InfoPill';
 import {
   ActionButton,
   NotificationCard,
 } from '@/components/shared/Notification';
 import SectionTitle from '@/components/shared/SectionTitle';
+import { ThemedText } from '@/components/ThemedText';
 import { View, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -21,7 +21,7 @@ export default function Home() {
             variant="info"
             title="Lucas Wiliam"
             imageSource={require('../../../assets/images/hottie.png')}
-            description={<InfoPill text="A 5 minutos de dist..." />}
+            description={<ThemedText>A 5 minutos de distância</ThemedText>}
             rightContent={
               <ActionButton
                 icon="call"
