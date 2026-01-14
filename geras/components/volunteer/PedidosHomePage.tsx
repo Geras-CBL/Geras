@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useMemo } from 'react';
+import { useRef, useState, useCallback, useMemo } from 'react';
 import { FlatList, View } from 'react-native';
 import { REQUESTS_DATA, RequestData } from '@/data/requestVolunteerData';
 import CardPedidos from '@/components/volunteer/CardPedidos';
@@ -10,12 +10,14 @@ import { router } from 'expo-router';
 interface PedidosHomePageProps {
   filterStatus: 'todos' | 'disponivel' | 'decorrer';
   filterSenior: string | null;
+  filterType: 'todos' | 'cleaning' | 'food' | 'other';
 }
 
 export default function PedidosHomePage({
   filterStatus,
   filterSenior,
-}: PedidosHomePageProps) {
+  filterType,
+}: Readonly<PedidosHomePageProps>) {
   const [requests, setRequests] = useState<RequestData[]>(REQUESTS_DATA);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const [selectedRequest, setSelectedRequest] = useState<RequestData | null>(
@@ -35,9 +37,14 @@ export default function PedidosHomePage({
           .includes(filterSenior.toLowerCase());
       }
 
-      return matchesStatus && matchesSenior;
+      let matchesType = true;
+      if (filterType !== 'todos') {
+        matchesType = item.type === filterType;
+      }
+
+      return matchesStatus && matchesSenior && matchesType;
     });
-  }, [requests, filterStatus, filterSenior]);
+  }, [requests, filterStatus, filterSenior, filterType]);
 
   const handleCardPress = useCallback((item: RequestData) => {
     if (item.state === false) {
@@ -83,7 +90,6 @@ export default function PedidosHomePage({
         renderItem={({ item }) => {
           return (
             <View className="mb-4">
-              {/* Card do pedido */}
               <CardPedidos
                 name={item.name}
                 category={item.category || ''}

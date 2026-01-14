@@ -27,7 +27,7 @@ export default function CardPedidos({
   imageUrl = 'https://via.placeholder.com/101x71',
   onPress,
   variant = 'home',
-}: CardPedidosProps) {
+}: Readonly<CardPedidosProps>) {
   const isAvailable = state === false;
   const statusLabel = isAvailable ? 'Disponível' : 'A decorrer';
   const cardBackgroundColor =
