@@ -9,7 +9,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { ThemedText } from '../ThemedText';
 import { Route, useRouter } from 'expo-router';
 
-type CardVariant = 'alert' | 'medication' | 'info' | 'pantry';
+type CardVariant = 'alert' | 'medication' | 'info' | 'pantry' | 'reminder';
 
 interface Theme {
   container: string;
@@ -38,6 +38,11 @@ const THEMES: Record<CardVariant, Theme> = {
     border: 'border-primary',
     iconBg: 'bg-primary',
   },
+  reminder: {
+    container: 'bg-white shadow-sm shadow-gray-300',
+    border: 'border-transparent',
+    iconBg: '',
+  },
 };
 
 interface ActionButtonProps {
@@ -57,10 +62,11 @@ export const ActionButton = ({ icon, onPress }: ActionButtonProps) => (
 interface NotificationCardProps {
   variant?: CardVariant;
   title: string;
-  description: string | React.ReactNode;
+  description?: string | React.ReactNode;
   iconName?: keyof typeof MaterialIcons.glyphMap;
   imageSource?: ImageSourcePropType;
   rightContent?: React.ReactNode;
+  bottomContent?: React.ReactNode;
   route?: string;
 }
 
@@ -71,18 +77,56 @@ export const NotificationCard = ({
   iconName,
   imageSource,
   rightContent,
+  bottomContent,
   route,
 }: NotificationCardProps) => {
   const theme = THEMES[variant];
   const router = useRouter();
 
+  const handlePress = () => {
+    if (route) router.push(route as Route);
+  };
+
+  if (variant === 'reminder') {
+    return (
+      <Pressable
+        onPress={route ? handlePress : undefined}
+        className={`w-full rounded-3xl p-5 ${theme.container}`}
+      >
+        <View className="flex-row items-start justify-between">
+          <ThemedText
+            type="subtitle"
+            className="flex-1 pr-4 text-[16px] font-bold uppercase leading-tight text-green-900"
+          >
+            {title}
+          </ThemedText>
+          {rightContent}
+        </View>
+
+        {description && (
+          <View className="mt-1">
+            {typeof description === 'string' ? (
+              <ThemedText type="body">{description}</ThemedText>
+            ) : (
+              description
+            )}
+          </View>
+        )}
+
+        {bottomContent && (
+          <View className="mt-6 flex-row items-center justify-between gap-3">
+            {bottomContent}
+          </View>
+        )}
+      </Pressable>
+    );
+  }
+
   return (
     <TouchableOpacity
       activeOpacity={route ? 0.8 : 1}
       className={`flex-row items-center justify-between rounded-3xl border-2 p-4 ${theme.container} ${theme.border}`}
-      onPress={() => {
-        if (route) router.push(route as Route);
-      }}
+      onPress={handlePress}
     >
       <View className="flex-1 flex-row items-center gap-4">
         <View
@@ -104,12 +148,16 @@ export const NotificationCard = ({
             {title}
           </ThemedText>
 
-          {typeof description === 'string' ? (
-            <ThemedText type="body" className="w-52 truncate">
-              {description}
-            </ThemedText>
-          ) : (
-            <View className="mt-1 w-full pr-2">{description}</View>
+          {description && (
+            <>
+              {typeof description === 'string' ? (
+                <ThemedText type="body" className="w-52 truncate">
+                  {description}
+                </ThemedText>
+              ) : (
+                <View className="mt-1 w-full pr-2">{description}</View>
+              )}
+            </>
           )}
         </View>
       </View>
@@ -184,5 +232,21 @@ export const NotificationCard = ({
   iconName="pantry"
   description="Alimentos disponíveis"
   route="/senior/groceries"
+/>; */
+}
+
+// Lembrete
+{
+  /* <NotificationCard
+  variant="reminder"
+  title="Lembrete"
+  description="Consulta médica amanhã às 10:00"
+  bottomContent={
+    <>
+      <Button title="Ver detalhes" variant="outlined" className="flex-1" />
+      <Button title="Ok" className="flex-1" />
+    </>
+  }
+  route="/senior/appointments/123"
 />; */
 }

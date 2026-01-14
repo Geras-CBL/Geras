@@ -1,12 +1,15 @@
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Linking } from 'react-native';
 import {
   NotificationCard,
   ActionButton,
 } from '@/components/shared/Notification';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/ThemedText';
+import { useRouter } from 'expo-router';
 
 export default function Notifications() {
+  const router = useRouter();
+
   return (
     <SafeAreaView edges={['top']} className="flex-1">
       <ScrollView
@@ -26,8 +29,18 @@ export default function Notifications() {
             description="Queda na sala há 4 min"
             rightContent={
               <>
-                <ActionButton icon="call" />
-                <ActionButton icon="videocam" />
+                <ActionButton
+                  icon="call"
+                  onPress={() => {
+                    Linking.openURL(`tel:${963744454}`);
+                  }}
+                />
+                <ActionButton
+                  icon="videocam"
+                  onPress={() => {
+                    router.push('./Sensors');
+                  }}
+                />
               </>
             }
           />
@@ -42,8 +55,18 @@ export default function Notifications() {
             description="Sem Benuron 50mg"
             rightContent={
               <>
-                <ActionButton icon="sensors" />
-                <ActionButton icon="videocam" />
+                <ActionButton
+                  icon="sensors"
+                  onPress={() => {
+                    router.push('./Sensors');
+                  }}
+                />
+                <ActionButton
+                  icon="videocam"
+                  onPress={() => {
+                    router.push('./Sensors');
+                  }}
+                />
               </>
             }
           />
@@ -58,8 +81,18 @@ export default function Notifications() {
             description="António não tomou a medicação"
             rightContent={
               <>
-                <ActionButton icon="sensors" />
-                <ActionButton icon="call" />
+                <ActionButton
+                  icon="sensors"
+                  onPress={() => {
+                    router.push('./Sensors');
+                  }}
+                />
+                <ActionButton
+                  icon="call"
+                  onPress={() => {
+                    Linking.openURL(`tel:${963744454}`);
+                  }}
+                />
               </>
             }
           />

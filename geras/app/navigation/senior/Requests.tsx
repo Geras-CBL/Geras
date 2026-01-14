@@ -141,10 +141,15 @@ export default function Requests() {
     if (requestType === 'pharmacy') {
       return (
         <Button
-          title={'Fazer Pedido'}
+          title="Fazer Pedido"
           variant="outlined"
           className="w-2/3"
-          onPress={() => router.push('./RequestDetails')}
+          onPress={() =>
+            router.push({
+              pathname: './RequestLoading',
+              params: { type: requestType },
+            })
+          }
         />
       );
     }
@@ -160,10 +165,15 @@ export default function Requests() {
           onPress={() => router.push('./Voice')}
         />
         <Button
-          title={'Fazer pedido'}
+          title="Fazer pedido"
           variant="outlined"
           className="w-full"
-          onPress={() => router.push('./RequestDetails')}
+          onPress={() =>
+            router.push({
+              pathname: './RequestLoading',
+              params: { type: requestType },
+            })
+          }
         />
       </View>
     );

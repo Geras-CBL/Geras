@@ -96,7 +96,7 @@ export default function VoicePage() {
           variant="outlined"
           className="w-2/3 border-primary text-primary"
           onPress={() => {
-            router.push('./RequestDetails');
+            router.push('./RequestLoading');
           }}
         />
       </View>

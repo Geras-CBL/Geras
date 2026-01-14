@@ -1,67 +1,110 @@
 import { View, Pressable, Image } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 
-// refazer componente
-
 interface CardPedidosProps {
-  name?: string;
-  category?: string;
-  task?: string;
-  status?: 'disponivel' | 'decorrer' | 'concluido';
+  name: string;
+  task: string;
+  type: string | number | (string | number)[] | null | undefined;
+  category: string;
+  state: boolean; // true: a decorrer | false: disponível
+  isNew: boolean;
+  date?: string;
+  time?: string;
   imageUrl?: string;
   onPress?: () => void;
+  variant?: 'home' | 'history';
 }
 
 export default function CardPedidos({
-  name = 'António Silva',
-  category = 'Tarefa doméstica',
-  task = 'Limpeza de casa',
-  status = 'disponivel',
+  name,
+  task,
+  type,
+  category,
+  state,
+  isNew,
+  date,
+  time,
   imageUrl = 'https://via.placeholder.com/101x71',
   onPress,
+  variant = 'home',
 }: CardPedidosProps) {
-  const isAvailable = status === 'disponivel';
+  const isAvailable = state === false;
+  const statusLabel = isAvailable ? 'Disponível' : 'A decorrer';
+  const cardBackgroundColor =
+    variant === 'history'
+      ? 'bg-neutralLight'
+      : isAvailable
+        ? 'bg-neutralLight'
+        : 'bg-[#CDE2CD]';
+
+  const statusBorderColor = isAvailable ? 'border-primary' : 'border-[#1d1d1b]';
+  const statusTextColor = isAvailable ? 'text-primary' : 'text-[#1d1d1b]';
 
   return (
     <Pressable
       onPress={onPress}
-      className="w-full gap-4 rounded-3xl bg-neutralLight p-6 shadow-md"
+      className={`relative w-full flex-row items-center justify-between gap-4 overflow-hidden rounded-3xl p-6 shadow-sm ${cardBackgroundColor}`}
     >
-      {/* Top Section: Info & Image */}
-      <View className="w-full flex-row items-start justify-between gap-4">
-        <View className="flex-1 gap-4">
-          <View className="gap-1">
-            <ThemedText type="bodyBold" className="uppercase text-neutral">
+      <View className="flex-1 gap-4">
+        <View className="gap-2">
+          <View>
+            <ThemedText
+              type="bodyBold"
+              className="text-lg uppercase text-neutral"
+            >
               {category}
             </ThemedText>
-            <ThemedText type="body" className="capitalize text-neutral">
+            <ThemedText
+              type="bodyBold"
+              className="mt-1 capitalize text-neutral"
+            >
               {name}
             </ThemedText>
           </View>
 
-          <ThemedText type="bodyInfo" className="capitalize text-neutral">
+          <ThemedText type="body" className="capitalize text-neutral">
             {task}
           </ThemedText>
         </View>
 
-        <Image
-          resizeMode="cover"
-          className="h-30 w-30 rounded-lg bg-gray-200"
-          source={{ uri: imageUrl }}
-        />
+        {variant === 'home' ? (
+          <View className="flex-row gap-3">
+            <View
+              className={`items-center justify-center rounded-full border bg-neutralLight px-4 py-1.5 ${statusBorderColor}`}
+            >
+              <ThemedText
+                type="bodyInfo"
+                className={`font-bold ${statusTextColor}`}
+              >
+                {statusLabel}
+              </ThemedText>
+            </View>
+
+            {isNew && (
+              <View className="items-center justify-center rounded-full border border-[#A17C48] px-4 py-1.5">
+                <ThemedText
+                  type="bodyInfo"
+                  className="font-bold text-[#A17C48]"
+                >
+                  Novo
+                </ThemedText>
+              </View>
+            )}
+          </View>
+        ) : (
+          <View>
+            <ThemedText type="bodyInfo" className="text-primary">
+              {date} {time}
+            </ThemedText>
+          </View>
+        )}
       </View>
 
-      {/* Status Chip */}
-      <View
-        className={`items-center justify-center self-start rounded-full border px-3 py-1 ${isAvailable ? 'border-primary' : 'border-neutral'} `}
-      >
-        <ThemedText
-          type="bodyInfo"
-          className={isAvailable ? 'text-primary' : 'text-neutral'}
-        >
-          {isAvailable ? 'Disponível' : status}
-        </ThemedText>
-      </View>
+      <Image
+        resizeMode="cover"
+        className="h-24 w-24 rounded-xl bg-gray-200"
+        source={{ uri: imageUrl }}
+      />
     </Pressable>
   );
 }

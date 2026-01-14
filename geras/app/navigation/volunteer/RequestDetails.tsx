@@ -1,13 +1,12 @@
 import { ThemedText } from '@/components/ThemedText';
-import BottomActions from '@/components/senior/BottomActions';
 import Button from '@/components/shared/Button';
 import CommentBox from '@/components/shared/CommentBox';
-import ContainerVoluntario from '@/components/shared/ContainerVolunteer';
+import ContainerSenior from '@/components/shared/Container';
 import EvaluationTask from '@/components/shared/EvaluationTask';
 import { InfoPill } from '@/components/shared/InfoPill';
 import SectionTitle from '@/components/shared/SectionTitle';
 import { useLocalSearchParams } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   ScrollView,
@@ -58,28 +57,15 @@ export default function RequestDetails() {
 
   const { title, image, description } = requestConfig[requestType];
 
-  const [taskStatus, setTaskStatus] = useState<'inProgress' | 'complete'>(
-    'inProgress',
-  );
-
   const [selectedVariant, setSelectedVariant] =
     useState<EvaluationTaskVariant | null>(null);
 
   const [observation, setObservation] = useState('');
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setTaskStatus('complete');
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   const volunteer = {
-    name: 'Lucas William',
-    age: 20,
-    role: 'Estudante',
-    avatarUri: undefined,
+    name: 'António Silva',
+    age: 74,
+    avatarUri: '',
   };
 
   return (
@@ -99,52 +85,46 @@ export default function RequestDetails() {
 
         <ScrollView
           style={{ flex: 1 }}
-          contentContainerStyle={{ paddingBottom: 180 }}
+          contentContainerStyle={{ paddingBottom: 100 }}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
           <View className="gap-6 px-6">
             <View className="items-center gap-4">
               <ThemedText type="title">{title}</ThemedText>
-              <InfoPill
-                text={taskStatus === 'inProgress' ? 'Em progresso' : 'Completa'}
-                variant={taskStatus === 'inProgress' ? 'secondary' : 'success'}
-              />
+              <InfoPill text="Completa" variant="success" />
             </View>
 
             <SectionTitle title="Descrição do Pedido" />
             <ThemedText type="body">{description}</ThemedText>
 
-            <SectionTitle title="Voluntário" />
-            <ContainerVoluntario {...volunteer} />
+            <ContainerSenior {...volunteer} />
 
-            {taskStatus === 'complete' && (
-              <>
-                <ThemedText type="title">Como correu a tarefa</ThemedText>
+            <>
+              <ThemedText type="title">Como correu a tarefa</ThemedText>
 
-                <View className="flex-row gap-4">
-                  {(
-                    [
-                      'sentiment_dissatisfied',
-                      'sentiment_neutral',
-                      'sentiment_satisfied',
-                    ] as EvaluationTaskVariant[]
-                  ).map((variant) => (
-                    <EvaluationTask
-                      key={variant}
-                      variant={variant}
-                      selected={selectedVariant === variant}
-                      isAnySelected={!!selectedVariant}
-                      onPress={() =>
-                        setSelectedVariant(
-                          selectedVariant === variant ? null : variant,
-                        )
-                      }
-                    />
-                  ))}
-                </View>
-              </>
-            )}
+              <View className="flex-row gap-4">
+                {(
+                  [
+                    'sentiment_dissatisfied',
+                    'sentiment_neutral',
+                    'sentiment_satisfied',
+                  ] as EvaluationTaskVariant[]
+                ).map((variant) => (
+                  <EvaluationTask
+                    key={variant}
+                    variant={variant}
+                    selected={selectedVariant === variant}
+                    isAnySelected={!!selectedVariant}
+                    onPress={() =>
+                      setSelectedVariant(
+                        selectedVariant === variant ? null : variant,
+                      )
+                    }
+                  />
+                ))}
+              </View>
+            </>
 
             <SectionTitle title="Enviar Observação" />
             <CommentBox value={observation} onChangeText={setObservation} />
@@ -161,7 +141,6 @@ export default function RequestDetails() {
 
         {/* FIXO NO FUNDO */}
       </KeyboardAvoidingView>
-      <BottomActions />
     </SafeAreaView>
   );
 }
