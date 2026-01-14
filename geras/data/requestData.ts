@@ -11,19 +11,19 @@ export const pedidosData: Pedido[] = [
   {
     id: '1',
     title: 'COMPRAS',
-    subtitle: 'António Silva',
+    subtitle: '12:23',
     type: 'food',
   },
   {
     id: '2',
     title: 'LIMPEZA DE CASA',
-    subtitle: 'António Silva',
+    subtitle: '14:53',
     type: 'cleaning',
   },
   {
     id: '3',
     title: 'MEDICAMENTOS',
-    subtitle: 'António Silva',
+    subtitle: '18:01',
     type: 'pharmacy',
   },
 ];
