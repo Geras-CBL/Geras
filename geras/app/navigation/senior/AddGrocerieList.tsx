@@ -30,7 +30,7 @@ export default function VoicePage() {
 
         <Button
           title={'Pressione Para Falar'}
-          variant='outlined'
+          variant="outlined"
           className="w-2/3 items-center self-center"
           icon={
             <MaterialIcons name="record-voice-over" size={24} color="#205a2d" />

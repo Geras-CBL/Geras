@@ -157,7 +157,7 @@ export default function Requests() {
       <View className="h-36 w-full flex-col justify-center gap-4 px-4">
         <Button
           title={'Pressione para falar'}
-          variant='outlined'
+          variant="outlined"
           icon={
             <MaterialIcons name="record-voice-over" size={24} color="#205a2d" />
           }
