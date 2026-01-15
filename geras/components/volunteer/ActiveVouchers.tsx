@@ -37,6 +37,7 @@ export default function ActiveVouchers() {
               value={item.value}
               currentTasks={item.currentTasks}
               totalTasks={item.totalTasks}
+              isCompleted={item.currentTasks >= item.totalTasks}
               onPress={() => handlePresentModalPress(item)}
             />
           </View>

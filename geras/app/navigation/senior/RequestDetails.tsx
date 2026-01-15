@@ -120,7 +120,7 @@ export default function RequestDetails() {
 
             {taskStatus === 'complete' && (
               <>
-                <ThemedText type="title">Como correu a tarefa</ThemedText>
+                <ThemedText type="title">Como Correu A Tarefa</ThemedText>
 
                 <View className="flex-row gap-4">
                   {(

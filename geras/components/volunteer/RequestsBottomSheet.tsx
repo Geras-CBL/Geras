@@ -8,6 +8,7 @@ import {
 import { ThemedText } from '@/components/ThemedText';
 import { RequestData } from '@/data/requestVolunteerData';
 import Button from '@/components/shared/Button';
+import srAntonio from '@/assets/images/srAntonio.png';
 
 interface RequestsBottomSheetProps {
   request: RequestData | null;
@@ -56,9 +57,7 @@ const RequestDetailsBottomSheet = forwardRef<
         <View className="w-full flex-row items-center gap-6 rounded-2xl bg-neutralLight p-6 shadow-lg shadow-neutral">
           <Image
             className="h-[100px] w-[100px] rounded-lg bg-gray-200"
-            source={{
-              uri: request.imageUrl || 'https://via.placeholder.com/100',
-            }}
+            source={srAntonio}
             resizeMode="cover"
           />
           <View className="flex-1 gap-2 overflow-hidden">

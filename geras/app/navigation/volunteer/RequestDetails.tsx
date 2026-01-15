@@ -101,7 +101,7 @@ export default function RequestDetails() {
             <ContainerSenior {...volunteer} />
 
             <>
-              <ThemedText type="title">Como correu a tarefa</ThemedText>
+              <ThemedText type="title">Como Correu A Tarefa</ThemedText>
 
               <View className="flex-row gap-4">
                 {(

@@ -23,7 +23,7 @@ export function MedicationSchedule() {
               }`}
             >
               <ThemedText
-                className={`${isSelected ? 'font-semibold text-white' : 'text-gray-400'}`}
+                className={`${isSelected ? 'font-semibold text-white' : 'text-neutral'}`}
               >
                 {day.label}
               </ThemedText>
@@ -59,7 +59,7 @@ export function MedicationSchedule() {
         ))
       ) : (
         <View className="items-center rounded-2xl bg-white p-6 shadow-sm">
-          <ThemedText className="text-gray-400">
+          <ThemedText className="text-neutral">
             Sem medicação para este dia.
           </ThemedText>
         </View>

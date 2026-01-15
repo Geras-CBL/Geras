@@ -1,11 +1,11 @@
-import { View } from 'react-native';
-import React, { useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import PedidosHomePage from '@/components/volunteer/PedidosHomePage';
-import MapaHomePage from '@/components/volunteer/MapaHomePage';
 import SectionTitle from '@/components/shared/SectionTitle';
-import ViewToggle from '@/components/volunteer/ViewToggle';
 import FilterButton from '@/components/volunteer/FilterButton';
+import MapaHomePage from '@/components/volunteer/MapaHomePage';
+import PedidosHomePage from '@/components/volunteer/PedidosHomePage';
+import ViewToggle from '@/components/volunteer/ViewToggle';
+import React, { useState } from 'react';
+import { View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Home() {
   const [tab, setTab] = React.useState('Lista');
@@ -14,6 +14,9 @@ export default function Home() {
     'todos' | 'disponivel' | 'decorrer'
   >('todos');
   const [seniorFilter, setSeniorFilter] = useState<string | null>(null);
+  const [typeFilter, setTypeFilter] = useState<
+    'todos' | 'cleaning' | 'food' | 'other'
+  >('todos');
 
   const handleStatusFilterPress = () => {
     if (statusFilter === 'todos') setStatusFilter('disponivel');
@@ -29,23 +32,33 @@ export default function Home() {
     }
   };
 
-  const statusLabel =
-    statusFilter === 'todos'
-      ? 'Estado'
-      : statusFilter === 'disponivel'
-        ? 'Disponível'
-        : 'A Decorrer';
+  const handleTypeFilterPress = () => {
+    if (typeFilter === 'todos') setTypeFilter('cleaning');
+    else if (typeFilter === 'cleaning') setTypeFilter('food');
+    else if (typeFilter === 'food') setTypeFilter('other');
+    else setTypeFilter('todos');
+  };
+
+  let statusLabel = 'Estado';
+  if (statusFilter === 'disponivel') {
+    statusLabel = 'Disponível';
+  } else if (statusFilter === 'decorrer') {
+    statusLabel = 'A Decorrer';
+  }
 
   const seniorLabel = seniorFilter ? `Sénior: ${seniorFilter}` : 'Sénior';
+
+  let typeLabel = 'Tipo';
+  if (typeFilter === 'cleaning') typeLabel = 'Limpeza';
+  else if (typeFilter === 'food') typeLabel = 'Compras';
+  else if (typeFilter === 'other') typeLabel = 'Outros';
 
   return (
     <View className="flex-1">
       <SafeAreaView edges={['top']} className="flex-1 px-6 pt-24">
         <View className="flex-1 gap-2">
-          {/* Título */}
           <SectionTitle title="Pedidos" />
 
-          {/* Tabs / Botões */}
           <ViewToggle
             currentValue={tab}
             onSelect={setTab}
@@ -55,15 +68,18 @@ export default function Home() {
             ]}
           />
 
-          {/* Conteúdo  - Páginas Lista/Mapa*/}
           <View className="flex-1">
             {tab === 'Lista' && (
               <View className="items-left mb-6 flex-row justify-start gap-6">
-                {/* Filtros */}
                 <FilterButton
                   label={statusLabel}
                   isActive={statusFilter !== 'todos'}
                   onPress={handleStatusFilterPress}
+                />
+                <FilterButton
+                  label={typeLabel}
+                  isActive={typeFilter !== 'todos'}
+                  onPress={handleTypeFilterPress}
                 />
                 <FilterButton
                   label={seniorLabel}
@@ -77,6 +93,7 @@ export default function Home() {
               <PedidosHomePage
                 filterStatus={statusFilter}
                 filterSenior={seniorFilter}
+                filterType={typeFilter}
               />
             )}
 

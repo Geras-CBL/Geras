@@ -1,3 +1,4 @@
+import { useEffect, useState, useRef } from 'react';
 import {
   View,
   ScrollView,
@@ -7,8 +8,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useEffect, useState } from 'react';
 import { Checkbox } from '@futurejj/react-native-checkbox';
+import { useRouter } from 'expo-router';
 
 import SectionTitle from '@/components/shared/SectionTitle';
 import MedicationCard, {
@@ -19,7 +20,9 @@ import { fetchItems, ItemDTO } from '@/data/items';
 import { NotificationCard } from '@/components/shared/Notification';
 import ClockPill from '@/components/shared/InfoPill';
 import { ThemedText } from '@/components/ThemedText';
-import { useRouter } from 'expo-router';
+import ProfilePicker from '@/components/caretaker/ProfilePicker';
+import ProfileBottomSheet from '@/components/caretaker/ProfileBottomSheet';
+import { useProfile } from '@/context/ProfileContext';
 
 interface GroceryItemState extends ItemDTO {
   checked?: boolean;
@@ -29,6 +32,9 @@ export default function SeniorManagement() {
   const [items, setItems] = useState<GroceryItemState[]>([]);
   const [showMedication, setShowMedication] = useState(true);
   const router = useRouter();
+
+  const sheetRef = useRef<any>(null);
+  const { selectedProfile, handleSelectProfile } = useProfile();
 
   useEffect(() => {
     async function loadItems() {
@@ -46,30 +52,31 @@ export default function SeniorManagement() {
     );
   };
 
+  const handleOpenSheet = () => {
+    sheetRef.current?.present();
+  };
+
   const handleIgnore = () => {
     Alert.alert('Notificação ignorada');
     setShowMedication(false);
   };
 
-  const handleWarn = () => {
-    Alert.alert('António avisado');
-  };
-
-  const handleCall = () => {
-    Linking.openURL(`tel:${963744454}`);
-  };
+  const handleWarn = () => Alert.alert('António avisado');
+  const handleCall = () => Linking.openURL(`tel:${963744454}`);
 
   return (
-    <SafeAreaView edges={['top']} className="flex-1">
+    <SafeAreaView edges={['top']} className="flex-1 pt-24">
       <ScrollView
-        className="flex-1 px-6 pt-24"
+        className="flex-1 px-6"
         showsVerticalScrollIndicator={false}
-        contentContainerClassName="flex-col pb-60"
+        contentContainerClassName="flex-col pb-60 gap-6"
       >
-        <SectionTitle title="Gestão de António Silva" />
+        <ProfilePicker onPress={handleOpenSheet} profile={selectedProfile} />
+
+        <SectionTitle title="Gestão" />
 
         {showMedication && (
-          <View className="mt-12">
+          <View>
             <SectionTitle title="Medicação">
               <NotificationCard
                 variant="reminder"
@@ -112,7 +119,7 @@ export default function SeniorManagement() {
           </View>
         )}
 
-        <View className="mt-12">
+        <View>
           <SectionTitle title="Monitorização">
             <View className="flex-row flex-wrap justify-between gap-y-4">
               {[
@@ -144,7 +151,6 @@ export default function SeniorManagement() {
                   />
                 </View>
               ))}
-
               <View className="aspect-square w-[48%]">
                 <AddMedicationCard onPress={() => {}} />
               </View>
@@ -152,7 +158,7 @@ export default function SeniorManagement() {
           </SectionTitle>
         </View>
 
-        <View className="mt-12 w-full">
+        <View className="w-full">
           <SectionTitle title="Mercearias em falta">
             <View className="w-full flex-col gap-3">
               <View className="w-full">
@@ -173,7 +179,6 @@ export default function SeniorManagement() {
                   </TouchableOpacity>
                 ))}
               </View>
-
               <View className="flex-row gap-4 p-4 pt-2">
                 <Button
                   title="Adicionar"
@@ -182,7 +187,6 @@ export default function SeniorManagement() {
                   onPress={() => router.push('../senior/AddGrocerieList')}
                   icon={<MaterialIcons name="add" size={20} color="#205a2d" />}
                 />
-
                 <Button
                   title="Comprar"
                   className="flex-1"
@@ -200,6 +204,11 @@ export default function SeniorManagement() {
           </SectionTitle>
         </View>
       </ScrollView>
+
+      <ProfileBottomSheet
+        ref={sheetRef}
+        onSelectProfile={handleSelectProfile}
+      />
     </SafeAreaView>
   );
 }

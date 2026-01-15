@@ -91,9 +91,9 @@ export default function AddHealthMetric() {
               {(['Adequado', 'Moderado', 'Excessivo'] as MetricStatus[]).map(
                 (s) => {
                   const isSelected = status === s;
-                  let activeColor = 'bg-primary';
-                  if (s === 'Moderado') activeColor = 'bg-secondary';
-                  if (s === 'Excessivo') activeColor = 'bg-tertiary';
+                  let activeColor = 'border-primary';
+                  if (s === 'Moderado') activeColor = 'border-secondary';
+                  if (s === 'Excessivo') activeColor = 'border-tertiary';
 
                   return (
                     <TouchableOpacity
@@ -101,14 +101,14 @@ export default function AddHealthMetric() {
                       onPress={() => setStatus(s)}
                       className={`flex-1 items-center justify-center rounded-xl border py-3 ${
                         isSelected
-                          ? `${activeColor} border-transparent`
+                          ? `border-4 ${activeColor}`
                           : 'border-gray-200 bg-white'
                       }`}
                     >
                       <ThemedText
                         type="body"
                         style={{
-                          color: isSelected ? 'white' : '#6b7280',
+                          color: isSelected ? 'black' : '#6b7280',
                           fontSize: 14,
                         }}
                       >

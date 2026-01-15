@@ -10,22 +10,13 @@ import {
   ActionButton,
 } from '@/components/shared/Notification';
 import ProfileBottomSheet from '@/components/caretaker/ProfileBottomSheet';
-import { profilesData, SeniorProfile } from '@/data/profilesData';
 import { useRouter } from 'expo-router';
+import { useProfile } from '@/context/ProfileContext';
 
 export default function HomePage() {
   const sheetRef = React.useRef<any>(null);
   const router = useRouter();
-
-  const [selectedProfile, setSelectedProfile] = React.useState<SeniorProfile>(
-    profilesData.find((p) => p.selected) || profilesData[0],
-  );
-
-  const handleSelectProfile = (profile: { name: string; age: number }) => {
-    console.log('Perfil selecionado:', profile);
-    const newSelected = profilesData.find((p) => p.name === profile.name);
-    if (newSelected) setSelectedProfile(newSelected);
-  };
+  const { selectedProfile, handleSelectProfile } = useProfile();
 
   const handleOpenSheet = () => {
     sheetRef.current?.present();
@@ -39,6 +30,7 @@ export default function HomePage() {
         showsVerticalScrollIndicator={false}
       >
         <ProfilePicker onPress={handleOpenSheet} profile={selectedProfile} />
+
         <Resume />
 
         <View className="pt-6">
@@ -52,15 +44,11 @@ export default function HomePage() {
                 <>
                   <ActionButton
                     icon="call"
-                    onPress={() => {
-                      Linking.openURL(`tel:${963744454}`);
-                    }}
+                    onPress={() => Linking.openURL(`tel:${963744454}`)}
                   />
                   <ActionButton
                     icon="videocam"
-                    onPress={() => {
-                      router.push('./Sensors');
-                    }}
+                    onPress={() => router.push('./Sensors')}
                   />
                 </>
               }

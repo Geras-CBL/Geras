@@ -142,7 +142,6 @@ export default function Requests() {
       return (
         <Button
           title="Fazer Pedido"
-          variant="outlined"
           className="w-2/3"
           onPress={() =>
             router.push({
@@ -158,15 +157,15 @@ export default function Requests() {
       <View className="h-36 w-full flex-col justify-center gap-4 px-4">
         <Button
           title={'Pressione para falar'}
+          variant="outlined"
           icon={
-            <MaterialIcons name="record-voice-over" size={24} color="#ffff" />
+            <MaterialIcons name="record-voice-over" size={24} color="#205a2d" />
           }
           className="mb-2 w-full"
           onPress={() => router.push('./Voice')}
         />
         <Button
           title="Fazer pedido"
-          variant="outlined"
           className="w-full"
           onPress={() =>
             router.push({

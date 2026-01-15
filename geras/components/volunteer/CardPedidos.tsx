@@ -1,5 +1,6 @@
-import { View, Pressable, Image } from 'react-native';
+import { View, Pressable, Image, ImageSourcePropType } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
+import srAntonio from '@/assets/images/srAntonio.png';
 
 interface CardPedidosProps {
   name: string;
@@ -10,7 +11,7 @@ interface CardPedidosProps {
   isNew: boolean;
   date?: string;
   time?: string;
-  imageUrl?: string;
+  imageUrl?: string | ImageSourcePropType;
   onPress?: () => void;
   variant?: 'home' | 'history';
 }
@@ -24,10 +25,10 @@ export default function CardPedidos({
   isNew,
   date,
   time,
-  imageUrl = 'https://via.placeholder.com/101x71',
+  imageUrl = 'https://i.pravatar.cc/309',
   onPress,
   variant = 'home',
-}: CardPedidosProps) {
+}: Readonly<CardPedidosProps>) {
   const isAvailable = state === false;
   const statusLabel = isAvailable ? 'Disponível' : 'A decorrer';
   const cardBackgroundColor =
@@ -39,6 +40,8 @@ export default function CardPedidos({
 
   const statusBorderColor = isAvailable ? 'border-primary' : 'border-[#1d1d1b]';
   const statusTextColor = isAvailable ? 'text-primary' : 'text-[#1d1d1b]';
+  const imageSource =
+    typeof imageUrl === 'string' ? { uri: imageUrl } : imageUrl;
 
   return (
     <Pressable
@@ -103,7 +106,7 @@ export default function CardPedidos({
       <Image
         resizeMode="cover"
         className="h-24 w-24 rounded-xl bg-gray-200"
-        source={{ uri: imageUrl }}
+        source={srAntonio}
       />
     </Pressable>
   );

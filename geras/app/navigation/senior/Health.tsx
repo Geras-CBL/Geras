@@ -17,10 +17,10 @@ export default function Health() {
   const router = useRouter();
 
   return (
-    <SafeAreaView edges={['top']} className="flex-1">
+    <SafeAreaView edges={['top']} className="flex-1 pt-24">
       <ScrollView
         className="flex-1"
-        contentContainerClassName="items-center gap-10 px-6 pt-24 pb-44"
+        contentContainerClassName="items-center gap-10 px-6 pb-44"
         showsVerticalScrollIndicator={false}
       >
         <SectionTitle title={'Notificações'}>
