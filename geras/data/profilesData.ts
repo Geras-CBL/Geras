@@ -2,10 +2,10 @@ export interface SeniorProfile {
   id: string;
   name: string;
   age: number;
-  email: string; // novo
-  password: string; // novo
-  birthDate: string; // novo
-  country: string; // novo
+  email: string;
+  password: string;
+  birthDate: string;
+  country: string;
   image?: any;
   selected: boolean;
 }
