@@ -25,24 +25,24 @@ describe('ThemedText component', () => {
 
     tipos.forEach(({ type, fontSize }) => {
       const { getByText } = render(
-        <ThemedText type={type}>{`Teste ${type}`}</ThemedText>
+        <ThemedText type={type}>{`Teste ${type}`}</ThemedText>,
       );
       const text = getByText(`Teste ${type}`);
 
       // Verifica se o fontSize está aplicado (considerando scale = 1 do mock)
       expect(text.props.style).toEqual(
-        expect.arrayContaining([expect.objectContaining({ fontSize })])
+        expect.arrayContaining([expect.objectContaining({ fontSize })]),
       );
     });
   });
 
   it('aplica style extra passado como prop', () => {
     const { getByText } = render(
-      <ThemedText style={{ color: 'red' }}>Texto colorido</ThemedText>
+      <ThemedText style={{ color: 'red' }}>Texto colorido</ThemedText>,
     );
     const text = getByText('Texto colorido');
     expect(text.props.style).toEqual(
-      expect.arrayContaining([expect.objectContaining({ color: 'red' })])
+      expect.arrayContaining([expect.objectContaining({ color: 'red' })]),
     );
   });
 });

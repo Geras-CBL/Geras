@@ -8,10 +8,7 @@ const TestComponent = () => {
   return (
     <>
       <Text testID="scale">{scale}</Text>
-      <Text
-        testID="increase"
-        onPress={() => setScale(scale + 1)}
-      >
+      <Text testID="increase" onPress={() => setScale(scale + 1)}>
         Increase
       </Text>
     </>
@@ -23,18 +20,18 @@ describe('FontContext', () => {
     const { getByTestId } = render(
       <FontProvider>
         <TestComponent />
-      </FontProvider>
+      </FontProvider>,
     );
 
     const scaleText = getByTestId('scale');
-    expect(scaleText.props.children).toBe(1); 
+    expect(scaleText.props.children).toBe(1);
   });
 
   it('atualiza o scale corretamente', () => {
     const { getByTestId } = render(
       <FontProvider>
         <TestComponent />
-      </FontProvider>
+      </FontProvider>,
     );
 
     const scaleText = getByTestId('scale');
@@ -44,7 +41,6 @@ describe('FontContext', () => {
       increaseButton.props.onPress();
     });
 
-    expect(scaleText.props.children).toBe(2); 
+    expect(scaleText.props.children).toBe(2);
   });
 });
-

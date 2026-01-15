@@ -1,3 +1,3 @@
 export const useFontScale = () => ({
-  scale: 1, 
+  scale: 1,
 });
