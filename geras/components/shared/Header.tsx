@@ -29,6 +29,7 @@ const Header: React.FC<HeaderProps> = ({
         <TouchableOpacity
           onPress={onLeftPress}
           className="items-center justify-center p-2"
+          testID="header-left-button"
         >
           <MaterialIcons
             name={leftIconName}
@@ -87,6 +88,7 @@ const Header: React.FC<HeaderProps> = ({
         <TouchableOpacity
           onPress={onRightPress}
           className="items-center justify-center p-2"
+          testID="header-right-button"
         >
           <MaterialIcons
             name={rightIconName}
