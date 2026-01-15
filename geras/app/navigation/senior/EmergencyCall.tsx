@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import Svg, { Circle } from 'react-native-svg';
+import { ThemedText } from '@/components/ThemedText';
 
 const { width } = Dimensions.get('window');
 const CIRCLE_SIZE = width * 0.75; // Increased slightly to 75%
@@ -57,12 +58,19 @@ export default function EmergencyCall() {
       <View className="flex-1 items-center justify-center gap-10">
         {/* Header Text - Now Bigger and Centered */}
         <View className="w-full items-center">
-          <Text className="text-center text-4xl font-black uppercase tracking-widest text-red-600">
+          <ThemedText
+            type="title"
+            style={{ fontSize: 40, lineHeight: 50 }}
+            className="text-center uppercase tracking-widest text-red-600"
+          >
             Emergência
-          </Text>
-          <Text className="mt-4 text-center text-2xl font-semibold text-gray-600">
+          </ThemedText>
+          <ThemedText
+            type="subtitle"
+            className="mt-4 text-center font-semibold text-gray-600"
+          >
             A ligar ao 112 em...
-          </Text>
+          </ThemedText>
         </View>
 
         {/* Progress Circle Container */}
@@ -119,15 +127,15 @@ export default function EmergencyCall() {
             activeOpacity={0.8}
             onPress={handleCancel}
           >
-            <Text className="text-3xl font-bold tracking-wider text-white">
+            <ThemedText type="title" className="tracking-wider text-white">
               CANCELAR
-            </Text>
+            </ThemedText>
           </TouchableOpacity>
         ) : (
           <View className="items-center py-6">
-            <Text className="text-3xl font-bold uppercase text-gray-300">
+            <ThemedText type="title" className="uppercase text-gray-300">
               Cancelado
-            </Text>
+            </ThemedText>
           </View>
         )}
       </View>
