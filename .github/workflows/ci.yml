@@ -52,11 +52,11 @@ jobs:
         run: npm ci
 
       - name: Run Tests
-        run: npm test
+        run: npm test -- --watchAll=false
 
   build_android:
     if: github.ref == 'refs/heads/main'
-    needs: [lint-and-format, test] 
+    needs: [lint-and-format, test]
     runs-on: ubuntu-latest
     defaults:
       run:
