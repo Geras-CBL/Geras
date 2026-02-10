@@ -26,18 +26,6 @@ Disponível [aqui](https://www.youtube.com/watch?v=1fBb_aUl9JE).
 
 ---
 
-## Galeria
-
-Abaixo apresentamos alguns exemplos da interface do utilizador, pensada para ser acessível e intuitiva.
-
-| Ecrã 1 | Ecrã 2 | Ecrã 3 |
-| --- | --- | --- |
-| <img src="[https://github.com/user-attachments/assets/a83ccc31-cd62-451e-bb5d-303f68db0a26](https://github.com/user-attachments/assets/a83ccc31-cd62-451e-bb5d-303f68db0a26)" width="200" /> | <img src="[https://github.com/user-attachments/assets/20760ce3-8e35-4f46-a445-01a09d2dc74b](https://github.com/user-attachments/assets/20760ce3-8e35-4f46-a445-01a09d2dc74b)" width="200" /> | <img src="[https://github.com/user-attachments/assets/89131c89-c721-4568-8abb-52bd6709b4b9](https://github.com/user-attachments/assets/89131c89-c721-4568-8abb-52bd6709b4b9)" width="200" /> |
-| **Ecrã 4** | **Ecrã 5** | **Ecrã 6** |
-| <img src="[https://github.com/user-attachments/assets/bd5ae9a2-0832-4b14-a5d2-3fa68f0408f3](https://github.com/user-attachments/assets/bd5ae9a2-0832-4b14-a5d2-3fa68f0408f3)" width="200" /> | <img src="[https://github.com/user-attachments/assets/a84181e3-6791-4656-837d-79bdf536a8dc](https://github.com/user-attachments/assets/a84181e3-6791-4656-837d-79bdf536a8dc)" width="200" /> | <img src="[https://github.com/user-attachments/assets/eff98d27-b435-43e9-aae2-d35146d74b08](https://github.com/user-attachments/assets/eff98d27-b435-43e9-aae2-d35146d74b08)" width="200" /> |
-
----
-
 ## Estrutura do Projeto
 
 A aplicação encontra-se organizada dentro da pasta `geras`. A estrutura de ficheiros segue uma lógica modular para facilitar a manutenção e escalabilidade:
