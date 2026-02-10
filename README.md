@@ -1,31 +1,110 @@
-# 👴 Geras 👵
+# Geras 
+<img src="https://github.com/user-attachments/assets/ce068f7b-a61c-43aa-99f0-d52e1d053c39" height="100">
 
-**Conectar gerações, simplificar a vida.**
+## Sobre o Projeto
 
-### 📖 O que é?
+O Geras é um ecossistema digital desenvolvido em [**React Native** (Expo)](https://docs.expo.dev/), desenhado para devolver a autonomia aos seniores e garantir a tranquilidade das suas famílias. A missão é combater o isolamento e promover a segurança através de uma comunidade unida e tecnologia acessível.
 
-O **Geras** é mais do que uma app: é um ecossistema digital desenhado para devolver a autonomia aos seniores e garantir a tranquilidade das suas famílias. A nossa missão é combater o isolamento e promover a segurança através de uma comunidade unida e tecnologia acessível.
+Este projeto foi desenvolvido no âmbito do **Mestrado em Comunicação e Tecnologias Web (MCTW)**, seguindo a metodologia **CBL (Challenge Based Learning)** com a pareceria da **Altice Labs**. O desenvolvimento desta aplicação serviu como ponto de convergência para aplicar os conhecimentos adquiridos em todas as disciplinas do mestrado, resultando numa solução prática e integrada.
 
-### ✨ Funcionalidades Principais
+## Nota Final
 
-* **🏠 Casa Inteligente & Segura:** Integração com sensores (IoT) que avisam se a medicação foi tomada, se faltam alimentos no frigorífico ou se ocorreu uma queda.
+18 valores
 
+## Vídeo Promocional
 
-* **🤝 Pedidos de Ajuda:** De forma simples, os seniores podem pedir compras de supermercado ou apenas companhia a voluntários verificados.
+Disponível [aqui](https://www.youtube.com/watch?v=1fBb_aUl9JE).
 
+---
 
-* **👁️ Tranquilidade para Cuidadores:** Os familiares podem monitorizar a saúde e receber alertas de segurança em tempo real, gerindo tudo à distância.
+### Funcionalidades Principais
 
+* **Casa Inteligente e Segura:** Integração com sensores (IoT) para monitorização de rotinas (toma de medicação, gestão de despensa) e deteção de quedas.
+* **Pedidos de Ajuda:** Interface simplificada para seniores solicitarem apoio (compras, companhia) a voluntários verificados.
+* **Gestão para Cuidadores:** Monitorização de saúde e alertas de segurança em tempo real para familiares.
+* **Voluntariado:** Sistema de recompensas (vouchers) para quem presta auxílio, fomentando a economia local.
 
-* **🎁 Voluntariado que Vale:** Quem ajuda ganha vouchers de desconto para usar no comércio local, apoiando a economia da vizinhança.
+---
 
+## Galeria
 
+Abaixo apresentamos alguns exemplos da interface do utilizador, pensada para ser acessível e intuitiva.
 
-### 🎯 Para quem?
+| Ecrã 1 | Ecrã 2 | Ecrã 3 |
+| --- | --- | --- |
+| <img src="[https://github.com/user-attachments/assets/a83ccc31-cd62-451e-bb5d-303f68db0a26](https://github.com/user-attachments/assets/a83ccc31-cd62-451e-bb5d-303f68db0a26)" width="200" /> | <img src="[https://github.com/user-attachments/assets/20760ce3-8e35-4f46-a445-01a09d2dc74b](https://github.com/user-attachments/assets/20760ce3-8e35-4f46-a445-01a09d2dc74b)" width="200" /> | <img src="[https://github.com/user-attachments/assets/89131c89-c721-4568-8abb-52bd6709b4b9](https://github.com/user-attachments/assets/89131c89-c721-4568-8abb-52bd6709b4b9)" width="200" /> |
+| **Ecrã 4** | **Ecrã 5** | **Ecrã 6** |
+| <img src="[https://github.com/user-attachments/assets/bd5ae9a2-0832-4b14-a5d2-3fa68f0408f3](https://github.com/user-attachments/assets/bd5ae9a2-0832-4b14-a5d2-3fa68f0408f3)" width="200" /> | <img src="[https://github.com/user-attachments/assets/a84181e3-6791-4656-837d-79bdf536a8dc](https://github.com/user-attachments/assets/a84181e3-6791-4656-837d-79bdf536a8dc)" width="200" /> | <img src="[https://github.com/user-attachments/assets/eff98d27-b435-43e9-aae2-d35146d74b08](https://github.com/user-attachments/assets/eff98d27-b435-43e9-aae2-d35146d74b08)" width="200" /> |
 
-Pensado para ser **fácil de usar** por qualquer pessoa (botões grandes e sem confusões!), mas poderoso para quem cuida.
+---
 
-> 
-> *"Se antecipamos um mundo digital, não podemos deixar ninguém para trás."* 
-> 
-> 
+## Estrutura do Projeto
+
+A aplicação encontra-se organizada dentro da pasta `geras`. A estrutura de ficheiros segue uma lógica modular para facilitar a manutenção e escalabilidade:
+
+* **app/**: Contém a lógica de navegação e as páginas principais da aplicação. O projeto utiliza *file-based routing* (rotas baseadas em ficheiros) do Expo Router.
+* **assets/**: Armazena recursos estáticos como imagens, ícones e tipos de letra.
+* **components/**: Componentes de UI reutilizáveis em toda a aplicação (ex: botões personalizados, cartões de pedidos, cabeçalhos).
+* **constants/**: Ficheiros de configuração global, como paletas de cores, definições de layout e strings constantes.
+* **context/**: Gestão de estado global da aplicação (ex: `ProfileContext` para gerir o tipo de utilizador - Sénior, Cuidador ou Voluntário).
+* **data/**: Dados estáticos ou *mock data* utilizados para preencher a aplicação durante o desenvolvimento e testes.
+* **scripts/**: Scripts utilitários para automação ou configuração do ambiente de desenvolvimento.
+
+---
+
+## Como Correr o Projeto
+
+Esta aplicação é construída com Expo e suporta iOS e Android.
+
+### Pré-requisitos
+
+Certifique-se de que tem o Node.js instalado.
+
+### Instalação
+
+1. Clone o repositório.
+2. Aceda à pasta do projeto (passo fundamental, pois a raiz do repositório contém outras pastas):
+
+```bash
+cd geras
+
+```
+
+3. Instale as dependências:
+
+```bash
+npm install
+
+```
+
+4. Inicie a aplicação:
+
+```bash
+npx expo start
+
+```
+
+No terminal, serão apresentadas opções para abrir a aplicação:
+
+* Pressionando `a` para o emulador Android.
+* Pressionando `i` para o simulador iOS.
+* Digitalizando o código QR com a app **Expo Go** no seu telemóvel físico.
+
+### Builds e Distribuição
+
+As builds de desenvolvimento e produção, bem como o estado atual do projeto na cloud, podem ser consultados no painel do Expo (requer permissão de acesso):
+
+[Ver Projeto no Expo.dev](https://expo.dev/accounts/geras-cbl/projects/geras)
+
+---
+
+## Tecnologias
+
+* **Framework:** React Native (via Expo)
+* **Linguagem:** JavaScript / TypeScript
+* **Routing:** Expo Router
+* **Estilo:** StyleSheet (React Native)
+
+---
+
+> *"Se antecipamos um mundo digital, não podemos deixar ninguém para trás."*
