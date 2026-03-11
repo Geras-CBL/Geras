@@ -189,7 +189,7 @@ export default function RootLayout() {
                     header: () => (
                       <Header
                         leftIconName="home"
-                        rightIconName="settings" 
+                        rightIconName="settings"
                         leftIconLabel="Ir para a página inicial"
                         rightIconLabel="Abrir definições"
                         onLeftPress={() =>

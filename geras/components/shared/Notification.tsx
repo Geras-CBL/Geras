@@ -142,7 +142,7 @@ export const NotificationCard = ({
               accessible={true}
               accessibilityRole="image"
               accessibilityLabel={alt}
-              />
+            />
           ) : (
             <MaterialIcons name={iconName} size={40} color="#FFF" />
           )}

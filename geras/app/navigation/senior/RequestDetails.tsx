@@ -25,7 +25,7 @@ type EvaluationTaskVariant =
 const requestConfig: Record<
   string,
   //Alterenative text (Colocar alt a seguir a descriçãos)
-  { title: string; image: any; description: string, alt?: string }
+  { title: string; image: any; description: string; alt?: string }
 > = {
   food: {
     title: 'Pedido de Compras',
@@ -39,7 +39,7 @@ const requestConfig: Record<
     image: require('@/assets/images/medicine.png'),
     description:
       'O Sr. António precisa de auxílio para buscar medicamentos na farmácia.',
-    alt: 'Imagem de medicamentos',  
+    alt: 'Imagem de medicamentos',
   },
   cleaning: {
     title: 'Tarefa Doméstica',

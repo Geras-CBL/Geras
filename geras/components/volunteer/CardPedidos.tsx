@@ -110,7 +110,7 @@ export default function CardPedidos({
         accessible={true}
         accessibilityRole="image"
         accessibilityLabel={`Foto de perfil de ${name}`}
-/>
+      />
     </Pressable>
   );
 }

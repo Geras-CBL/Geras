@@ -15,10 +15,10 @@ const Avatar = ({ uri, alt }: AvatarProps) => {
           source={{ uri }}
           className="h-full w-full rounded-full"
           resizeMode="cover"
-          alt={alt || "Foto de perfil do utilizador"}
+          alt={alt || 'Foto de perfil do utilizador'}
           accessible={true}
           accessibilityRole="image"
-          accessibilityLabel={alt || "Foto de perfil do utilizador"}
+          accessibilityLabel={alt || 'Foto de perfil do utilizador'}
         />
       ) : (
         <ThemedText type="title" className="momo font-bold text-neutral">

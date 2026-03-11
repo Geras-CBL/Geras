@@ -37,7 +37,6 @@ const Header: React.FC<HeaderProps> = ({
           accessible={true}
           accessibilityRole="button"
           accessibilityLabel={leftIconLabel}
-
         >
           <MaterialIcons
             name={leftIconName}

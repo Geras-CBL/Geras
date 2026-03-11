@@ -44,7 +44,7 @@ const requestConfig: Record<
     alt: 'Imagem ilustrativa de ajuda doméstica',
   },
 };
-  
+
 export default function RequestDetails() {
   const { type } = useLocalSearchParams<{ type?: string }>();
   const requestType = type && requestConfig[type] ? type : 'other';
