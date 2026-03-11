@@ -4,9 +4,10 @@ import { ThemedText } from '@/components/ThemedText';
 
 interface AvatarProps {
   uri?: string | null;
+  alt?: string;
 }
 
-const Avatar = ({ uri }: AvatarProps) => {
+const Avatar = ({ uri, alt }: AvatarProps) => {
   return (
     <View className="relative h-32 w-32 items-center justify-center overflow-hidden rounded-full border border-secondary bg-secondary/50">
       {uri ? (
@@ -14,6 +15,10 @@ const Avatar = ({ uri }: AvatarProps) => {
           source={{ uri }}
           className="h-full w-full rounded-full"
           resizeMode="cover"
+          alt={alt || "Foto de perfil do utilizador"}
+          accessible={true}
+          accessibilityRole="image"
+          accessibilityLabel={alt || "Foto de perfil do utilizador"}
         />
       ) : (
         <ThemedText type="title" className="momo font-bold text-neutral">

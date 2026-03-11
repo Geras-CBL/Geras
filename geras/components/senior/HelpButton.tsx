@@ -105,6 +105,9 @@ export default function HelpButton() {
                     source={HelpShape}
                     className="h-full w-full"
                     resizeMode="contain"
+                    accessible={true}
+                    accessibilityRole="image"
+                    accessibilityLabel="Forma decorativa de ajuda"
                   />
                 </View>
 

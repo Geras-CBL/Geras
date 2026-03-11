@@ -59,7 +59,10 @@ const RequestDetailsBottomSheet = forwardRef<
             className="h-[100px] w-[100px] rounded-lg bg-gray-200"
             source={srAntonio}
             resizeMode="cover"
-          />
+            accessible={true}
+            accessibilityRole="image"
+            accessibilityLabel="Foto do pedido"
+/>
           <View className="flex-1 gap-2 overflow-hidden">
             <ThemedText type="subtitle" className="uppercase text-neutral">
               {request.name}

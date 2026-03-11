@@ -62,6 +62,8 @@ export default function RootLayout() {
                       <Header
                         leftIconName="home"
                         rightIconName="settings"
+                        leftIconLabel="Ir para a página inicial"
+                        rightIconLabel="Abrir definições"
                         onLeftPress={() => {}}
                         onRightPress={() =>
                           router.push('/navigation/senior/Settings')
@@ -81,6 +83,8 @@ export default function RootLayout() {
                       <Header
                         leftIconName="home"
                         rightIconName="settings"
+                        leftIconLabel="Ir para a página inicial"
+                        rightIconLabel="Abrir definições"
                         onLeftPress={() => {}}
                         onRightPress={() =>
                           router.push('/navigation/senior/Settings')
@@ -100,6 +104,8 @@ export default function RootLayout() {
                       <Header
                         leftIconName="home"
                         rightIconName="settings"
+                        leftIconLabel="Ir para a página inicial"
+                        rightIconLabel="Abrir definições"
                         onLeftPress={() =>
                           router.push('/navigation/senior/HomePage')
                         }
@@ -120,6 +126,8 @@ export default function RootLayout() {
                       <Header
                         leftIconName="home"
                         rightIconName="settings"
+                        leftIconLabel="Ir para a página inicial"
+                        rightIconLabel="Abrir definições"
                         onLeftPress={() =>
                           router.push('/navigation/senior/HomePage')
                         }
@@ -138,6 +146,8 @@ export default function RootLayout() {
                       <Header
                         leftIconName="home"
                         rightIconName="settings"
+                        leftIconLabel="Ir para a página inicial"
+                        rightIconLabel="Abrir definições"
                         onLeftPress={() =>
                           router.push('/navigation/senior/HomePage')
                         }
@@ -158,6 +168,8 @@ export default function RootLayout() {
                       <Header
                         leftIconName="home"
                         rightIconName="settings"
+                        leftIconLabel="Ir para a página inicial"
+                        rightIconLabel="Abrir definições"
                         onLeftPress={() =>
                           router.push('/navigation/senior/HomePage')
                         }
@@ -177,7 +189,9 @@ export default function RootLayout() {
                     header: () => (
                       <Header
                         leftIconName="home"
-                        rightIconName="settings"
+                        rightIconName="settings" 
+                        leftIconLabel="Ir para a página inicial"
+                        rightIconLabel="Abrir definições"
                         onLeftPress={() =>
                           router.push('/navigation/senior/HomePage')
                         }
@@ -198,6 +212,8 @@ export default function RootLayout() {
                       <Header
                         leftIconName="home"
                         rightIconName="settings"
+                        leftIconLabel="Ir para a página inicial"
+                        rightIconLabel="Abrir definições"
                         onLeftPress={() =>
                           router.push('/navigation/senior/HomePage')
                         }
@@ -218,6 +234,8 @@ export default function RootLayout() {
                       <Header
                         leftIconName="home"
                         rightIconName="settings"
+                        leftIconLabel="Ir para a página inicial"
+                        rightIconLabel="Abrir definições"
                         onLeftPress={() =>
                           router.push('/navigation/senior/HomePage')
                         }
@@ -238,6 +256,8 @@ export default function RootLayout() {
                       <Header
                         leftIconName="home"
                         rightIconName="settings"
+                        leftIconLabel="Ir para a página inicial"
+                        rightIconLabel="Abrir definições"
                         onLeftPress={() =>
                           router.push('/navigation/senior/HomePage')
                         }
@@ -258,6 +278,8 @@ export default function RootLayout() {
                       <Header
                         leftIconName="home"
                         rightIconName="settings"
+                        leftIconLabel="Ir para a página inicial"
+                        rightIconLabel="Abrir definições"
                         onLeftPress={() =>
                           router.push('/navigation/senior/HomePage')
                         }
@@ -278,6 +300,8 @@ export default function RootLayout() {
                       <Header
                         leftIconName="home"
                         rightIconName="settings"
+                        leftIconLabel="Ir para a página inicial"
+                        rightIconLabel="Abrir definições"
                         onLeftPress={() =>
                           router.push('/navigation/senior/HomePage')
                         }
@@ -303,6 +327,8 @@ export default function RootLayout() {
                       <Header
                         leftIconName="arrow-back"
                         rightIconName="notifications"
+                        leftIconLabel="Voltar"
+                        rightIconLabel="Notificações"
                         onLeftPress={() => {
                           router.back();
                         }}
@@ -324,6 +350,8 @@ export default function RootLayout() {
                       <Header
                         leftIconName="arrow-back"
                         rightIconName="notifications"
+                        leftIconLabel="Voltar"
+                        rightIconLabel="Notificações"
                         onLeftPress={() => {
                           router.back();
                         }}
@@ -344,6 +372,8 @@ export default function RootLayout() {
                       <Header
                         leftIconName="arrow-back"
                         rightIconName="notifications"
+                        leftIconLabel="Voltar"
+                        rightIconLabel="Notificações"
                         onLeftPress={() => {
                           router.back();
                         }}
@@ -365,6 +395,8 @@ export default function RootLayout() {
                       <Header
                         leftIconName="home"
                         rightIconName="settings"
+                        leftIconLabel="Ir para a página inicial"
+                        rightIconLabel="Abrir definições"
                         onLeftPress={() =>
                           router.push('/navigation/senior/HomePage')
                         }

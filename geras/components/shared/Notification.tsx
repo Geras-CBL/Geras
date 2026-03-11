@@ -68,6 +68,7 @@ interface NotificationCardProps {
   rightContent?: React.ReactNode;
   bottomContent?: React.ReactNode;
   route?: string;
+  alt?: string;
 }
 
 export const NotificationCard = ({
@@ -79,6 +80,7 @@ export const NotificationCard = ({
   rightContent,
   bottomContent,
   route,
+  alt = 'Imagem da notificação',
 }: NotificationCardProps) => {
   const theme = THEMES[variant];
   const router = useRouter();
@@ -137,7 +139,10 @@ export const NotificationCard = ({
               source={imageSource}
               className="h-full w-full"
               resizeMode="cover"
-            />
+              accessible={true}
+              accessibilityRole="image"
+              accessibilityLabel={alt}
+              />
           ) : (
             <MaterialIcons name={iconName} size={40} color="#FFF" />
           )}

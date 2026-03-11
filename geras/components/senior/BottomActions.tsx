@@ -100,6 +100,7 @@ export default function BottomActions() {
                 source={RightActionImage}
                 style={{ width: BTN_WIDTH, height: BTN_HEIGHT }}
                 resizeMode="contain"
+                alt ="Imagem do botão de ajuda para dúvidas"
               />
               <View className="absolute inset-0 justify-center pb-1 pr-8">
                 <ThemedText

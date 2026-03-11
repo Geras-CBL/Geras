@@ -107,7 +107,10 @@ export default function CardPedidos({
         resizeMode="cover"
         className="h-24 w-24 rounded-xl bg-gray-200"
         source={srAntonio}
-      />
+        accessible={true}
+        accessibilityRole="image"
+        accessibilityLabel={`Foto de perfil de ${name}`}
+/>
     </Pressable>
   );
 }

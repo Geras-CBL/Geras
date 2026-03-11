@@ -24,31 +24,36 @@ type EvaluationTaskVariant =
 
 const requestConfig: Record<
   string,
-  { title: string; image: any; description: string }
+  //Alterenative text (Colocar alt a seguir a descriçãos)
+  { title: string; image: any; description: string, alt?: string }
 > = {
   food: {
     title: 'Pedido de Compras',
     image: require('@/assets/images/food.png'),
     description:
       'O Sr. António precisa de auxílio para realizar compras de alimentos essenciais.',
+    alt: 'Imagem de alimentos',
   },
   pharmacy: {
     title: 'Pedido de Farmácia',
     image: require('@/assets/images/medicine.png'),
     description:
       'O Sr. António precisa de auxílio para buscar medicamentos na farmácia.',
+    alt: 'Imagem de medicamentos',  
   },
   cleaning: {
     title: 'Tarefa Doméstica',
     image: require('@/assets/images/domestic-tasks.png'),
     description:
       'O Sr. António precisa de ajuda para realizar tarefas domésticas devido à sua mobilidade reduzida.',
+    alt: 'Imagem de tarefas domésticas',
   },
   other: {
     title: 'Pedido Personalizado',
     image: require('@/assets/images/domestic-tasks.png'),
     description:
       'O Sr. António realizou um pedido personalizado que necessita de apoio.',
+    alt: 'Imagem de pedido personalizado',
   },
 };
 
@@ -56,7 +61,7 @@ export default function RequestDetails() {
   const { type } = useLocalSearchParams<{ type?: string }>();
   const requestType = type && requestConfig[type] ? type : 'other';
 
-  const { title, image, description } = requestConfig[requestType];
+  const { title, image, description, alt } = requestConfig[requestType];
 
   const [taskStatus, setTaskStatus] = useState<'inProgress' | 'complete'>(
     'inProgress',
@@ -94,6 +99,9 @@ export default function RequestDetails() {
             source={image}
             resizeMode="cover"
             className="h-36 w-full rounded-2xl"
+            accessible={true}
+            accessibilityRole="image"
+            accessibilityLabel={alt}
           />
         </View>
 

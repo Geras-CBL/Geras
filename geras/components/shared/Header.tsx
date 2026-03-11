@@ -8,6 +8,8 @@ import { Svg, G, Path, Defs, ClipPath, Rect } from 'react-native-svg';
 interface HeaderProps {
   leftIconName?: keyof typeof MaterialIcons.glyphMap;
   rightIconName?: keyof typeof MaterialIcons.glyphMap;
+  leftIconLabel?: string;
+  rightIconLabel?: string;
   onLeftPress?: () => void;
   onRightPress?: () => void;
   isWhite?: boolean;
@@ -16,6 +18,8 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({
   leftIconName = 'person',
   rightIconName = 'notifications',
+  leftIconLabel = 'Left Button',
+  rightIconLabel = 'Right Button',
   onLeftPress,
   onRightPress,
   isWhite = true,
@@ -30,6 +34,10 @@ const Header: React.FC<HeaderProps> = ({
           onPress={onLeftPress}
           className="items-center justify-center p-2"
           testID="header-left-button"
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel={leftIconLabel}
+
         >
           <MaterialIcons
             name={leftIconName}
@@ -89,6 +97,9 @@ const Header: React.FC<HeaderProps> = ({
           onPress={onRightPress}
           className="items-center justify-center p-2"
           testID="header-right-button"
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel={rightIconLabel}
         >
           <MaterialIcons
             name={rightIconName}

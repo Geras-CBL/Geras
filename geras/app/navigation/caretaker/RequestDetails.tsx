@@ -16,36 +16,40 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 const requestConfig: Record<
   string,
-  { title: string; image: any; description: string }
+  { title: string; image: any; description: string; alt: string }
 > = {
   food: {
     title: 'Pedido de Compras',
     image: require('@/assets/images/food.png'),
     description: 'Auxílio para realizar compras de alimentos essenciais.',
+    alt: 'Imagem ilustrativa de compras de alimentos',
   },
   pharmacy: {
     title: 'Pedido de Farmácia',
     image: require('@/assets/images/medicine.png'),
     description: 'Auxílio para buscar medicamentos na farmácia.',
+    alt: 'Imagem ilustrativa de medicamentos',
   },
   cleaning: {
     title: 'Tarefa Doméstica',
     image: require('@/assets/images/domestic-tasks.png'),
     description:
       'Auxílio para realizar tarefas domésticas devido à mobilidade reduzida.',
+    alt: 'Imagem ilustrativa de tarefas domésticas',
   },
   other: {
     title: 'Pedido Personalizado',
     image: require('@/assets/images/domestic-tasks.png'),
     description: 'Pedido personalizado que necessita de apoio.',
+    alt: 'Imagem ilustrativa de ajuda doméstica',
   },
 };
-
+  
 export default function RequestDetails() {
   const { type } = useLocalSearchParams<{ type?: string }>();
   const requestType = type && requestConfig[type] ? type : 'other';
 
-  const { title, image, description } = requestConfig[requestType];
+  const { title, image, description, alt } = requestConfig[requestType];
 
   const volunteer = {
     name: 'Lucas Williams',
@@ -65,6 +69,9 @@ export default function RequestDetails() {
             source={image}
             resizeMode="cover"
             className="h-36 w-full rounded-2xl"
+            accessible={true}
+            accessibilityRole="image"
+            accessibilityLabel={alt}
           />
         </View>
 

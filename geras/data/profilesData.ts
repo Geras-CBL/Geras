@@ -8,6 +8,7 @@ export interface SeniorProfile {
   country: string;
   image?: any;
   selected: boolean;
+  alt?: string;
 }
 
 export const profilesData: SeniorProfile[] = [
@@ -21,6 +22,7 @@ export const profilesData: SeniorProfile[] = [
     country: 'Portugal',
     image: null,
     selected: true,
+    alt: 'Foto do perfil de António Silva',
   },
   {
     id: '2',
@@ -32,5 +34,6 @@ export const profilesData: SeniorProfile[] = [
     country: 'Portugal',
     image: null,
     selected: false,
+    alt: 'Foto do perfil de Maria Silva',
   },
 ];

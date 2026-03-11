@@ -23,31 +23,35 @@ type EvaluationTaskVariant =
 
 const requestConfig: Record<
   string,
-  { title: string; image: any; description: string }
+  { title: string; image: any; description: string; alt?: string }
 > = {
   food: {
     title: 'Pedido de Compras',
     image: require('@/assets/images/food.png'),
     description:
       'O Sr. António precisa de auxílio para realizar compras de alimentos essenciais.',
+    alt: 'Imagem que representa um pedido de compras, com saco de supermercado',
   },
   pharmacy: {
     title: 'Pedido de Farmácia',
     image: require('@/assets/images/medicine.png'),
     description:
       'O Sr. António precisa de auxílio para buscar medicamentos na farmácia.',
+    alt: 'Imagem que representa um pedido de farmácia, com uma caixa de remédios',
   },
   cleaning: {
     title: 'Tarefa Doméstica',
     image: require('@/assets/images/domestic-tasks.png'),
     description:
       'O Sr. António precisa de ajuda para realizar tarefas domésticas devido à sua mobilidade reduzida.',
+    alt: 'Imagem que representa uma tarefa doméstica, com um balde e uma vassoura',
   },
   other: {
     title: 'Pedido Personalizado',
     image: require('@/assets/images/domestic-tasks.png'),
     description:
       'O Sr. António realizou um pedido personalizado que necessita de apoio.',
+    alt: 'Imagem que representa um pedido personalizado, com um ícone genérico de solicitação',
   },
 };
 
@@ -55,7 +59,7 @@ export default function RequestDetails() {
   const { type } = useLocalSearchParams<{ type?: string }>();
   const requestType = type && requestConfig[type] ? type : 'other';
 
-  const { title, image, description } = requestConfig[requestType];
+  const { title, image, description, alt } = requestConfig[requestType];
 
   const [selectedVariant, setSelectedVariant] =
     useState<EvaluationTaskVariant | null>(null);
@@ -66,6 +70,7 @@ export default function RequestDetails() {
     name: 'António Silva',
     age: 74,
     avatarUri: '',
+    alt: 'Foto do perfil de António Silva',
   };
 
   return (
@@ -80,6 +85,9 @@ export default function RequestDetails() {
             source={image}
             resizeMode="cover"
             className="h-36 w-full rounded-2xl"
+            accessible={true}
+            accessibilityRole="image"
+            accessibilityLabel={alt}
           />
         </View>
 
