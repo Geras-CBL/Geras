@@ -1,17 +1,17 @@
-import { ScrollView, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { NotificationCard } from '@/components/shared/Notification';
+import BottomActions from '@/components/senior/BottomActions';
+import { MedicationSchedule } from '@/components/senior/MedicineDrawer';
+import Button from '@/components/shared/Button';
 import ClockPill from '@/components/shared/InfoPill';
 import MedicationCard, {
   AddMedicationCard,
 } from '@/components/shared/MedicationCard';
-import { useRouter } from 'expo-router';
-import { MedicationSchedule } from '@/components/senior/MedicineDrawer';
-import { ASSISTED_LIVING_DATA } from '@/data/assistedLivingData';
+import { NotificationCard } from '@/components/shared/Notification';
 import SectionTitle from '@/components/shared/SectionTitle';
-import BottomActions from '@/components/senior/BottomActions';
-import Button from '@/components/shared/Button';
+import { ASSISTED_LIVING_DATA } from '@/data/assistedLivingData';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { ScrollView, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Health() {
   const router = useRouter();
@@ -24,18 +24,30 @@ export default function Health() {
         showsVerticalScrollIndicator={false}
       >
         <SectionTitle title={'Notificações'}>
-          <NotificationCard
-            variant="medication"
-            title="Aviso Medicação"
-            iconName="medication"
-            description="Losartan 50 mg"
-            rightContent={<ClockPill time="08:00" />}
-          />
+          <View
+            accessible={true}
+            accessibilityRole="text"
+            accessibilityLabel="Aviso de Medicação: Losartan 50 miligramas às 8 horas"
+          >
+            <NotificationCard
+              variant="medication"
+              title="Aviso Medicação"
+              iconName="medication"
+              description="Losartan 50 mg"
+              rightContent={<ClockPill time="08:00" />}
+            />
+          </View>
         </SectionTitle>
         <SectionTitle title={'Monitorização'}>
           <View className="-m-4 flex-row flex-wrap">
             {ASSISTED_LIVING_DATA.map((metric) => (
-              <View key={metric.id} className="aspect-square w-1/2 p-4">
+              <View
+                key={metric.id}
+                className="aspect-square w-1/2 p-4"
+                accessible={true}
+                accessibilityRole="text"
+                accessibilityLabel={`Métrica de saúde: ${metric.title}. Valor: ${metric.value} ${metric.unit}. Estado: ${metric.status}.`}
+              >
                 <MedicationCard
                   title={metric.title}
                   status={metric.status}
@@ -45,7 +57,12 @@ export default function Health() {
               </View>
             ))}
 
-            <View className="aspect-square w-1/2 p-4">
+            <View
+              className="aspect-square w-1/2 p-4"
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="Adicionar nova métrica de saúde"
+            >
               <AddMedicationCard
                 onPress={() => {
                   router.push('../shared/AddHealthMetric');

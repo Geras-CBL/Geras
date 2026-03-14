@@ -1,10 +1,10 @@
-import { View, TouchableOpacity, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { ThemedText } from '@/components/ThemedText';
 import { useFontScale } from '@/components/FontContext';
-import SectionTitle from '@/components/shared/SectionTitle';
 import BottomActions from '@/components/senior/BottomActions';
+import SectionTitle from '@/components/shared/SectionTitle';
+import { ThemedText } from '@/components/ThemedText';
 import { MaterialIcons } from '@expo/vector-icons';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Settings() {
   const { scale, setScale } = useFontScale();
@@ -25,7 +25,11 @@ export default function Settings() {
         showsVerticalScrollIndicator={false}
       >
         <View className="gap-2">
-          <ThemedText type="subtitle" className="text-neutral-800">
+          <ThemedText
+            type="subtitle"
+            className="text-neutral-800"
+            accessibilityRole="header"
+          >
             Tamanho do Texto
           </ThemedText>
           <ThemedText type="body" className="text-gray-500">
@@ -48,9 +52,14 @@ export default function Settings() {
                     ? 'border-transparent bg-primary'
                     : 'border-gray-200 bg-white'
                 }`}
+                accessible={true}
+                accessibilityRole="radio"
+                accessibilityState={{ checked: isSelected }}
+                accessibilityLabel={`Tamanho ${option.label}`}
+                accessibilityHint={`Toca duas vezes para alterar a escala do texto para ${option.value} vezes`}
               >
                 {isSelected && (
-                  <View className="mb-1">
+                  <View className="mb-1" importantForAccessibility="no">
                     <MaterialIcons
                       name="check-circle"
                       size={20}
@@ -82,7 +91,9 @@ export default function Settings() {
         </View>
 
         <View className="mt-4 gap-3">
-          <ThemedText type="subtitle">Pré-visualização</ThemedText>
+          <ThemedText type="subtitle" accessibilityRole="header">
+            Pré-visualização
+          </ThemedText>
 
           <View className="rounded-3xl border border-gray-200 bg-gray-100 p-6">
             <View className="mb-4 flex-row items-center gap-3">

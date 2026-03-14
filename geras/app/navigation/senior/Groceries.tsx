@@ -1,16 +1,16 @@
-import { useState } from 'react';
-import { ScrollView, View, TouchableOpacity } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
-import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import SectionTitle from '@/components/shared/SectionTitle';
-import { NotificationCard } from '@/components/shared/Notification';
-import * as Progress from 'react-native-progress';
+import BottomActions from '@/components/senior/BottomActions';
 import Button from '@/components/shared/Button';
+import { NotificationCard } from '@/components/shared/Notification';
+import SectionTitle from '@/components/shared/SectionTitle';
+import { ThemedText } from '@/components/ThemedText';
+import { GroceryItem, INITIAL_GROCERIES } from '@/data/groceryData';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Checkbox } from '@futurejj/react-native-checkbox';
-import { GroceryItem, INITIAL_GROCERIES } from '@/data/groceryData';
-import BottomActions from '@/components/senior/BottomActions';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
+import * as Progress from 'react-native-progress';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Groceries() {
   const router = useRouter();
@@ -39,15 +39,22 @@ export default function Groceries() {
             title="A MINHA DISPENSA"
             iconName="shopping-cart"
             description={
-              <Progress.Bar
-                progress={0.75}
-                width={null}
-                height={12}
-                color="#2F5C3E"
-                unfilledColor="#FFFFFF"
-                borderWidth={0}
-                borderRadius={8}
-              />
+              <View
+                accessible={true}
+                accessibilityRole="progressbar"
+                accessibilityValue={{ min: 0, max: 100, now: 75 }}
+                accessibilityLabel="A minha dispensa está a 75 porcento da capacidade"
+              >
+                <Progress.Bar
+                  progress={0.75}
+                  width={null}
+                  height={12}
+                  color="#2F5C3E"
+                  unfilledColor="#FFFFFF"
+                  borderWidth={0}
+                  borderRadius={8}
+                />
+              </View>
             }
           />
         </View>
@@ -61,6 +68,11 @@ export default function Groceries() {
                 key={item.id}
                 className="mb-3 flex-row items-center rounded-2xl border border-gray-100 bg-white p-3 shadow-lg"
                 onPress={() => toggleCheckbox(item.id)}
+                accessible={true}
+                accessibilityRole="checkbox"
+                accessibilityState={{ checked: item.checked }}
+                accessibilityLabel={item.name}
+                accessibilityHint={`Toca duas vezes para ${item.checked ? 'remover da' : 'adicionar à'} lista de compras`}
               >
                 <Checkbox
                   status={item.checked ? 'checked' : 'unchecked'}
@@ -83,6 +95,7 @@ export default function Groceries() {
             onPress={() =>
               router.push('../../navigation/senior/AddGrocerieList')
             }
+            accessibilityLabel="Adicionar novo artigo à lista"
           />
           <Button
             icon={
@@ -92,6 +105,7 @@ export default function Groceries() {
             onPress={() =>
               router.push('../../navigation/senior/RequestLoading?type=food')
             }
+            accessibilityLabel="Concluir e comprar itens da lista"
           />
         </View>
       </ScrollView>

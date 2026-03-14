@@ -10,10 +10,10 @@ import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   Image,
-  ScrollView,
-  View,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -114,17 +114,33 @@ export default function RequestDetails() {
           <View className="gap-6 px-6">
             <View className="items-center gap-4">
               <ThemedText type="title">{title}</ThemedText>
-              <InfoPill
-                text={taskStatus === 'inProgress' ? 'Em progresso' : 'Completa'}
-                variant={taskStatus === 'inProgress' ? 'secondary' : 'success'}
-              />
+              <View
+                accessible={true}
+                accessibilityLabel={`Estado da tarefa: ${taskStatus === 'inProgress' ? 'Em progresso' : 'Completa'}`}
+              >
+                <InfoPill
+                  text={
+                    taskStatus === 'inProgress' ? 'Em progresso' : 'Completa'
+                  }
+                  variant={
+                    taskStatus === 'inProgress' ? 'secondary' : 'success'
+                  }
+                />
+              </View>
             </View>
 
             <SectionTitle title="Descrição do Pedido" />
             <ThemedText type="body">{description}</ThemedText>
 
             <SectionTitle title="Voluntário" />
-            <ContainerVoluntario {...volunteer} />
+
+            <View
+              accessible={true}
+              accessibilityRole="text"
+              accessibilityLabel={`Voluntário atribuído: ${volunteer.name}, ${volunteer.age} anos, perfil de ${volunteer.role}`}
+            >
+              <ContainerVoluntario {...volunteer} />
+            </View>
 
             {taskStatus === 'complete' && (
               <>
@@ -155,7 +171,13 @@ export default function RequestDetails() {
             )}
 
             <SectionTitle title="Enviar Observação" />
-            <CommentBox value={observation} onChangeText={setObservation} />
+
+            <View
+              accessible={true}
+              accessibilityLabel="Caixa de texto para escrever uma observação sobre a tarefa"
+            >
+              <CommentBox value={observation} onChangeText={setObservation} />
+            </View>
 
             {selectedVariant && (
               <Button
