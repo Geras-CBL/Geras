@@ -17,5 +17,4 @@ jobs:
       - name: Run Axe Linter
         uses: dequelabs/axe-linter-action@v1
         with:
-          source: './geras'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
