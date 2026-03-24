@@ -155,26 +155,26 @@ export default function TabBar({
             circleStyle,
           ]}
         >
-        {isBubbleVisible && (
-          <View className="items-center">
-            <IconRenderer
-              routeName={visibleRoutes[activeIndex].name}
-              color={COLORS.activeIcon}
-              size={28}
-            />
+          {isBubbleVisible && (
+            <View className="items-center">
+              <IconRenderer
+                routeName={visibleRoutes[activeIndex].name}
+                color={COLORS.activeIcon}
+                size={28}
+              />
 
-            <Text
-              style={{
-                fontSize: 11,
-                color: COLORS.activeIcon,
-                marginTop: 2,
-                fontWeight: '600',
-              }}
-            >
-              {getLabel(visibleRoutes[activeIndex].name)}
-            </Text>
-          </View>
-        )}
+              <Text
+                style={{
+                  fontSize: 11,
+                  color: COLORS.activeIcon,
+                  marginTop: 2,
+                  fontWeight: '600',
+                }}
+              >
+                {getLabel(visibleRoutes[activeIndex].name)}
+              </Text>
+            </View>
+          )}
         </Animated.View>
       )}
 
@@ -203,13 +203,13 @@ export default function TabBar({
               className="flex-1 items-center justify-center"
               activeOpacity={1}
             >
-            {!isFocused && (
-              <IconRenderer
-                routeName={route.name}
-                color={COLORS.inactive}
-                size={30}
-              />
-            )}
+              {!isFocused && (
+                <IconRenderer
+                  routeName={route.name}
+                  color={COLORS.inactive}
+                  size={30}
+                />
+              )}
             </TouchableOpacity>
           );
         })}
