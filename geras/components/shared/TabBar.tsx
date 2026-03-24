@@ -1,7 +1,7 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View, Text } from 'react-native';
 import Animated, {
   useAnimatedProps,
   useAnimatedStyle,
@@ -155,13 +155,26 @@ export default function TabBar({
             circleStyle,
           ]}
         >
-          {isBubbleVisible && (
+        {isBubbleVisible && (
+          <View className="items-center">
             <IconRenderer
               routeName={visibleRoutes[activeIndex].name}
               color={COLORS.activeIcon}
-              size={32}
+              size={28}
             />
-          )}
+
+            <Text
+              style={{
+                fontSize: 11,
+                color: COLORS.activeIcon,
+                marginTop: 2,
+                fontWeight: '600',
+              }}
+            >
+              {getLabel(visibleRoutes[activeIndex].name)}
+            </Text>
+          </View>
+        )}
         </Animated.View>
       )}
 
@@ -185,22 +198,45 @@ export default function TabBar({
             <TouchableOpacity
               key={route.key}
               onPress={onPress}
+              accessibilityLabel={getLabel(route.name)}
+              accessibilityRole="button"
               className="flex-1 items-center justify-center"
               activeOpacity={1}
             >
-              {!isFocused && (
-                <IconRenderer
-                  routeName={route.name}
-                  color={COLORS.inactive}
-                  size={30}
-                />
-              )}
+            {!isFocused && (
+              <IconRenderer
+                routeName={route.name}
+                color={COLORS.inactive}
+                size={30}
+              />
+            )}
             </TouchableOpacity>
           );
         })}
       </View>
     </Animated.View>
   );
+}
+
+function getLabel(routeName: string) {
+  switch (routeName) {
+    case 'SeniorManagement':
+      return 'Gestão';
+    case 'Requests':
+      return 'Pedidos';
+    case 'HomePage':
+      return 'Início';
+    case 'Sensors':
+      return 'Sensores';
+    case 'Profile':
+      return 'Perfil';
+    case 'RequestsHistory':
+      return 'Histórico';
+    case 'Vouchers':
+      return 'Vouchers';
+    default:
+      return routeName;
+  }
 }
 
 function IconRenderer({
