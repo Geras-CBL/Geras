@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/ThemedText';
-import SectionTitle from '@/components/shared/SectionTitle';
 import BottomActions from '@/components/senior/BottomActions';
-import { MaterialIcons } from '@expo/vector-icons';
-import Button from '@/components/shared/Button';
-import { Checkbox } from '@futurejj/react-native-checkbox';
-import { MEDICINE_DATA } from '@/data/medicineData';
-import { useRouter, useLocalSearchParams } from 'expo-router';
 import FloatingIconCard from '@/components/senior/FloatingIconCard';
+import Button from '@/components/shared/Button';
+import SectionTitle from '@/components/shared/SectionTitle';
+import { MEDICINE_DATA } from '@/data/medicineData';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Checkbox } from '@futurejj/react-native-checkbox';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useState } from 'react';
+import { ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface RequestItem {
   id: string;
@@ -80,12 +80,18 @@ export default function Requests() {
 
       <View className="mb-4 flex-row items-center rounded-full border-2 border-primary px-4 py-2">
         <TextInput
+          accessibilityLabel="Pesquisar medicamento"
           placeholder="Pesquise o medicamento"
           className="flex-1 text-base text-neutral"
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
-        <MaterialIcons name="search" size={24} color="#0000" />
+        <MaterialIcons
+          importantForAccessibility="no"
+          name="search"
+          size={24}
+          color="#0000"
+        />
       </View>
 
       <ScrollView
@@ -94,19 +100,32 @@ export default function Requests() {
         contentContainerStyle={{ paddingBottom: 36 }}
       >
         {filteredItems.slice(0, 3).map((item) => (
-          <TouchableOpacity
+          <View
             key={item.id}
-            className="mb-3 flex-row items-center rounded-2xl border border-gray-100 bg-white p-2 shadow-lg"
-            onPress={() => toggleCheckbox(item.id)}
+            accessible={true}
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: item.checked }}
+            accessibilityLabel={item.name}
+            accessibilityHint={`Toca duas vezes para ${item.checked ? 'remover da' : 'adicionar à'} lista de pedidos`}
           >
-            <Checkbox
-              status={item.checked ? 'checked' : 'unchecked'}
+            <TouchableOpacity
+              className="mb-3 flex-row items-center rounded-2xl border border-gray-100 bg-white p-2 shadow-lg"
               onPress={() => toggleCheckbox(item.id)}
               color={item.checked ? '#205a2d' : '#969696'}
               style={{ transform: [{ scale: 1.4 }] }}
             />
             <ThemedText className="ml-2 text-neutral">{item.name}</ThemedText>
           </TouchableOpacity>
+              importantForAccessibility="no-hide-descendants"
+            >
+              <Checkbox
+                status={item.checked ? 'checked' : 'unchecked'}
+                onPress={() => toggleCheckbox(item.id)}
+                color={item.checked ? '#205a2d' : '#969696'}
+              />
+              <ThemedText className="text-neutral">{item.name}</ThemedText>
+            </TouchableOpacity>
+          </View>
         ))}
         {filteredItems.length === 0 && (
           <ThemedText className="mt-4 text-center text-gray-400">
@@ -125,6 +144,7 @@ export default function Requests() {
 
       <View className="relative mb-2 flex-1 rounded-2xl border-2 border-primary bg-white p-4 shadow-sm">
         <TextInput
+          accessibilityLabel="Escreva uma breve descrição da tarefa em que precisa de ajuda"
           placeholder="Breve descrição da tarefa..."
           multiline
           className="flex-1 pb-8 font-rubik text-lg text-neutral"
@@ -184,7 +204,12 @@ export default function Requests() {
       <View className="pb-4 pt-24">
         <SectionTitle title="Pedir Ajuda" />
         <View className="mt-2">
-          <ThemedText type="subtitle" className="pt-4" style={{ fontSize: 16 }}>
+          <ThemedText
+            type="subtitle"
+            className="pt-4"
+            style={{ fontSize: 16 }}
+            accessibilityRole="header"
+          >
             Olá Senhor António, o que precisa...
           </ThemedText>
         </View>

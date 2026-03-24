@@ -54,6 +54,9 @@
           "android": {
             "useAndroidX": true,
             "enableJetifier": true
+          },
+          "ios": {
+            "useFrameworks": "static"
           }
         }
       ],
@@ -74,7 +77,8 @@
       "expo-audio",
       "@react-native-community/datetimepicker",
       "expo-build-properties",
-      "expo-speech-recognition"
+      "expo-speech-recognition",
+      "@maplibre/maplibre-react-native"
     ],
     "experiments": {
       "typedRoutes": true,

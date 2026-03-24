@@ -1,15 +1,20 @@
-import * as React from 'react';
-import { View, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/ThemedText';
-import Header from '../../../components/shared/Header';
 import { MaterialIcons } from '@expo/vector-icons';
-import Road from '../../../assets/images/error_page_image.svg';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as React from 'react';
+import { TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Road from '../../../assets/images/error_page_image.svg';
+import Header from '../../../components/shared/Header';
 
 const ButtonGoBack = () => {
   return (
-    <TouchableOpacity className="h-[70px] w-[200px] flex-row items-center justify-center">
+    <TouchableOpacity
+      className="h-[70px] w-[200px] flex-row items-center justify-center"
+      accessibilityRole="button"
+      accessibilityLabel="Voltar à página anterior"
+      accessibilityHint="Toca duas vezes para regressar ao ecrã anterior"
+    >
       <View className="z-10 h-14 w-14 items-center justify-center rounded-full bg-white shadow-sm">
         <MaterialIcons name="arrow-back" size={28} color="black" />
       </View>
@@ -53,7 +58,12 @@ export default function Home() {
             Ups!
           </ThemedText>
 
-          <View className="h-[225px] w-full">
+          <View
+            className="h-[225px] w-full"
+            accessible={true}
+            accessibilityRole="image"
+            accessibilityLabel="Ilustração de uma estrada com um sinal de erro"
+          >
             <Road
               width={'100%'}
               height={'100%'}

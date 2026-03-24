@@ -35,6 +35,7 @@ export function ThemedText({
 
   return (
     <Text
+      accessibilityLanguage="pt-PT"
       className={`${className || ''}`}
       style={[baseStyle, dynamicStyle, style]}
       {...props}
