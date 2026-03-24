@@ -1,11 +1,11 @@
-import { View, TextInput } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import { MaterialIcons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
 import BottomActions from '@/components/senior/BottomActions';
 import FloatingIconCard from '@/components/senior/FloatingIconCard';
 import Button from '@/components/shared/Button';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { TextInput, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function VoicePage() {
   const router = useRouter();
@@ -22,14 +22,23 @@ export default function VoicePage() {
         <View className="flex-row items-center rounded-2xl border-2 border-primary bg-white px-4 py-3">
           <TextInput
             placeholder="Escreva aqui"
+            accessibilityLabel="Campo para escrever item da lista de compras"
+            accessibilityHint="Introduza o nome do produto que deseja adicionar"
             className="flex-1 text-lg font-bold text-neutral"
             placeholderTextColor="#666"
           />
-          <MaterialIcons name="edit" size={24} color="#2F5C3E" />
+          <MaterialIcons
+            name="edit"
+            size={24}
+            color="#2F5C3E"
+            accessible={false}
+          />
         </View>
 
         <Button
           title={'Pressione Para Falar'}
+          accessibilityLabel="Iniciar gravação por voz"
+          accessibilityHint="Permite adicionar um item à lista de compras usando a voz"
           variant="outlined"
           className="w-2/3 items-center self-center"
           icon={
@@ -58,7 +67,11 @@ export default function VoicePage() {
   return (
     <SafeAreaView edges={['top']} className="flex-1 pb-56 pt-24">
       <View className="mt-8 items-center px-10">
-        <ThemedText type="subtitle" className="text-neutral">
+        <ThemedText
+          type="subtitle"
+          className="text-neutral"
+          accessibilityRole="header"
+        >
           Adicionar item a lista de compras
         </ThemedText>
       </View>
@@ -66,7 +79,14 @@ export default function VoicePage() {
       <View className="flex-1 px-6 pt-12">
         <FloatingIconCard
           onClose={handleBack}
-          icon={<MaterialIcons name="shopping-cart" size={48} color="#ffff" />}
+          icon={
+            <MaterialIcons
+              name="shopping-cart"
+              size={48}
+              color="#ffff"
+              accessibilityLabel="Lista de compras"
+            />
+          }
         >
           {renderCardContent()}
         </FloatingIconCard>

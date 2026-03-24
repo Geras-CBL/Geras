@@ -6,7 +6,7 @@ import {
 } from '@/components/shared/Notification';
 import SectionTitle from '@/components/shared/SectionTitle';
 import { ThemedText } from '@/components/ThemedText';
-import { View, Linking } from 'react-native';
+import { Linking, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Home() {
@@ -23,12 +23,19 @@ export default function Home() {
             imageSource={require('../../../assets/images/hottie.png')}
             description={<ThemedText>A 5 minutos de distância</ThemedText>}
             rightContent={
-              <ActionButton
-                icon="call"
-                onPress={() => {
-                  Linking.openURL(`tel:${963744454}`);
-                }}
-              />
+              <View
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel="Ligar a Lucas Wiliam"
+                accessibilityHint="Toca duas vezes para iniciar uma chamada telefónica"
+              >
+                <ActionButton
+                  icon="call"
+                  onPress={() => {
+                    Linking.openURL(`tel:${963744454}`);
+                  }}
+                />
+              </View>
             }
             route="../../navigation/senior/RequestDetails"
           />
@@ -74,7 +81,14 @@ export default function Home() {
         </View>
       </SafeAreaView>
       <View className="absolute bottom-4 left-0 right-0 z-50 items-center">
-        <HelpButton />
+        <View
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel="Pedir ajuda de emergência"
+          accessibilityHint="Toca duas vezes para acionar o alerta de ajuda"
+        >
+          <HelpButton />
+        </View>
       </View>
     </>
   );

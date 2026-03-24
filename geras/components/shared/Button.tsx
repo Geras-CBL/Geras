@@ -14,6 +14,9 @@ interface ButtonProps {
   icon?: React.ReactNode;
   className?: string;
   disabled?: boolean;
+
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -23,6 +26,8 @@ const Button: React.FC<ButtonProps> = ({
   icon,
   className = '',
   disabled = false,
+  accessibilityLabel,
+  accessibilityHint,
 }) => {
   const baseButtonStyles =
     'flex-row items-center justify-center rounded-xl py-4 px-6';
@@ -61,6 +66,9 @@ const Button: React.FC<ButtonProps> = ({
       onPress={onPress}
       activeOpacity={0.7}
       disabled={disabled}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={accessibilityHint}
       className={`${baseButtonStyles} ${currentStyle.button} ${className}`}
     >
       {icon && <View className="mr-3">{icon}</View>}
