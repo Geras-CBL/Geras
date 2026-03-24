@@ -1,7 +1,9 @@
+import { FontAwesome } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
+import { Text, View } from 'react-native';
 import Animated, {
+  Easing,
   interpolateColor,
   useAnimatedStyle,
   useSharedValue,
@@ -9,9 +11,7 @@ import Animated, {
   withSequence,
   withSpring,
   withTiming,
-  Easing,
 } from 'react-native-reanimated';
-import { FontAwesome } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const STEPS = [
@@ -65,7 +65,11 @@ const CentralAnimation = ({ stepIndex }: { stepIndex: number }) => {
   const iconColor = stepIndex === 2 ? '#4ADE80' : '#F5F5F5';
 
   return (
-    <View className="mb-10 h-40 w-40 items-center justify-center rounded-full bg-white/10">
+    <View
+      className="mb-10 h-40 w-40 items-center justify-center rounded-full bg-white/10"
+      importantForAccessibility="no-hide-descendants"
+      accessibilityElementsHidden={true}
+    >
       <Animated.View style={animatedStyle}>
         <FontAwesome name={currentIcon as any} size={60} color={iconColor} />
       </Animated.View>
@@ -96,7 +100,19 @@ const AnimatedStepText = ({
   }));
 
   return (
-    <Animated.Text className="my-2 text-xl font-bold" style={animatedStyle}>
+    <Animated.Text
+      className="my-2 text-xl font-bold"
+      style={animatedStyle}
+      accessible={true}
+      accessibilityRole="text"
+      accessibilityLabel={
+        isPast
+          ? `Concluído: ${label}`
+          : isActive
+            ? `A decorrer: ${label}`
+            : `Próximo passo: ${label}`
+      }
+    >
       {isPast ? '✓ ' : ''}
       {label}
     </Animated.Text>
@@ -129,7 +145,10 @@ export default function RequestLoading() {
       edges={['top']}
       className="flex-1 justify-between bg-primary px-10 pb-20 pt-16"
     >
-      <Text className="mb-2 pt-8 text-3xl font-bold text-neutralLight">
+      <Text
+        className="mb-2 pt-8 text-3xl font-bold text-neutralLight"
+        accessibilityRole="header"
+      >
         Aguarde...
       </Text>
 
