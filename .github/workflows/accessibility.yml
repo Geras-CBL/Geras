@@ -1,0 +1,21 @@
+name: Accessibility Checks
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  axe-linter:
+    name: Run Axe Linter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Axe Linter
+        uses: dequelabs/axe-linter-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          api_key: ${{ secrets.API_KEY_AXE }}
