@@ -19,7 +19,7 @@ export function MedicationSchedule() {
               key={day.id}
               onPress={() => setSelectedDayId(day.id)}
               className={`${
-                isSelected ? 'rounded-full bg-primary px-4 py-1.5' : 'px-2'
+                isSelected ? 'rounded-full bg-primary px-7 py-1.5' : 'px-2'
               }`}
             >
               <ThemedText

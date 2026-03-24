@@ -23,7 +23,7 @@ const ProfilePicker: React.FC<ProfilePickerProps> = ({ onPress, profile }) => {
         opacity: pressed ? 0.7 : 1,
       })}
     >
-      <View className="h-12 w-12 items-center justify-center rounded-full border border-secondary bg-secondary/50">
+      <View className="h-14 w-14 items-center justify-center rounded-full border border-secondary bg-secondary/50">
         <ThemedText type="subtitle">{initials}</ThemedText>
       </View>
 

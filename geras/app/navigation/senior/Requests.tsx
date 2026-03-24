@@ -103,8 +103,9 @@ export default function Requests() {
               status={item.checked ? 'checked' : 'unchecked'}
               onPress={() => toggleCheckbox(item.id)}
               color={item.checked ? '#205a2d' : '#969696'}
+              style={{ transform: [{ scale: 1.4 }] }}
             />
-            <ThemedText className="text-neutral">{item.name}</ThemedText>
+            <ThemedText className="ml-2 text-neutral">{item.name}</ThemedText>
           </TouchableOpacity>
         ))}
         {filteredItems.length === 0 && (
