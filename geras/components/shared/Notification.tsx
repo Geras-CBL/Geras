@@ -69,6 +69,7 @@ interface NotificationCardProps {
   bottomContent?: React.ReactNode;
   route?: string;
   alt?: string;
+  accessibilityLabel?: string;
 }
 
 export const NotificationCard = ({
@@ -81,6 +82,7 @@ export const NotificationCard = ({
   bottomContent,
   route,
   alt = 'Imagem da notificação',
+  accessibilityLabel,
 }: NotificationCardProps) => {
   const theme = THEMES[variant];
   const router = useRouter();
@@ -89,13 +91,25 @@ export const NotificationCard = ({
     if (route) router.push(route as Route);
   };
 
+  const defaultLabel =
+    typeof description === 'string' ? `${title}. ${description}` : title;
+
+  const finalAccessibilityLabel = accessibilityLabel || defaultLabel;
+
   if (variant === 'reminder') {
     return (
       <Pressable
         onPress={route ? handlePress : undefined}
         className={`w-full rounded-3xl p-5 ${theme.container}`}
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel={finalAccessibilityLabel}
       >
-        <View className="flex-row items-start justify-between">
+        <View
+          className="flex-row items-start justify-between"
+          importantForAccessibility="no"
+          accessibilityElementsHidden={true}
+        >
           <ThemedText
             type="subtitle"
             className="flex-1 pr-4 text-[16px] font-bold uppercase leading-tight text-green-900"
@@ -129,6 +143,9 @@ export const NotificationCard = ({
       activeOpacity={route ? 0.8 : 1}
       className={`flex-row items-center justify-between rounded-3xl border-2 p-4 ${theme.container} ${theme.border}`}
       onPress={handlePress}
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={finalAccessibilityLabel}
     >
       <View className="flex-1 flex-row items-center gap-4">
         <View
@@ -149,14 +166,26 @@ export const NotificationCard = ({
         </View>
 
         <View className="flex-1 justify-center gap-1 pr-2">
-          <ThemedText type="subtitle" className="uppercase">
+          <ThemedText
+            type="subtitle"
+            className="uppercase"
+            accessible={true}
+            accessibilityRole="text"
+            accessibilityLabel={`${title}'}`}
+          >
             {title}
           </ThemedText>
 
           {description && (
             <>
               {typeof description === 'string' ? (
-                <ThemedText type="body" className="w-52 truncate">
+                <ThemedText
+                  type="body"
+                  className="w-52 truncate"
+                  accessible={true}
+                  accessibilityRole="text"
+                  accessibilityLabel={`Descrição da notificação: ${description}`}
+                >
                   {description}
                 </ThemedText>
               ) : (

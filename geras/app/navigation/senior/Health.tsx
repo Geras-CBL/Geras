@@ -24,19 +24,14 @@ export default function Health() {
         showsVerticalScrollIndicator={false}
       >
         <SectionTitle title={'Notificações'}>
-          <View
-            accessible={true}
-            accessibilityRole="text"
+          <NotificationCard
+            variant="medication"
+            title="Aviso Medicação"
+            iconName="medication"
+            description="Losartan 50 mg"
+            rightContent={<ClockPill time="08:00" />}
             accessibilityLabel="Aviso de Medicação: Losartan 50 miligramas às 8 horas"
-          >
-            <NotificationCard
-              variant="medication"
-              title="Aviso Medicação"
-              iconName="medication"
-              description="Losartan 50 mg"
-              rightContent={<ClockPill time="08:00" />}
-            />
-          </View>
+          />
         </SectionTitle>
         <SectionTitle title={'Monitorização'}>
           <View className="-m-4 flex-row flex-wrap">
