@@ -84,10 +84,10 @@ export default function CardPedidos({
             </View>
 
             {isNew && (
-              <View className="items-center justify-center rounded-full border border-[#A17C48] px-4 py-1.5">
+              <View className="items-center justify-center rounded-full border border-[#7d6431] px-4 py-1.5">
                 <ThemedText
                   type="bodyInfo"
-                  className="font-bold text-[#A17C48]"
+                  className="font-bold text-[#7d6431]"
                 >
                   Novo
                 </ThemedText>
