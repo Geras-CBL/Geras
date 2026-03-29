@@ -80,15 +80,14 @@ export default function Home() {
           </View>
         </View>
       </SafeAreaView>
-      <View className="absolute bottom-4 left-0 right-0 z-50 items-center">
-        <View
-          accessible={true}
-          accessibilityRole="button"
-          accessibilityLabel="Pedir ajuda de emergência"
-          accessibilityHint="Toca duas vezes para acionar o alerta de ajuda"
-        >
-          <HelpButton />
-        </View>
+      <View
+        className="absolute bottom-4 left-0 right-0 z-50 items-center"
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel="Pedir ajuda de emergência"
+        accessibilityHint="Toca duas vezes para acionar o alerta de ajuda"
+      >
+        <HelpButton />
       </View>
     </>
   );
