@@ -77,7 +77,7 @@ const Voucher = ({
   return (
     <Pressable
       onPress={onPress}
-      className={`relative w-full overflow-hidden rounded-xl shadow-md ${
+      className={`relative mb-2 w-full overflow-hidden rounded-xl shadow-md ${
         !isCompleted ? 'bg-neutralLight' : ''
       }`}
     >

@@ -12,7 +12,7 @@ export default function Vouchers() {
   return (
     <View className="flex-1">
       <SafeAreaView edges={['top']} className="flex-1 px-6 pt-24">
-        <View className="gap-6">
+        <View className="flex-1 gap-6">
           {/* Título */}
           <SectionTitle title="Vouchers" />
 
@@ -26,11 +26,10 @@ export default function Vouchers() {
             ]}
           />
 
-          {/* Vouchers Ativos */}
-          {tab === 'disponíveis' && <ActionVouchers />}
-
-          {/* Vouchers Usados */}
-          {tab === 'usados' && <UsedVouchers />}
+          <View className="flex-1">
+            {tab === 'disponíveis' && <ActionVouchers />}
+            {tab === 'usados' && <UsedVouchers />}
+          </View>
         </View>
       </SafeAreaView>
     </View>
