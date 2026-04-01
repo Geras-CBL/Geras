@@ -42,7 +42,7 @@ const Button: React.FC<ButtonProps> = ({
     },
     warning: {
       button: 'bg-secondary/10 border border-tertiary',
-      text: 'text-tertiary font-regular',
+      text: 'text-neutral font-regular',
     },
     lineThrough: {
       button: 'bg-primary',
