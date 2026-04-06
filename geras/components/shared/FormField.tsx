@@ -1,6 +1,10 @@
-import { View, TextInput, Pressable } from 'react-native';
+import { Pressable, TextInput, View } from 'react-native';
 import { ThemedText, styles as themedStyles } from '@/components/ThemedText';
 import { MaterialIcons } from '@expo/vector-icons';
+import {
+  FocusRingOverlay,
+  useFocusRingFeedback,
+} from '@/components/FocusFeedback';
 
 type FormFieldProps =
   | ({
@@ -16,6 +20,9 @@ type FormFieldProps =
     };
 
 export function FormField(props: FormFieldProps) {
+  const dropdownFocus = useFocusRingFeedback();
+  const inputFocus = useFocusRingFeedback();
+
   const baseContainerClasses = `
     w-full
     h-12      
@@ -38,7 +45,20 @@ export function FormField(props: FormFieldProps) {
     const { value, placeholder = 'Selecionar', onPress, className } = props;
 
     return (
-      <Pressable onPress={onPress}>
+      <Pressable
+        onPress={onPress}
+        className="relative rounded-lg"
+        accessible={true}
+        focusable={true}
+        {...dropdownFocus.bindFocusHandlers()}
+      >
+        <FocusRingOverlay
+          visible={dropdownFocus.isFocused}
+          ringWidth={2}
+          ringRadius={8}
+          label="Focus"
+        />
+
         <View
           className={` ${baseContainerClasses} flex-row items-center justify-between ${className ?? ''} `}
         >
@@ -62,12 +82,29 @@ export function FormField(props: FormFieldProps) {
   const { className, ...inputProps } = props;
 
   return (
-    <View className={`${baseContainerClasses} ${className ?? ''}`}>
-      <TextInput
-        style={inputTextStyle}
-        placeholderTextColor="rgba(29,29,27,0.4)"
-        {...inputProps}
+    <View className="relative">
+      <FocusRingOverlay
+        visible={inputFocus.isFocused}
+        ringWidth={2}
+        ringRadius={8}
+        label="Focado"
       />
+
+      <View className={`${baseContainerClasses} ${className ?? ''}`}>
+        <TextInput
+          style={inputTextStyle}
+          placeholderTextColor="rgba(29,29,27,0.4)"
+          onFocus={(e) => {
+            inputFocus.handleFocus();
+            inputProps.onFocus?.(e);
+          }}
+          onBlur={(e) => {
+            inputFocus.handleBlur();
+            inputProps.onBlur?.(e);
+          }}
+          {...inputProps}
+        />
+      </View>
     </View>
   );
 }
