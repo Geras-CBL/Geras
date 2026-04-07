@@ -44,14 +44,14 @@ const WaveBar = ({ index }: { index: number }) => {
 
   return (
     <Animated.View
-      className="mx-[2px] w-1.5 rounded-full bg-primary"
+      className="mx-[1.5px] mt-12 w-1 rounded-full bg-primary"
       style={animatedStyle}
     />
   );
 };
 
 const AudioWaveform = () => (
-  <View className="mb-6 h-16 w-full flex-row items-center justify-center">
+  <View className="mb-8 h-8 w-full flex-row items-center justify-center">
     {Array.from({ length: NUM_BARS }).map((_, i) => (
       <WaveBar key={i} index={i} />
     ))}
@@ -71,15 +71,15 @@ export default function VoicePage() {
     <View className="w-full flex-1 justify-center gap-4">
       <AudioWaveform />
 
-      <View className="px-4">
+      <View className="px-2">
         <ThemedText
           type="bodyBold"
-          className="mb-3 text-left text-lg text-neutral"
+          className="mb-2 text-left text-lg text-neutral"
         >
           O seu pedido...
         </ThemedText>
 
-        <View className="mb-6 h-40 w-full rounded-2xl border-2 border-primary bg-neutralLight px-3">
+        <View className="mb-6 h-32 w-full rounded-2xl border-2 border-primary bg-neutralLight px-3">
           <TextInput
             value="Uvas sem grainha."
             multiline
@@ -90,7 +90,7 @@ export default function VoicePage() {
         </View>
       </View>
 
-      <View className="items-center">
+      <View className="items-center mb-4" >
         <Button
           title="Fazer Pedido"
           className="w-2/3 border-primary text-primary"

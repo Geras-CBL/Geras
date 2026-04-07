@@ -35,6 +35,7 @@ export function ThemedText({
 
   return (
     <Text
+      allowFontScaling={false}
       accessibilityLanguage="pt-PT"
       className={`${className || ''}`}
       style={[baseStyle, dynamicStyle, style]}
