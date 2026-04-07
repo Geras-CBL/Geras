@@ -90,7 +90,7 @@ export default function VoicePage() {
         </View>
       </View>
 
-      <View className="items-center mb-4" >
+      <View className="mb-4 items-center">
         <Button
           title="Fazer Pedido"
           className="w-2/3 border-primary text-primary"

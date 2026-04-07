@@ -29,7 +29,11 @@ const MedicationCard = ({
       activeOpacity={1}
       onPress={onPress}
     >
-      <ThemedText type="subtitle" style={{ fontSize: 18 }} className="text-neutral">
+      <ThemedText
+        type="subtitle"
+        style={{ fontSize: 18 }}
+        className="text-neutral"
+      >
         {title}
       </ThemedText>
       <View className="flex-row gap-4">
@@ -52,7 +56,11 @@ export const AddMedicationCard = ({ onPress }: { onPress: () => void }) => {
       activeOpacity={0.7}
       onPress={onPress}
     >
-      <ThemedText type="subtitle" style={{ fontSize: 18 }} className="text-center">
+      <ThemedText
+        type="subtitle"
+        style={{ fontSize: 18 }}
+        className="text-center"
+      >
         Adicionar métrica
       </ThemedText>
       <MaterialIcons name="add" size={64} color="#1d1d1b" />

@@ -73,13 +73,13 @@ const Button: React.FC<ButtonProps> = ({
     >
       {icon && <View className="mr-3">{icon}</View>}
 
-<ThemedText
-  allowFontScaling={false}
-  style={{ fontSize: 15, lineHeight: 20 }}
-  className={`capitalize ${currentStyle.text}`}
->
-  {title}
-</ThemedText>
+      <ThemedText
+        allowFontScaling={false}
+        style={{ fontSize: 15, lineHeight: 20 }}
+        className={`capitalize ${currentStyle.text}`}
+      >
+        {title}
+      </ThemedText>
     </TouchableOpacity>
   );
 };

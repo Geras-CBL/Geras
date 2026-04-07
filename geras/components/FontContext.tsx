@@ -18,7 +18,10 @@ export const useFontScale = () => useContext(FontContext);
 
 export const FontProvider = ({ children }: { children: ReactNode }) => {
   const systemScale = PixelRatio.getFontScale();
-  const clampedSystemScale = Math.min(Math.max(systemScale, MIN_SCALE), MAX_SCALE);
+  const clampedSystemScale = Math.min(
+    Math.max(systemScale, MIN_SCALE),
+    MAX_SCALE,
+  );
 
   const [scale, setScale] = useState(clampedSystemScale);
 

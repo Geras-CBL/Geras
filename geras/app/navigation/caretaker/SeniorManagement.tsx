@@ -173,7 +173,10 @@ export default function SeniorManagement() {
                       onPress={() => toggleCheckbox(item.id)}
                       color={item.checked ? '#205a2d' : '#969696'}
                     />
-                    <ThemedText className={`ml-1 text-base text-neutral`} style={{ fontSize: 15 }}>
+                    <ThemedText
+                      className={`ml-1 text-base text-neutral`}
+                      style={{ fontSize: 15 }}
+                    >
                       {item.name}
                     </ThemedText>
                   </TouchableOpacity>
