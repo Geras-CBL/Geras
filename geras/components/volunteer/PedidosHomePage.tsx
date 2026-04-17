@@ -87,7 +87,7 @@ export default function PedidosHomePage({
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         className="flex-1"
-        contentContainerClassName="gap-4 p-4 -m-4"
+        contentContainerClassName="gap-4 p-4 -m-4 pb-32"
         renderItem={({ item }) => {
           return (
             <View className="mb-4">

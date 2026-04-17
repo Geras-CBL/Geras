@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View } from 'react-native';
+import { Image, View } from 'react-native';
 import { ThemedText } from '../ThemedText';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -20,7 +20,12 @@ const ContainerVoluntario = ({
     <View className="h-32 w-full flex-row items-center rounded-2xl bg-white px-4 shadow-md">
       {avatarUri ? (
         <View className="h-20 w-20 overflow-hidden rounded-full">
-          <img src={avatarUri} style={{ width: 56, height: 56 }} />
+          <Image
+            source={{ uri: avatarUri }}
+            className="h-14 w-14"
+            accessibilityRole="image"
+            accessibilityLabel={`Avatar de ${name}`}
+          />
         </View>
       ) : (
         <View className="h-20 w-20 items-center justify-center rounded-lg bg-neutral/10">

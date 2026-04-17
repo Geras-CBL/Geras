@@ -21,57 +21,29 @@ export default function RequestHelp() {
           Olá Senhor António, o que precisa...
         </ThemedText>
 
-        <View
-          accessible={true}
-          accessibilityRole="button"
-          accessibilityLabel="Pedir ajuda com Compras no Mercado"
-          accessibilityHint="Toca duas vezes para abrir a tua lista de mercearias"
-        >
-          <RequestHelpButton
-            iconName="shopping-cart"
-            label="Compras Mercado"
-            route={'../../navigation/senior/Groceries'}
-          />
-        </View>
+        <RequestHelpButton
+          iconName="shopping-cart"
+          label="Compras Mercado"
+          route={'../../navigation/senior/Groceries'}
+        />
 
-        <View
-          accessible={true}
-          accessibilityRole="button"
-          accessibilityLabel="Pedir ajuda com Compras na Farmácia"
-          accessibilityHint="Toca duas vezes para iniciar um novo pedido de medicamentos"
-        >
-          <RequestHelpButton
-            iconName="local-pharmacy"
-            label="Compras Farmácia"
-            route={'../../navigation/senior/Requests?type=pharmacy'}
-          />
-        </View>
+        <RequestHelpButton
+          iconName="local-pharmacy"
+          label="Compras Farmácia"
+          route={'../../navigation/senior/Requests?type=pharmacy'}
+        />
 
-        <View
-          accessible={true}
-          accessibilityRole="button"
-          accessibilityLabel="Pedir ajuda com Tarefas Domésticas"
-          accessibilityHint="Toca duas vezes para pedir ajuda com as limpezas de casa"
-        >
-          <RequestHelpButton
-            iconName="cleaning-services"
-            label="Tarefas Domésticas"
-            route={'../../navigation/senior/Requests?type=cleaning'}
-          />
-        </View>
+        <RequestHelpButton
+          iconName="cleaning-services"
+          label="Tarefas Domésticas"
+          route={'../../navigation/senior/Requests?type=cleaning'}
+        />
 
-        <View
-          accessible={true}
-          accessibilityRole="button"
-          accessibilityLabel="Fazer Outros Pedidos"
-          accessibilityHint="Toca duas vezes para fazer um pedido de ajuda personalizado"
-        >
-          <RequestHelpButton
-            iconName="construction"
-            label="Outros Pedidos"
-            route={'../../navigation/senior/Requests?type=other'}
-          />
-        </View>
+        <RequestHelpButton
+          iconName="construction"
+          label="Outros Pedidos"
+          route={'../../navigation/senior/Requests?type=other'}
+        />
       </View>
       <BottomActions />
     </SafeAreaView>

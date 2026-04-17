@@ -7,6 +7,8 @@ export interface RequestHelpButtonProps {
   iconName: keyof typeof MaterialIcons.glyphMap;
   label: string;
   route: string;
+  acessibilityLabel?: string;
+  accessibilityHint?: string;
 }
 
 export default function RequestHelpButton({
@@ -17,6 +19,11 @@ export default function RequestHelpButton({
   const router = useRouter();
   return (
     <TouchableOpacity
+      accessible={true}
+      focusable={true}
+      accessibilityRole="button"
+      accessibilityLabel={`Pedir ajuda com ${label}`}
+      accessibilityHint={`Toca duas vezes para pedir ajuda com ${label}`}
       activeOpacity={0.8}
       className="flex-row items-center gap-6 rounded-3xl bg-primary p-8"
       onPress={() => router.push(route as Route)}

@@ -29,6 +29,7 @@ export default function ActiveVouchers() {
         data={activeVouchers}
         className="-m-4 p-4"
         keyExtractor={(item) => item.id}
+        contentContainerClassName="pb-32"
         renderItem={({ item }) => (
           <View className="mb-6">
             <Voucher
