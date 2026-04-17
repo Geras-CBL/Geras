@@ -165,7 +165,7 @@ export const NotificationCard = ({
           )}
         </View>
 
-        <View className="flex-1 justify-center gap-1 pr-2">
+        <View className="flex-shrink justify-center gap-1">
           <ThemedText
             type="subtitle"
             className="uppercase"
@@ -181,7 +181,7 @@ export const NotificationCard = ({
               {typeof description === 'string' ? (
                 <ThemedText
                   type="body"
-                  className="w-52 truncate"
+                  numberOfLines={2}
                   accessible={true}
                   accessibilityRole="text"
                   accessibilityLabel={`Descrição da notificação: ${description}`}
@@ -189,7 +189,7 @@ export const NotificationCard = ({
                   {description}
                 </ThemedText>
               ) : (
-                <View className="mt-1 w-full pr-2">{description}</View>
+                <View className="mt-1 pr-2">{description}</View>
               )}
             </>
           )}

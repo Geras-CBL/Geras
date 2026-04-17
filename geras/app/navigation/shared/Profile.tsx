@@ -48,7 +48,7 @@ export default function Profile() {
 
           <View className="mt-12 items-center">
             <ThemedText type="bodyBold" className="text-tertiary">
-              Eliminar conta
+              Eliminar Conta
             </ThemedText>
           </View>
         </View>

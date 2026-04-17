@@ -30,7 +30,7 @@ const Button: React.FC<ButtonProps> = ({
   accessibilityHint,
 }) => {
   const baseButtonStyles =
-    'flex-row items-center justify-center rounded-xl py-4 px-6';
+    'flex-row items-center justify-center rounded-xl py-4 px-4';
 
   const stylesMap = {
     default: {
@@ -73,7 +73,11 @@ const Button: React.FC<ButtonProps> = ({
     >
       {icon && <View className="mr-3">{icon}</View>}
 
-      <ThemedText className={`text-base capitalize ${currentStyle.text}`}>
+      <ThemedText
+        allowFontScaling={false}
+        style={{ fontSize: 15, lineHeight: 20 }}
+        className={`capitalize ${currentStyle.text}`}
+      >
         {title}
       </ThemedText>
     </TouchableOpacity>

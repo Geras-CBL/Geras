@@ -1,7 +1,9 @@
 import React from 'react';
 import { render, act } from '@testing-library/react-native';
 import { FontProvider, useFontScale } from '../FontContext';
-import { Text } from 'react-native';
+import { Text, PixelRatio } from 'react-native';
+
+jest.spyOn(PixelRatio, 'getFontScale').mockReturnValue(1);
 
 const TestComponent = () => {
   const { scale, setScale } = useFontScale();
