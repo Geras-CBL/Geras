@@ -1,6 +1,15 @@
 import { useState, type ReactNode } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Pressable, StyleSheet, View, type ColorValue, type PressableProps, type StyleProp, type ViewProps, type ViewStyle } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  View,
+  type ColorValue,
+  type PressableProps,
+  type StyleProp,
+  type ViewProps,
+  type ViewStyle,
+} from 'react-native';
 import { ThemedText } from './ThemedText';
 
 type FocusRingOverlayProps = {
@@ -61,7 +70,10 @@ type FocusRingState = {
     onBlur?: (event: TFocus) => void;
     onPressIn?: (event: TPress) => void;
     onPressOut?: (event: TPress) => void;
-  }) => Pick<InteractiveProps<TFocus, TPress>, 'onFocus' | 'onBlur' | 'onPressIn' | 'onPressOut'>;
+  }) => Pick<
+    InteractiveProps<TFocus, TPress>,
+    'onFocus' | 'onBlur' | 'onPressIn' | 'onPressOut'
+  >;
   focusableProps: FocusableProps<unknown>;
   interactiveProps: InteractiveProps<unknown, unknown>;
   bindFocusHandlers: <T>(handlers?: {
@@ -277,8 +289,7 @@ export function FocusablePressableWrapper({
 }: FocusablePressableWrapperProps) {
   const focusRing = useFocusRingFeedback(focusOptions);
   const mergedPressableStyle: PressableProps['style'] = (state) => {
-    const resolvedStyle =
-      typeof style === 'function' ? style(state) : style;
+    const resolvedStyle = typeof style === 'function' ? style(state) : style;
 
     return [styles.pressableBase, resolvedStyle];
   };

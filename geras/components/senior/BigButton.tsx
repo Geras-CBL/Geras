@@ -2,10 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Route, useRouter } from 'expo-router';
 import { Pressable } from 'react-native';
 import { ThemedText } from '../ThemedText';
-import {
-  FocusFeedbackWrapper,
-  useFocusRingFeedback,
-} from '../FocusFeedback';
+import { FocusFeedbackWrapper, useFocusRingFeedback } from '../FocusFeedback';
 
 interface BigButtonProps {
   iconName: keyof typeof MaterialIcons.glyphMap;
