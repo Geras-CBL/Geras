@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import Settings from '../../app/navigation/senior/Settings';
-import { FontProvider } from '@/components/FontContext'; 
+import { FontProvider } from '@/components/FontContext';
 import { StyleSheet } from 'react-native';
 
 // 1. Mocks Essenciais
@@ -38,12 +38,11 @@ jest.mock('react-native-safe-area-context', () => ({
 
 describe('Ecrã Settings - Teste Funcional', () => {
   it('deve selecionar o tamanho Extra (1.5x) quando o utilizador clica no botão', () => {
-    
-    // 2. Renderizar o ecrã real envolvido no Provider 
+    // 2. Renderizar o ecrã real envolvido no Provider
     const { getByText } = render(
       <FontProvider>
         <Settings />
-      </FontProvider>
+      </FontProvider>,
     );
 
     // 3. Encontrar o elemento no ecrã tal como o utilizador o vê
