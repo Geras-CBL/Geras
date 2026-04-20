@@ -12,14 +12,19 @@ jest.mock('react-native-safe-area-context', () => ({
   SafeAreaView: ({ children }: any) => children,
 }));
 
-// 2. Mock do smiley
+// 2. MOCK DO SMILEY:
 jest.mock('@/components/shared/EvaluationTask', () => {
   const { TouchableOpacity, Text } = require('react-native');
-  return ({ variant, onPress }: any) => (
+
+  const MockEvaluationTask = ({ variant, onPress }: any) => (
     <TouchableOpacity onPress={onPress}>
       <Text>{variant}</Text>
     </TouchableOpacity>
   );
+
+  MockEvaluationTask.displayName = 'MockEvaluationTask';
+
+  return MockEvaluationTask;
 });
 
 jest.mock('expo-audio', () => ({
