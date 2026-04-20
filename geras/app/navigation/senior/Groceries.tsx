@@ -3,7 +3,6 @@ import Button from '@/components/shared/Button';
 import { NotificationCard } from '@/components/shared/Notification';
 import SectionTitle from '@/components/shared/SectionTitle';
 import { ThemedText } from '@/components/ThemedText';
-import { GroceryItem, INITIAL_GROCERIES } from '@/data/groceryData';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Checkbox } from '@futurejj/react-native-checkbox';
 import { useRouter } from 'expo-router';
@@ -11,17 +10,28 @@ import { useState } from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 import * as Progress from 'react-native-progress';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useQuery } from '@tanstack/react-query';
+import { getGroceries } from '@/services/groceriesService';
+
 
 export default function Groceries() {
   const router = useRouter();
 
-  const [items, setItems] = useState<GroceryItem[]>(INITIAL_GROCERIES);
+  const { data: groceries, isLoading, isError } = useQuery({
+    queryKey: ['groceries'],
+    queryFn: () => getGroceries(),
+  });
 
-  const toggleCheckbox = (id: string) => {
-    setItems((currentItems) =>
-      currentItems.map((item) =>
-        item.id === id ? { ...item, checked: !item.checked } : item,
-      ),
+  const [checkedIds, setCheckedIds] = useState<number[]>([]);
+
+  if (isLoading) return <ThemedText className='text-center self-center pt-10 text-primary mt-24' >A carregar as tuas mercearias...</ThemedText>;
+  if (isError) return <ThemedText className='text-center self-center pt-10 text-secondary mt-24' >Ocorreu um erro ao carregar as mercearias.</ThemedText>;
+
+  const toggleCheckbox = (id: number) => {
+    setCheckedIds((prev) =>
+      prev.includes(id)
+        ? prev.filter((checkedId) => checkedId !== id)
+        : [...prev, id]
     );
   };
 
@@ -63,21 +73,21 @@ export default function Groceries() {
           <SectionTitle title="Lista de Compras" />
 
           <View className="w-full">
-            {items.map((item) => (
+            {groceries?.map((item) => (
               <TouchableOpacity
                 key={item.id}
                 className="mb-3 flex-row items-center rounded-2xl border border-gray-100 bg-white p-3 shadow-lg"
                 onPress={() => toggleCheckbox(item.id)}
                 accessible={true}
                 accessibilityRole="checkbox"
-                accessibilityState={{ checked: item.checked }}
+                accessibilityState={{ checked: checkedIds.includes(item.id) }}
                 accessibilityLabel={item.name}
-                accessibilityHint={`Toca duas vezes para ${item.checked ? 'remover da' : 'adicionar à'} lista de compras`}
+                accessibilityHint={`Toca duas vezes para ${checkedIds.includes(item.id) ? 'remover da' : 'adicionar à'} lista de compras`}
               >
                 <Checkbox
-                  status={item.checked ? 'checked' : 'unchecked'}
+                  status={checkedIds.includes(item.id) ? 'checked' : 'unchecked'}
                   onPress={() => toggleCheckbox(item.id)}
-                  color={item.checked ? '#205a2d' : '#969696'}
+                  color={checkedIds.includes(item.id) ? '#205a2d' : '#969696'}
                   style={{ transform: [{ scale: 1.4 }] }}
                 />
                 <ThemedText className={`ml-2 text-base text-neutral`}>
