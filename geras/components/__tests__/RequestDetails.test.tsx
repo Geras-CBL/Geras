@@ -4,7 +4,7 @@ import RequestDetails from '../../app/navigation/senior/RequestDetails';
 
 // 1. Mocks Essenciais
 jest.mock('expo-router', () => ({
-  useLocalSearchParams: () => ({ type: 'food' }), // Finge que abrimos um pedido de compras
+  useLocalSearchParams: () => ({ type: 'food' }),
   useRouter: () => ({ push: jest.fn(), back: jest.fn() }),
 }));
 
