@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, act } from '@testing-library/react-native';
-import RequestDetails from '../../app/navigation/senior/RequestDetails'; 
+import RequestDetails from '../../app/navigation/senior/RequestDetails';
 
 // 1. Mocks Essenciais
 jest.mock('expo-router', () => ({
