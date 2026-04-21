@@ -13,25 +13,38 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery } from '@tanstack/react-query';
 import { getGroceries } from '@/services/groceriesService';
 
-
 export default function Groceries() {
   const router = useRouter();
 
-  const { data: groceries, isLoading, isError } = useQuery({
+  const {
+    data: groceries,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ['groceries'],
     queryFn: () => getGroceries(),
   });
 
   const [checkedIds, setCheckedIds] = useState<number[]>([]);
 
-  if (isLoading) return <ThemedText className='text-center self-center pt-10 text-primary mt-24' >A carregar as tuas mercearias...</ThemedText>;
-  if (isError) return <ThemedText className='text-center self-center pt-10 text-secondary mt-24' >Ocorreu um erro ao carregar as mercearias.</ThemedText>;
+  if (isLoading)
+    return (
+      <ThemedText className="mt-24 self-center pt-10 text-center text-primary">
+        A carregar as tuas mercearias...
+      </ThemedText>
+    );
+  if (isError)
+    return (
+      <ThemedText className="mt-24 self-center pt-10 text-center text-secondary">
+        Ocorreu um erro ao carregar as mercearias.
+      </ThemedText>
+    );
 
   const toggleCheckbox = (id: number) => {
     setCheckedIds((prev) =>
       prev.includes(id)
         ? prev.filter((checkedId) => checkedId !== id)
-        : [...prev, id]
+        : [...prev, id],
     );
   };
 
@@ -85,7 +98,9 @@ export default function Groceries() {
                 accessibilityHint={`Toca duas vezes para ${checkedIds.includes(item.id) ? 'remover da' : 'adicionar à'} lista de compras`}
               >
                 <Checkbox
-                  status={checkedIds.includes(item.id) ? 'checked' : 'unchecked'}
+                  status={
+                    checkedIds.includes(item.id) ? 'checked' : 'unchecked'
+                  }
                   onPress={() => toggleCheckbox(item.id)}
                   color={checkedIds.includes(item.id) ? '#205a2d' : '#969696'}
                   style={{ transform: [{ scale: 1.4 }] }}
