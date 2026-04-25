@@ -6,9 +6,13 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useState } from 'react';
+import { supabase } from '@/lib/supabase';
 
 export default function VoicePage() {
   const router = useRouter();
+  const [groceryName, setGroceryName] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleBack = () => {
     if (router.canGoBack()) {
@@ -16,8 +20,34 @@ export default function VoicePage() {
     }
   };
 
+  const handleAdd = async () => {
+    if (!groceryName.trim()) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase.from('groceries').insert({
+        name: groceryName.trim(),
+        category: 'Geral',
+        unit: 1
+      });
+
+      if (error) {
+        console.error('Error adding grocery:', error);
+      } else {
+        handleBack();
+      }
+    } catch (err) {
+      console.error('Unexpected error:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const renderCardContent = () => (
-    <View className="w-full flex-1 justify-start gap-28 py-2">
+    <View className="w-full flex-1 justify-start gap-4">
       <View className="gap-10 pt-8">
         <View className="flex-row items-center rounded-2xl border-2 border-primary bg-white px-4 py-3">
           <TextInput
@@ -26,6 +56,8 @@ export default function VoicePage() {
             accessibilityHint="Introduza o nome do produto que deseja adicionar"
             className="flex-1 text-lg font-bold text-neutral"
             placeholderTextColor="#666"
+            value={groceryName}
+            onChangeText={setGroceryName}
           />
           <MaterialIcons
             name="edit"
@@ -58,7 +90,11 @@ export default function VoicePage() {
           />
         </View>
         <View className="flex-1">
-          <Button title="Adicionar" className="w-full" onPress={handleBack} />
+          <Button
+            title={isSubmitting ? "A Guardar..." : "Adicionar"}
+            className="w-full"
+            onPress={handleAdd}
+          />
         </View>
       </View>
     </View>
