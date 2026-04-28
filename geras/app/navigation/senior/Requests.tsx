@@ -3,12 +3,12 @@ import BottomActions from '@/components/senior/BottomActions';
 import FloatingIconCard from '@/components/senior/FloatingIconCard';
 import Button from '@/components/shared/Button';
 import SectionTitle from '@/components/shared/SectionTitle';
-import { MEDICINE_DATA } from '@/data/medicineData';
+import { supabase } from '@/lib/supabase';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Checkbox } from '@futurejj/react-native-checkbox';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useState } from 'react';
-import { ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
+import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
+import { useState, useCallback } from 'react';
+import { ScrollView, TextInput, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface RequestItem {
@@ -26,18 +26,39 @@ export default function Requests() {
 
   const requestType = type || 'pharmacy';
 
-  const [items, setItems] = useState<RequestItem[]>(() => {
-    const allMedications = MEDICINE_DATA.flatMap((day) =>
-      day.schedule.flatMap((slot) => slot.medications),
-    );
-    const uniqueMedications = [...new Set(allMedications)];
-    return uniqueMedications.map((medName, index) => ({
-      id: index.toString(),
-      name: medName,
-      checked: false,
-    }));
-  });
+  const [items, setItems] = useState<RequestItem[]>([]);
+  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  useFocusEffect(
+    useCallback(() => {
+      if (requestType !== 'pharmacy') return;
+
+      async function fetchMedicines() {
+        setLoading(true);
+        try {
+          const { data, error } = await supabase.from('medicine').select('name');
+          if (error) {
+            console.error('Error fetching medicines:', error);
+          } else if (data) {
+            const uniqueNames = [...new Set(data.map((m) => m.name))];
+            const formattedItems = uniqueNames.map((name, index) => ({
+              id: index.toString(),
+              name,
+              checked: false,
+            }));
+            setItems(formattedItems);
+          }
+        } catch (err) {
+          console.error('Unexpected error:', err);
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      fetchMedicines();
+    }, [requestType])
+  );
 
   const toggleCheckbox = (id: string) => {
     setItems((currentItems) =>
@@ -99,37 +120,43 @@ export default function Requests() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 36 }}
       >
-        {filteredItems.slice(0, 3).map((item) => (
-          <View
-            key={item.id}
-            accessible={true}
-            accessibilityRole="checkbox"
-            accessibilityState={{ checked: item.checked }}
-            accessibilityLabel={item.name}
-            accessibilityHint={`Toca duas vezes para ${
-              item.checked ? 'remover da' : 'adicionar à'
-            } lista de pedidos`}
-          >
-            <TouchableOpacity
-              className="mb-3 flex-row items-center rounded-2xl border border-gray-100 bg-white p-2 shadow-lg"
-              onPress={() => toggleCheckbox(item.id)}
-              importantForAccessibility="no-hide-descendants"
-            >
-              <Checkbox
-                status={item.checked ? 'checked' : 'unchecked'}
-                onPress={() => toggleCheckbox(item.id)}
-                color={item.checked ? '#205a2d' : '#969696'}
-                style={{ transform: [{ scale: 1.4 }] }}
-              />
+        {loading ? (
+          <ActivityIndicator size="large" color="#2F5C3E" className="mt-4" />
+        ) : (
+          <>
+            {filteredItems.slice(0, 3).map((item) => (
+              <View
+                key={item.id}
+                accessible={true}
+                accessibilityRole="checkbox"
+                accessibilityState={{ checked: item.checked }}
+                accessibilityLabel={item.name}
+                accessibilityHint={`Toca duas vezes para ${
+                  item.checked ? 'remover da' : 'adicionar à'
+                } lista de pedidos`}
+              >
+                <TouchableOpacity
+                  className="mb-3 flex-row items-center rounded-2xl border border-gray-100 bg-white p-2 shadow-lg"
+                  onPress={() => toggleCheckbox(item.id)}
+                  importantForAccessibility="no-hide-descendants"
+                >
+                  <Checkbox
+                    status={item.checked ? 'checked' : 'unchecked'}
+                    onPress={() => toggleCheckbox(item.id)}
+                    color={item.checked ? '#205a2d' : '#969696'}
+                    style={{ transform: [{ scale: 1.4 }] }}
+                  />
 
-              <ThemedText className="ml-2 text-neutral">{item.name}</ThemedText>
-            </TouchableOpacity>
-          </View>
-        ))}
-        {filteredItems.length === 0 && (
-          <ThemedText className="mt-4 text-center text-gray-400">
-            Nenhum medicamento encontrado.
-          </ThemedText>
+                  <ThemedText className="ml-2 text-neutral">{item.name}</ThemedText>
+                </TouchableOpacity>
+              </View>
+            ))}
+            {filteredItems.length === 0 && (
+              <ThemedText className="mt-4 text-center text-gray-400">
+                Nenhum medicamento encontrado.
+              </ThemedText>
+            )}
+          </>
         )}
       </ScrollView>
     </View>
