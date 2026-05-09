@@ -13,6 +13,7 @@ import { useRouter, useFocusEffect } from 'expo-router';
 
 import { useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
 
 import {
   ScrollView,
@@ -56,8 +57,8 @@ interface MedicineItem {
 // =========================
 
 export default function Health() {
-
   const router = useRouter();
+  const { profile } = useAuth();
 
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [monitoring, setMonitoring] = useState<MonitoringItem[]>([]);
@@ -79,10 +80,13 @@ export default function Health() {
   useFocusEffect(
     useCallback(() => {
       async function fetchHealthData() {
+        if (!profile?.id) return;
+
         try {
           const { data: notificationsData, error: notificationsError } = await supabase
             .from('notifications')
-            .select('*');
+            .select('*')
+            .eq('id_senior', profile.id);
 
           if (!notificationsError && notificationsData) {
             setNotifications(notificationsData.map(item => ({
@@ -94,7 +98,8 @@ export default function Health() {
 
           const { data: monitoringData, error: monitoringError } = await supabase
             .from('monitoring')
-            .select('*');
+            .select('*')
+            .eq('id_senior', profile.id);
 
           if (!monitoringError && monitoringData) {
             setMonitoring(monitoringData.map(item => {
@@ -119,7 +124,8 @@ export default function Health() {
 
           const { data: medicineData, error: medicineError } = await supabase
             .from('medicine')
-            .select('*');
+            .select('*')
+            .eq('id_senior', profile.id);
 
           if (!medicineError && medicineData) {
             setMedicines(medicineData.map(item => ({
@@ -136,7 +142,7 @@ export default function Health() {
         }
       }
       fetchHealthData();
-    }, [])
+    }, [profile?.id])
   );
 
   return (

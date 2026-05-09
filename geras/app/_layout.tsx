@@ -11,6 +11,7 @@ import { FontProvider } from '@/components/FontContext';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ProfileProvider } from '@/context/ProfileContext';
+import { AuthProvider } from '@/context/AuthContext';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -34,13 +35,14 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ProfileProvider>
-        <ImageBackground
-          source={require('../assets/images/background.png')}
-          style={{ flex: 1 }}
-          resizeMode="cover"
-        >
-          <FontProvider>
+      <AuthProvider>
+        <ProfileProvider>
+          <ImageBackground
+            source={require('../assets/images/background.png')}
+            style={{ flex: 1 }}
+            resizeMode="cover"
+          >
+            <FontProvider>
             <StatusBar style="dark" />
             <BottomSheetModalProvider>
               <Stack
@@ -412,6 +414,7 @@ export default function RootLayout() {
           </FontProvider>
         </ImageBackground>
       </ProfileProvider>
+      </AuthProvider>
     </GestureHandlerRootView>
   );
 }

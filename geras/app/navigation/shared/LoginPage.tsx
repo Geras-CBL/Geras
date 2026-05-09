@@ -1,12 +1,40 @@
-import { View, TextInput } from 'react-native';
+import { View, TextInput, Alert, TouchableOpacity, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ThemedText } from '@/components/ThemedText';
 import Button from '@/components/shared/Button';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { Svg, G, Path, Defs, ClipPath } from 'react-native-svg';
+import { useState } from 'react';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { session, profile } = useAuth();
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Erro', 'Por favor preencha todos os campos.');
+      return;
+    }
+    
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    setLoading(false);
+
+    if (error) {
+      Alert.alert('Erro de Autenticação', error.message);
+    } else {
+      router.replace('/');
+    }
+  };
   return (
     <LinearGradient
       style={{ flex: 1 }}
@@ -53,6 +81,9 @@ export default function LoginPage() {
                 className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
                 placeholder="E-mail"
                 placeholderTextColor="#fbfbfb"
+                autoCapitalize="none"
+                value={email}
+                onChangeText={setEmail}
               />
 
               <TextInput
@@ -60,12 +91,24 @@ export default function LoginPage() {
                 placeholder="Palavra-Passe"
                 placeholderTextColor="#fbfbfb"
                 secureTextEntry
+                value={password}
+                onChangeText={setPassword}
               />
             </View>
 
             <View className="w-2/3">
-              <Button title="Log in" variant="transparent" className="mt-7" />
+              <Button 
+                title={loading ? "A entrar..." : "Log in"} 
+                variant="transparent" 
+                className="mt-7" 
+                onPress={handleLogin}
+                disabled={loading}
+              />
             </View>
+
+            <TouchableOpacity className="mt-8" onPress={() => router.push('/navigation/shared/SignInPage' as any)}>
+              <Text className="text-white text-base font-bold">Não tem conta? Registe-se</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </SafeAreaView>

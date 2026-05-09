@@ -14,11 +14,13 @@ import { ThemedText } from '@/components/ThemedText';
 import Button from '@/components/shared/Button';
 import SectionTitle from '@/components/shared/SectionTitle';
 import BottomActions from '@/components/senior/BottomActions';
+import { useAuth } from '@/context/AuthContext';
 
 type MetricStatus = 'Adequado' | 'Moderado' | 'Excessivo';
 
 export default function AddHealthMetric() {
   const router = useRouter();
+  const { profile } = useAuth();
 
   const [title, setTitle] = useState('');
   const [value, setValue] = useState('');
@@ -34,12 +36,17 @@ export default function AddHealthMetric() {
       return;
     }
 
+    if (!profile?.id) {
+      Alert.alert('Erro', 'Sessão inválida. Por favor faça login novamente.');
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from('monitoring')
         .insert([
           {
-            id_senior: 1, // Usando o ID 1 por defeito enquanto não há login
+            id_senior: profile.id,
             custom_metric_name: title,
             custom_metric_value: parseFloat(value),
             unit: unit,

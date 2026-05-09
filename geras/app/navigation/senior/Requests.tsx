@@ -10,6 +10,7 @@ import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import { useState, useCallback } from 'react';
 import { ScrollView, TextInput, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from '@/context/AuthContext';
 
 interface RequestItem {
   id: string;
@@ -21,6 +22,7 @@ type IconName = keyof typeof MaterialIcons.glyphMap;
 
 export default function Requests() {
   const router = useRouter();
+  const { profile } = useAuth();
 
   const { type } = useLocalSearchParams<{ type: string }>();
 
@@ -236,7 +238,7 @@ export default function Requests() {
             style={{ fontSize: 16 }}
             accessibilityRole="header"
           >
-            Olá Senhor António, o que precisa...
+            Olá {profile?.name?.split(' ')[0] || 'Senhor'}, o que precisa...
           </ThemedText>
         </View>
       </View>
