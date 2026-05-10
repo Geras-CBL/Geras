@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, TouchableOpacity, Image } from 'react-native';
+import { View, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import {
   BottomSheetModal,
   BottomSheetView,
@@ -7,11 +7,12 @@ import {
 } from '@gorhom/bottom-sheet';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
-import { profilesData, SeniorProfile } from '@/data/profilesData';
+import { SeniorProfile } from '@/data/profilesData';
+import { useProfile } from '@/context/ProfileContext';
 
 type ProfileBottomSheetRef = BottomSheetModal;
 type ProfileBottomSheetProps = {
-  onSelectProfile: (profile: { name: string; age: number }) => void;
+  onSelectProfile: (profile: { id: string }) => void;
 };
 
 const ProfileBottomSheet = React.forwardRef<
@@ -19,9 +20,7 @@ const ProfileBottomSheet = React.forwardRef<
   ProfileBottomSheetProps
 >(({ onSelectProfile }, ref) => {
   const snapPoints = React.useMemo(() => ['55%'], []);
-
-  const [profilesState, setProfilesState] =
-    React.useState<SeniorProfile[]>(profilesData);
+  const { profiles, isLoading } = useProfile();
 
   const renderBackdrop = React.useCallback(
     (props: any) => (
@@ -37,14 +36,7 @@ const ProfileBottomSheet = React.forwardRef<
   );
 
   const handleProfileSelect = (selectedProfile: SeniorProfile) => {
-    setProfilesState((prev) =>
-      prev.map((p) => ({
-        ...p,
-        selected: p.id === selectedProfile.id,
-      })),
-    );
-
-    onSelectProfile({ name: selectedProfile.name, age: selectedProfile.age });
+    onSelectProfile({ id: selectedProfile.id });
 
     const modalRef = ref as React.RefObject<BottomSheetModal>;
     modalRef.current?.dismiss();
@@ -70,55 +62,66 @@ const ProfileBottomSheet = React.forwardRef<
           Selecionar Perfil do Sénior
         </ThemedText>
 
-        <View className="gap-5">
-          {profilesState.map((profile) => (
-            <TouchableOpacity
-              key={profile.id}
-              onPress={() => handleProfileSelect(profile)}
-              activeOpacity={0.8}
-              className={`h-42 flex-row items-center justify-between rounded-2xl p-6 shadow-sm ${
-                profile.selected
-                  ? 'bg-primary/40 shadow-green-200/20'
-                  : 'bg-neutralLight shadow-black/10'
-              }`}
-            >
-              <View className="flex-row items-center gap-5">
-                {profile.image ? (
-                  <Image
-                    source={profile.image}
-                    className="h-42 w-42 rounded-lg bg-gray-300"
-                    resizeMode="cover"
-                  />
-                ) : (
-                  <View className="h-42 w-42 items-center justify-center rounded-lg bg-gray-200">
-                    <Ionicons name="person" size={80} color="#205a2d" />
+        {isLoading ? (
+          <ActivityIndicator size="large" color="#205a2d" className="mt-10" />
+        ) : (
+          <View className="gap-5">
+            {profiles.map((profile) => (
+              <TouchableOpacity
+                key={profile.id}
+                onPress={() => handleProfileSelect(profile)}
+                activeOpacity={0.8}
+                className={`h-42 flex-row items-center justify-between rounded-2xl p-6 shadow-sm ${
+                  profile.selected
+                    ? 'bg-primary/40 shadow-green-200/20'
+                    : 'bg-neutralLight shadow-black/10'
+                }`}
+              >
+                <View className="flex-row items-center gap-5">
+                  {profile.image ? (
+                    <Image
+                      source={profile.image}
+                      className="h-42 w-42 rounded-lg bg-gray-300"
+                      resizeMode="cover"
+                    />
+                  ) : (
+                    <View className="h-42 w-42 items-center justify-center rounded-lg bg-gray-200">
+                      <Ionicons name="person" size={80} color="#205a2d" />
+                    </View>
+                  )}
+
+                  <View className="h-42 justify-center gap-2">
+                    <ThemedText
+                      type="bodyBold"
+                      className="uppercase text-neutral"
+                    >
+                      {profile.name}
+                    </ThemedText>
+
+                    {profile.age > 0 && (
+                      <ThemedText type="bodyInfo" className="text-neutral">
+                        {profile.age} anos
+                      </ThemedText>
+                    )}
                   </View>
-                )}
-
-                <View className="h-42 justify-center gap-2">
-                  <ThemedText
-                    type="bodyBold"
-                    className="uppercase text-neutral"
-                  >
-                    {profile.name}
-                  </ThemedText>
-
-                  <ThemedText type="bodyInfo" className="text-neutral">
-                    {profile.age} anos
-                  </ThemedText>
                 </View>
-              </View>
 
-              <View>
-                {profile.selected ? (
-                  <Ionicons name="radio-button-on" size={24} color="#1d1d1b" />
-                ) : (
-                  <Ionicons name="radio-button-off" size={24} color="#1d1d1b" />
-                )}
-              </View>
-            </TouchableOpacity>
-          ))}
-        </View>
+                <View>
+                  {profile.selected ? (
+                    <Ionicons name="radio-button-on" size={24} color="#1d1d1b" />
+                  ) : (
+                    <Ionicons name="radio-button-off" size={24} color="#1d1d1b" />
+                  )}
+                </View>
+              </TouchableOpacity>
+            ))}
+            {profiles.length === 0 && (
+              <ThemedText type="body" className="text-center mt-10">
+                Nenhum idoso associado.
+              </ThemedText>
+            )}
+          </View>
+        )}
       </BottomSheetView>
     </BottomSheetModal>
   );
