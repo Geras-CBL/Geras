@@ -4,7 +4,7 @@ import { Stack, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
-import { ImageBackground } from 'react-native';
+import { ImageBackground, Alert } from 'react-native';
 import '../global.css';
 import Header from '@/components/shared/Header';
 import { FontProvider } from '@/components/FontContext';
@@ -12,6 +12,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ProfileProvider } from '@/context/ProfileContext';
 import { AuthProvider } from '@/context/AuthContext';
+import { supabase } from '@/lib/supabase';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -28,6 +29,20 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
+
+  const handleLogout = () => {
+    Alert.alert('Terminar Sessão', 'Tem a certeza que pretende terminar a sessão?', [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Sair',
+        style: 'destructive',
+        onPress: async () => {
+          await supabase.auth.signOut();
+          router.replace('/');
+        },
+      },
+    ]);
+  };
 
   if (!loaded) {
     return null;
@@ -70,6 +85,7 @@ export default function RootLayout() {
                         onRightPress={() =>
                           router.push('/navigation/senior/Settings')
                         }
+                        onLogoutPress={handleLogout}
                       />
                     ),
                   }}
@@ -92,6 +108,7 @@ export default function RootLayout() {
                           router.push('/navigation/senior/Settings')
                         }
                         isWhite={false}
+                        onLogoutPress={handleLogout}
                       />
                     ),
                   }}
@@ -114,6 +131,7 @@ export default function RootLayout() {
                         onRightPress={() =>
                           router.push('/navigation/senior/Settings')
                         }
+                        onLogoutPress={handleLogout}
                       />
                     ),
                   }}
@@ -134,6 +152,7 @@ export default function RootLayout() {
                           router.push('/navigation/senior/HomePage')
                         }
                         onRightPress={() => {}}
+                        onLogoutPress={handleLogout}
                       />
                     ),
                   }}
@@ -156,6 +175,7 @@ export default function RootLayout() {
                         onRightPress={() =>
                           router.push('/navigation/senior/Settings')
                         }
+                        onLogoutPress={handleLogout}
                       />
                     ),
                   }}
@@ -178,6 +198,7 @@ export default function RootLayout() {
                         onRightPress={() =>
                           router.push('/navigation/senior/Settings')
                         }
+                        onLogoutPress={handleLogout}
                       />
                     ),
                   }}
@@ -200,6 +221,7 @@ export default function RootLayout() {
                         onRightPress={() =>
                           router.push('/navigation/senior/Settings')
                         }
+                        onLogoutPress={handleLogout}
                       />
                     ),
                   }}
@@ -222,6 +244,7 @@ export default function RootLayout() {
                         onRightPress={() =>
                           router.push('/navigation/senior/Settings')
                         }
+                        onLogoutPress={handleLogout}
                       />
                     ),
                   }}
@@ -244,6 +267,7 @@ export default function RootLayout() {
                         onRightPress={() =>
                           router.push('/navigation/senior/Settings')
                         }
+                        onLogoutPress={handleLogout}
                       />
                     ),
                   }}
@@ -266,6 +290,7 @@ export default function RootLayout() {
                         onRightPress={() =>
                           router.push('/navigation/senior/Settings')
                         }
+                        onLogoutPress={handleLogout}
                       />
                     ),
                   }}
@@ -288,6 +313,7 @@ export default function RootLayout() {
                         onRightPress={() =>
                           router.push('/navigation/senior/Settings')
                         }
+                        onLogoutPress={handleLogout}
                       />
                     ),
                   }}
@@ -310,6 +336,7 @@ export default function RootLayout() {
                         onRightPress={() =>
                           router.push('/navigation/senior/Settings')
                         }
+                        onLogoutPress={handleLogout}
                       />
                     ),
                   }}
@@ -405,6 +432,7 @@ export default function RootLayout() {
                         onRightPress={() =>
                           router.push('/navigation/senior/Settings')
                         }
+                        onLogoutPress={handleLogout}
                       />
                     ),
                   }}

@@ -6,10 +6,48 @@ import {
 } from '@/components/shared/Notification';
 import SectionTitle from '@/components/shared/SectionTitle';
 import { ThemedText } from '@/components/ThemedText';
-import { Linking, View } from 'react-native';
+import { Linking, View, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useState, useCallback } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
+
+const NOTIFICATION_CONFIG: Record<string, { variant: 'alert' | 'medication' | 'info' | 'pantry' | 'reminder'; icon: any; title: string }> = {
+  medication: { variant: 'medication', icon: 'medication', title: 'Medicação' },
+  alert: { variant: 'alert', icon: 'report', title: 'Urgente' },
+  pantry: { variant: 'pantry', icon: 'shopping-basket', title: 'Despensa' },
+  info: { variant: 'info', icon: 'info', title: 'Informação' },
+};
 
 export default function Home() {
+  const { profile } = useAuth();
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useFocusEffect(
+    useCallback(() => {
+      async function fetchNotifications() {
+        if (!profile?.id) return;
+        try {
+          const { data, error } = await supabase
+            .from('notifications')
+            .select('*')
+            .eq('id_senior', profile.id);
+
+          if (!error && data) {
+            setNotifications(data);
+          }
+        } catch (err) {
+          console.error('Error fetching notifications:', err);
+        } finally {
+          setLoading(false);
+        }
+      }
+      fetchNotifications();
+    }, [profile?.id])
+  );
+
   return (
     <>
       <SafeAreaView
@@ -17,32 +55,28 @@ export default function Home() {
         className="flex-1 items-center gap-12 p-4 px-6 pt-24"
       >
         <SectionTitle title={'Notificações'}>
-          <NotificationCard
-            variant="info"
-            title="Lucas Wiliam"
-            imageSource={require('../../../assets/images/hottie.png')}
-            description={<ThemedText>A 5 minutos de distância</ThemedText>}
-            rightContent={
-              <View
-                accessible={true}
-                accessibilityRole="button"
-                accessibilityLabel="Ligar a Lucas Wiliam"
-                accessibilityHint="Toca duas vezes para iniciar uma chamada telefónica"
-              >
-                <ActionButton
-                  icon="call"
-                  onPress={() => {
-                    Linking.openURL(`tel:${963744454}`);
-                  }}
+          {loading ? (
+            <ActivityIndicator size="large" color="#2F5C3E" />
+          ) : notifications.length > 0 ? (
+            notifications.map((notification) => {
+              const typeKey = (notification.type || 'info').toLowerCase();
+              const config = NOTIFICATION_CONFIG[typeKey] || NOTIFICATION_CONFIG.info;
+              
+              return (
+                <NotificationCard
+                  key={notification.id}
+                  variant={config.variant}
+                  title={config.title}
+                  iconName={config.icon}
+                  description={notification.description}
                 />
-              </View>
-            }
-            route="../../navigation/senior/RequestDetails"
-          />
-          {/* no notification */}
-          {/* <ThemedText type="body" className="text-neutralDark text-center py-10">
-            Não há notificações novas
-          </ThemedText> */}
+              );
+            })
+          ) : (
+            <ThemedText type="body" className="text-neutralDark text-center py-10">
+              Não há notificações novas
+            </ThemedText>
+          )}
         </SectionTitle>
         <View className="-m-4 flex-row flex-wrap">
           <View className="aspect-square w-1/2 p-4">

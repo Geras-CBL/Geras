@@ -56,6 +56,13 @@ interface MedicineItem {
 // COMPONENT
 // =========================
 
+const NOTIFICATION_CONFIG: Record<string, { variant: 'alert' | 'medication' | 'info' | 'pantry' | 'reminder'; icon: any; title: string }> = {
+  medication: { variant: 'medication', icon: 'medication', title: 'Medicação' },
+  alert: { variant: 'alert', icon: 'report', title: 'Urgente' },
+  pantry: { variant: 'pantry', icon: 'shopping-basket', title: 'Despensa' },
+  info: { variant: 'info', icon: 'info', title: 'Informação' },
+};
+
 export default function Health() {
   const router = useRouter();
   const { profile } = useAuth();
@@ -64,12 +71,6 @@ export default function Health() {
   const [monitoring, setMonitoring] = useState<MonitoringItem[]>([]);
   const [medicines, setMedicines] = useState<MedicineItem[]>([]);
   const [loading, setLoading] = useState(true);
-
-
-
-  // =========================
-  // FETCH DATA
-  // =========================
 
   const MONITORING_CONFIG: Record<string, { label: string, unit: string }> = {
     'HEART RATE': { label: 'Batimento Cardíaco', unit: 'bpm' },
@@ -166,15 +167,20 @@ export default function Health() {
 
           ) : (
 
-            notifications.map((notification) => (
-              <NotificationCard
-                key={notification.id}
-                variant="medication"
-                title="Aviso"
-                iconName="medication"
-                description={notification.description}
-              />
-            ))
+            notifications.map((notification) => {
+              const typeKey = (notification.type || 'info').toLowerCase();
+              const config = NOTIFICATION_CONFIG[typeKey] || NOTIFICATION_CONFIG.info;
+              
+              return (
+                <NotificationCard
+                  key={notification.id}
+                  variant={config.variant}
+                  title={config.title}
+                  iconName={config.icon}
+                  description={notification.description}
+                />
+              );
+            })
           )}
         </SectionTitle>
 
