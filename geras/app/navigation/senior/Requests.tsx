@@ -8,7 +8,13 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Checkbox } from '@futurejj/react-native-checkbox';
 import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import { useState, useCallback } from 'react';
-import { ScrollView, TextInput, TouchableOpacity, View, ActivityIndicator } from 'react-native';
+import {
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@/context/AuthContext';
 
@@ -39,7 +45,9 @@ export default function Requests() {
       async function fetchMedicines() {
         setLoading(true);
         try {
-          const { data, error } = await supabase.from('medicine').select('name');
+          const { data, error } = await supabase
+            .from('medicine')
+            .select('name');
           if (error) {
             console.error('Error fetching medicines:', error);
           } else if (data) {
@@ -59,7 +67,7 @@ export default function Requests() {
       }
 
       fetchMedicines();
-    }, [requestType])
+    }, [requestType]),
   );
 
   const toggleCheckbox = (id: string) => {
@@ -149,7 +157,9 @@ export default function Requests() {
                     style={{ transform: [{ scale: 1.4 }] }}
                   />
 
-                  <ThemedText className="ml-2 text-neutral">{item.name}</ThemedText>
+                  <ThemedText className="ml-2 text-neutral">
+                    {item.name}
+                  </ThemedText>
                 </TouchableOpacity>
               </View>
             ))}

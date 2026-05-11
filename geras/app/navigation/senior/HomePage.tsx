@@ -13,7 +13,14 @@ import { useFocusEffect } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 
-const NOTIFICATION_CONFIG: Record<string, { variant: 'alert' | 'medication' | 'info' | 'pantry' | 'reminder'; icon: any; title: string }> = {
+const NOTIFICATION_CONFIG: Record<
+  string,
+  {
+    variant: 'alert' | 'medication' | 'info' | 'pantry' | 'reminder';
+    icon: any;
+    title: string;
+  }
+> = {
   medication: { variant: 'medication', icon: 'medication', title: 'Medicação' },
   alert: { variant: 'alert', icon: 'report', title: 'Urgente' },
   pantry: { variant: 'pantry', icon: 'shopping-basket', title: 'Despensa' },
@@ -45,7 +52,7 @@ export default function Home() {
         }
       }
       fetchNotifications();
-    }, [profile?.id])
+    }, [profile?.id]),
   );
 
   return (
@@ -60,8 +67,9 @@ export default function Home() {
           ) : notifications.length > 0 ? (
             notifications.map((notification) => {
               const typeKey = (notification.type || 'info').toLowerCase();
-              const config = NOTIFICATION_CONFIG[typeKey] || NOTIFICATION_CONFIG.info;
-              
+              const config =
+                NOTIFICATION_CONFIG[typeKey] || NOTIFICATION_CONFIG.info;
+
               return (
                 <NotificationCard
                   key={notification.id}
@@ -73,7 +81,10 @@ export default function Home() {
               );
             })
           ) : (
-            <ThemedText type="body" className="text-neutralDark text-center py-10">
+            <ThemedText
+              type="body"
+              className="text-neutralDark py-10 text-center"
+            >
               Não há notificações novas
             </ThemedText>
           )}

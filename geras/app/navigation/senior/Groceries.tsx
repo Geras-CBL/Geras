@@ -13,7 +13,12 @@ import { Checkbox } from '@futurejj/react-native-checkbox';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
-import { ScrollView, TouchableOpacity, View, ActivityIndicator } from 'react-native';
+import {
+  ScrollView,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+} from 'react-native';
 import * as Progress from 'react-native-progress';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -46,7 +51,7 @@ export default function Groceries() {
       }
 
       fetchGroceries();
-    }, [])
+    }, []),
   );
 
   const toggleCheckbox = (id: string) => {

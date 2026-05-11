@@ -39,7 +39,7 @@ const Header: React.FC<HeaderProps> = ({
           esquerda = botão esquerdo
           centro = logo GERAS perfeitamente centralizado
           direita = notificações + logout */}
-      <View className="flex-row items-center px-5 h-16">
+      <View className="h-16 flex-row items-center px-5">
         {/* ESQUERDA */}
         <View className="flex-1 items-start">
           <TouchableOpacity
@@ -114,7 +114,7 @@ const Header: React.FC<HeaderProps> = ({
           {onLogoutPress && (
             <TouchableOpacity
               onPress={onLogoutPress}
-              className="items-center justify-center p-2 ml-1"
+              className="ml-1 items-center justify-center p-2"
               testID="header-logout-button"
               accessible
               accessibilityRole="button"
