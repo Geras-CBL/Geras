@@ -35,17 +35,15 @@ export default function AddHealthMetric() {
     }
 
     try {
-      const { error } = await supabase
-        .from('monitoring')
-        .insert([
-          {
-            id_senior: 1, // Usando o ID 1 por defeito enquanto não há login
-            custom_metric_name: title,
-            custom_metric_value: parseFloat(value),
-            unit: unit,
-            // Opcional: tentar mapear o título para um tipo enum se for um dos conhecidos
-          }
-        ]);
+      const { error } = await supabase.from('monitoring').insert([
+        {
+          id_senior: 1, // Usando o ID 1 por defeito enquanto não há login
+          custom_metric_name: title,
+          custom_metric_value: parseFloat(value),
+          unit: unit,
+          // Opcional: tentar mapear o título para um tipo enum se for um dos conhecidos
+        },
+      ]);
 
       if (error) {
         console.error('Error saving metric:', error);

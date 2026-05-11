@@ -14,15 +14,9 @@ import { useRouter, useFocusEffect } from 'expo-router';
 import { useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 
-import {
-  ScrollView,
-  View,
-  ActivityIndicator,
-} from 'react-native';
+import { ScrollView, View, ActivityIndicator } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-
 
 // =========================
 // TYPES
@@ -49,14 +43,11 @@ interface MedicineItem {
   scheduled_time?: string;
 }
 
-
-
 // =========================
 // COMPONENT
 // =========================
 
 export default function Health() {
-
   const router = useRouter();
 
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
@@ -64,57 +55,61 @@ export default function Health() {
   const [medicines, setMedicines] = useState<MedicineItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-
-
   // =========================
   // FETCH DATA
   // =========================
 
-  const MONITORING_CONFIG: Record<string, { label: string, unit: string }> = {
+  const MONITORING_CONFIG: Record<string, { label: string; unit: string }> = {
     'HEART RATE': { label: 'Batimento Cardíaco', unit: 'bpm' },
     'BLOOD PRESSURE': { label: 'Pressão Arterial', unit: 'mmHg' },
-    'TEMPERATURE': { label: 'Temperatura', unit: 'ºC' }
+    TEMPERATURE: { label: 'Temperatura', unit: 'ºC' },
   };
 
   useFocusEffect(
     useCallback(() => {
       async function fetchHealthData() {
         try {
-          const { data: notificationsData, error: notificationsError } = await supabase
-            .from('notifications')
-            .select('*');
+          const { data: notificationsData, error: notificationsError } =
+            await supabase.from('notifications').select('*');
 
           if (!notificationsError && notificationsData) {
-            setNotifications(notificationsData.map(item => ({
-              id: item.id.toString(),
-              description: item.description,
-              type: item.type,
-            })));
+            setNotifications(
+              notificationsData.map((item) => ({
+                id: item.id.toString(),
+                description: item.description,
+                type: item.type,
+              })),
+            );
           }
 
-          const { data: monitoringData, error: monitoringError } = await supabase
-            .from('monitoring')
-            .select('*');
+          const { data: monitoringData, error: monitoringError } =
+            await supabase.from('monitoring').select('*');
 
           if (!monitoringError && monitoringData) {
-            setMonitoring(monitoringData.map(item => {
-              const config = item.type ? MONITORING_CONFIG[item.type] : null;
-              const title = item.custom_metric_name || config?.label || item.type || 'Métrica';
-              const value = item.custom_metric_value || item.value || 0;
-              const unit = item.unit || config?.unit || '';
-              
-              let status: 'Adequado' | 'Moderado' | 'Excessivo' = 'Adequado';
-              if (value > 100) status = 'Excessivo';
-              else if (value > 70) status = 'Moderado';
+            setMonitoring(
+              monitoringData.map((item) => {
+                const config = item.type ? MONITORING_CONFIG[item.type] : null;
+                const title =
+                  item.custom_metric_name ||
+                  config?.label ||
+                  item.type ||
+                  'Métrica';
+                const value = item.custom_metric_value || item.value || 0;
+                const unit = item.unit || config?.unit || '';
 
-              return {
-                id: item.id.toString(),
-                title,
-                value,
-                unit,
-                status,
-              };
-            }));
+                let status: 'Adequado' | 'Moderado' | 'Excessivo' = 'Adequado';
+                if (value > 100) status = 'Excessivo';
+                else if (value > 70) status = 'Moderado';
+
+                return {
+                  id: item.id.toString(),
+                  title,
+                  value,
+                  unit,
+                  status,
+                };
+              }),
+            );
           }
 
           const { data: medicineData, error: medicineError } = await supabase
@@ -122,12 +117,14 @@ export default function Health() {
             .select('*');
 
           if (!medicineError && medicineData) {
-            setMedicines(medicineData.map(item => ({
-              id: item.id.toString(),
-              name: item.name,
-              dosage: item.dosage,
-              scheduled_time: item.scheduled_time,
-            })));
+            setMedicines(
+              medicineData.map((item) => ({
+                id: item.id.toString(),
+                name: item.name,
+                dosage: item.dosage,
+                scheduled_time: item.scheduled_time,
+              })),
+            );
           }
         } catch (err) {
           console.error('Unexpected error:', err);
@@ -136,30 +133,21 @@ export default function Health() {
         }
       }
       fetchHealthData();
-    }, [])
+    }, []),
   );
 
   return (
-    <SafeAreaView
-      edges={['top']}
-      className="flex-1 pt-24"
-    >
+    <SafeAreaView edges={['top']} className="flex-1 pt-24">
       <ScrollView
         className="flex-1"
         contentContainerClassName="items-center gap-10 px-6 pb-44"
         showsVerticalScrollIndicator={false}
       >
-
         {/* NOTIFICATIONS */}
         <SectionTitle title={'Notificações'}>
           {loading ? (
-            <ActivityIndicator
-              size="large"
-              color="#2F5C3E"
-            />
-
+            <ActivityIndicator size="large" color="#2F5C3E" />
           ) : (
-
             notifications.map((notification) => (
               <NotificationCard
                 key={notification.id}
@@ -176,18 +164,10 @@ export default function Health() {
         <SectionTitle title={'Monitorização'}>
           <View className="-m-4 flex-row flex-wrap">
             {loading ? (
-              <ActivityIndicator
-                size="large"
-                color="#2F5C3E"
-              />
-
+              <ActivityIndicator size="large" color="#2F5C3E" />
             ) : (
-
               monitoring.map((metric) => (
-                <View
-                  key={metric.id}
-                  className="aspect-square w-1/2 p-4"
-                >
+                <View key={metric.id} className="aspect-square w-1/2 p-4">
                   <MedicationCard
                     title={metric.title}
                     status={metric.status}
@@ -199,14 +179,9 @@ export default function Health() {
             )}
 
             <View className="aspect-square w-1/2 p-4">
-
               <AddMedicationCard
                 onPress={() => {
-
-                  router.push(
-                    '../shared/AddHealthMetric'
-                  );
-
+                  router.push('../shared/AddHealthMetric');
                 }}
               />
             </View>
@@ -217,19 +192,9 @@ export default function Health() {
         <MedicationSchedule medicines={medicines} />
         <Button
           title="Fazer pedido farmácia"
-          icon={
-            <MaterialCommunityIcons
-              name="pill"
-              size={24}
-              color="#ffff"
-            />
-          }
+          icon={<MaterialCommunityIcons name="pill" size={24} color="#ffff" />}
           onPress={() => {
-
-            router.push(
-              './PharmacyShopping'
-            );
-
+            router.push('./PharmacyShopping');
           }}
         />
       </ScrollView>
