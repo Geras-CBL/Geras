@@ -108,15 +108,23 @@ const ProfileBottomSheet = React.forwardRef<
 
                 <View>
                   {profile.selected ? (
-                    <Ionicons name="radio-button-on" size={24} color="#1d1d1b" />
+                    <Ionicons
+                      name="radio-button-on"
+                      size={24}
+                      color="#1d1d1b"
+                    />
                   ) : (
-                    <Ionicons name="radio-button-off" size={24} color="#1d1d1b" />
+                    <Ionicons
+                      name="radio-button-off"
+                      size={24}
+                      color="#1d1d1b"
+                    />
                   )}
                 </View>
               </TouchableOpacity>
             ))}
             {profiles.length === 0 && (
-              <ThemedText type="body" className="text-center mt-10">
+              <ThemedText type="body" className="mt-10 text-center">
                 Nenhum idoso associado.
               </ThemedText>
             )}

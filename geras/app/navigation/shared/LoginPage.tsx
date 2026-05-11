@@ -21,7 +21,7 @@ export default function LoginPage() {
       Alert.alert('Erro', 'Por favor preencha todos os campos.');
       return;
     }
-    
+
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({
       email,
@@ -97,17 +97,24 @@ export default function LoginPage() {
             </View>
 
             <View className="w-2/3">
-              <Button 
-                title={loading ? "A entrar..." : "Log in"} 
-                variant="transparent" 
-                className="mt-7" 
+              <Button
+                title={loading ? 'A entrar...' : 'Log in'}
+                variant="transparent"
+                className="mt-7"
                 onPress={handleLogin}
                 disabled={loading}
               />
             </View>
 
-            <TouchableOpacity className="mt-8" onPress={() => router.push('/navigation/shared/SignInPage' as any)}>
-              <Text className="text-white text-base font-bold">Não tem conta? Registe-se</Text>
+            <TouchableOpacity
+              className="mt-8"
+              onPress={() =>
+                router.push('/navigation/shared/SignInPage' as any)
+              }
+            >
+              <Text className="text-base font-bold text-white">
+                Não tem conta? Registe-se
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

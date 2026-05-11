@@ -9,7 +9,11 @@ interface MedicineItem {
   scheduled_time?: string;
 }
 
-export function MedicationSchedule({ medicines }: { medicines: MedicineItem[] }) {
+export function MedicationSchedule({
+  medicines,
+}: {
+  medicines: MedicineItem[];
+}) {
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
   // Agrupar medicamentos por data
@@ -22,7 +26,10 @@ export function MedicationSchedule({ medicines }: { medicines: MedicineItem[] })
     const todayStr = formatDate(today);
     const tomorrowStr = formatDate(tomorrow);
 
-    const daysMap: Record<string, { label: string; medicines: MedicineItem[] }> = {
+    const daysMap: Record<
+      string,
+      { label: string; medicines: MedicineItem[] }
+    > = {
       [todayStr]: { label: 'Hoje', medicines: [] },
       [tomorrowStr]: { label: 'Amanhã', medicines: [] },
     };
@@ -31,9 +38,11 @@ export function MedicationSchedule({ medicines }: { medicines: MedicineItem[] })
       if (med.scheduled_time) {
         const medDate = med.scheduled_time.split('T')[0];
         if (!daysMap[medDate]) {
-          daysMap[medDate] = { 
-            label: new Date(medDate).toLocaleDateString('pt-PT', { weekday: 'long' }), 
-            medicines: [] 
+          daysMap[medDate] = {
+            label: new Date(medDate).toLocaleDateString('pt-PT', {
+              weekday: 'long',
+            }),
+            medicines: [],
           };
         }
         daysMap[medDate].medicines.push(med);
@@ -43,7 +52,12 @@ export function MedicationSchedule({ medicines }: { medicines: MedicineItem[] })
       }
     });
 
-    return Object.values(daysMap).filter(day => day.medicines.length > 0 || day.label === 'Hoje' || day.label === 'Amanhã');
+    return Object.values(daysMap).filter(
+      (day) =>
+        day.medicines.length > 0 ||
+        day.label === 'Hoje' ||
+        day.label === 'Amanhã',
+    );
   };
 
   const days = groupMedicinesByDay();
@@ -83,7 +97,12 @@ export function MedicationSchedule({ medicines }: { medicines: MedicineItem[] })
             <View className="mb-4 flex-row items-start justify-between">
               <View className="rounded-full bg-primary px-4 py-1">
                 <ThemedText type="bodyBold" className="text-white">
-                  {med.scheduled_time ? new Date(med.scheduled_time).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) : 'Sem hora'}
+                  {med.scheduled_time
+                    ? new Date(med.scheduled_time).toLocaleTimeString('pt-PT', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })
+                    : 'Sem hora'}
                 </ThemedText>
               </View>
               <MaterialCommunityIcons name="pill" size={32} color="#1a1a1a" />
@@ -92,7 +111,9 @@ export function MedicationSchedule({ medicines }: { medicines: MedicineItem[] })
             <View className="gap-3">
               <View className="flex-row items-center gap-2">
                 <View className="h-1.5 w-1.5 rounded-full bg-black" />
-                <ThemedText>{med.name} {med.dosage ? `- ${med.dosage}mg` : ''}</ThemedText>
+                <ThemedText>
+                  {med.name} {med.dosage ? `- ${med.dosage}mg` : ''}
+                </ThemedText>
               </View>
             </View>
           </View>

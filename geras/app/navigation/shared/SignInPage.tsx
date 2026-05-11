@@ -13,7 +13,9 @@ export default function SignInPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<'SENIOR' | 'CARETAKER' | 'VOLUNTEER'>('SENIOR');
+  const [role, setRole] = useState<'SENIOR' | 'CARETAKER' | 'VOLUNTEER'>(
+    'SENIOR',
+  );
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
@@ -21,7 +23,7 @@ export default function SignInPage() {
       Alert.alert('Erro', 'Por favor preencha todos os campos.');
       return;
     }
-    
+
     setLoading(true);
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -39,7 +41,10 @@ export default function SignInPage() {
     if (error) {
       Alert.alert('Erro de Registo', error.message);
     } else {
-      Alert.alert('Sucesso', 'Conta criada com sucesso! Pode agora fazer login.');
+      Alert.alert(
+        'Sucesso',
+        'Conta criada com sucesso! Pode agora fazer login.',
+      );
       router.replace('/navigation/shared/LoginPage');
     }
   };
@@ -76,17 +81,13 @@ export default function SignInPage() {
             </Svg>
           </View>
 
-          <ThemedText
-            type="title"
-            className="px-8 text-left text-neutralLight"
-          >
+          <ThemedText type="title" className="px-8 text-left text-neutralLight">
             Crie a sua conta
           </ThemedText>
 
           {/* Inputs */}
           <View className="mb-6 mt-6 w-full items-center">
             <View className="w-full gap-y-4 px-8">
-              
               <TextInput
                 className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
                 placeholder="Nome"
@@ -113,44 +114,44 @@ export default function SignInPage() {
                 onChangeText={setPassword}
               />
 
-              <View className="flex-row justify-between w-full mt-2">
-                <TouchableOpacity 
-                  className={`flex-1 mx-1 rounded-full p-2 items-center ${role === 'SENIOR' ? 'bg-[#325439]' : 'bg-neutralLight/40'}`}
+              <View className="mt-2 w-full flex-row justify-between">
+                <TouchableOpacity
+                  className={`mx-1 flex-1 items-center rounded-full p-2 ${role === 'SENIOR' ? 'bg-[#325439]' : 'bg-neutralLight/40'}`}
                   onPress={() => setRole('SENIOR')}
                 >
-                  <Text className="text-white font-bold">Sénior</Text>
+                  <Text className="font-bold text-white">Sénior</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity 
-                  className={`flex-1 mx-1 rounded-full p-2 items-center ${role === 'CARETAKER' ? 'bg-[#325439]' : 'bg-neutralLight/40'}`}
+                <TouchableOpacity
+                  className={`mx-1 flex-1 items-center rounded-full p-2 ${role === 'CARETAKER' ? 'bg-[#325439]' : 'bg-neutralLight/40'}`}
                   onPress={() => setRole('CARETAKER')}
                 >
-                  <Text className="text-white font-bold">Cuidador</Text>
+                  <Text className="font-bold text-white">Cuidador</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity 
-                  className={`flex-1 mx-1 rounded-full p-2 items-center ${role === 'VOLUNTEER' ? 'bg-[#325439]' : 'bg-neutralLight/40'}`}
+                <TouchableOpacity
+                  className={`mx-1 flex-1 items-center rounded-full p-2 ${role === 'VOLUNTEER' ? 'bg-[#325439]' : 'bg-neutralLight/40'}`}
                   onPress={() => setRole('VOLUNTEER')}
                 >
-                  <Text className="text-white font-bold">Voluntário</Text>
+                  <Text className="font-bold text-white">Voluntário</Text>
                 </TouchableOpacity>
               </View>
-
             </View>
 
-            <View className="w-2/3 mt-6">
-              <Button 
-                title={loading ? "A registar..." : "Registar"} 
-                variant="transparent" 
-                onPress={handleRegister} 
+            <View className="mt-6 w-2/3">
+              <Button
+                title={loading ? 'A registar...' : 'Registar'}
+                variant="transparent"
+                onPress={handleRegister}
                 disabled={loading}
               />
             </View>
 
             <TouchableOpacity className="mt-4" onPress={() => router.back()}>
-              <Text className="text-white text-base">Já tem conta? Inicie sessão</Text>
+              <Text className="text-base text-white">
+                Já tem conta? Inicie sessão
+              </Text>
             </TouchableOpacity>
-
           </View>
         </View>
       </SafeAreaView>
