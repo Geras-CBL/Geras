@@ -13,6 +13,7 @@ import { Checkbox } from '@futurejj/react-native-checkbox';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
 import {
   ScrollView,
   TouchableOpacity,
@@ -24,6 +25,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Groceries() {
   const router = useRouter();
+  const { profile } = useAuth();
 
   const [items, setItems] = useState<GroceryItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,14 +33,19 @@ export default function Groceries() {
   useFocusEffect(
     useCallback(() => {
       async function fetchGroceries() {
+        if (!profile?.id) return;
         try {
-          const { data, error } = await supabase.from('groceries').select('*');
+          const { data, error } = await supabase
+            .from('senior_groceries')
+            .select('*, groceries(*)')
+            .eq('id_senior', profile.id);
+
           if (error) {
             console.error('Error fetching groceries:', error);
           } else if (data) {
-            const formattedItems = data.map((item) => ({
+            const formattedItems = data.map((item: any) => ({
               id: item.id.toString(),
-              name: item.name,
+              name: item.groceries?.name || 'Item desconhecido',
               checked: false,
             }));
             setItems(formattedItems);

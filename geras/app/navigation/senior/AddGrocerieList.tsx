@@ -9,8 +9,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 
+import { useAuth } from '@/context/AuthContext';
+import { useProfile } from '@/context/ProfileContext';
+
 export default function VoicePage() {
   const router = useRouter();
+  const { profile: currentUser } = useAuth();
+  const { selectedProfile } = useProfile();
   const [groceryName, setGroceryName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -28,19 +33,47 @@ export default function VoicePage() {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase.from('groceries').insert({
-        name: groceryName.trim(),
-        category: 'Geral',
-        unit: 1,
-      });
-
-      if (error) {
-        console.error('Error adding grocery:', error);
-      } else {
-        handleBack();
+      // 1. Determinar o ID do sénior alvo
+      let targetSeniorId = null;
+      if (currentUser?.role === 'SENIOR') {
+        targetSeniorId = currentUser.id;
+      } else if (currentUser?.role === 'CARETAKER' && selectedProfile) {
+        targetSeniorId = selectedProfile.id;
       }
-    } catch (err) {
-      console.error('Unexpected error:', err);
+
+      if (!targetSeniorId) {
+        throw new Error(
+          'Não foi possível identificar o sénior para esta lista.',
+        );
+      }
+
+      // 2. Inserir no catálogo de groceries
+      const { data: groceryData, error: groceryError } = await supabase
+        .from('groceries')
+        .insert({
+          name: groceryName.trim(),
+          category: 'Geral',
+          unit: 1,
+        })
+        .select()
+        .single();
+
+      if (groceryError) throw groceryError;
+
+      // 3. Associar ao sénior na tabela senior_groceries
+      const { error: associationError } = await supabase
+        .from('senior_groceries')
+        .insert({
+          id_senior: targetSeniorId,
+          id_groceries: groceryData.id,
+        });
+
+      if (associationError) throw associationError;
+
+      handleBack();
+    } catch (err: any) {
+      console.error('Error adding grocery:', err);
+      alert(err.message || 'Erro ao adicionar item.');
     } finally {
       setIsSubmitting(false);
     }
