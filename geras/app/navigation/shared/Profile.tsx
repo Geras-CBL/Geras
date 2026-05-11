@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, Linking } from 'react-native';
+import { View, ScrollView, Linking, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
@@ -7,9 +7,17 @@ import SectionTitle from '@/components/shared/SectionTitle';
 import { Card } from '@/components/shared/ProfileCard';
 import Button from '@/components/shared/Button';
 import { ThemedText } from '@/components/ThemedText';
+import { useAuth } from '@/context/AuthContext';
+
+const ROLE_LABELS: Record<string, string> = {
+  CARETAKER: 'Cuidador(a)',
+  SENIOR: 'Sénior',
+  VOLUNTEER: 'Voluntário(a)',
+};
 
 export default function Profile() {
   const router = useRouter();
+  const { profile, isLoading } = useAuth();
 
   const openTerms = () => {
     Linking.openURL('https://www.ua.pt/pt/termos-de-utilizacao');
@@ -18,6 +26,18 @@ export default function Profile() {
   const openPrivacy = () => {
     Linking.openURL('https://www.ua.pt/pt/rgpd/politicas-de-privacidade');
   };
+
+  if (isLoading) {
+    return (
+      <SafeAreaView edges={['top']} className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" color="#205a2d" />
+        <ThemedText className="mt-4">A carregar perfil...</ThemedText>
+      </SafeAreaView>
+    );
+  }
+
+  const displayName = profile?.name ?? 'Utilizador';
+  const displayRole = profile?.role ? (ROLE_LABELS[profile.role] ?? profile.role) : 'Sem papel';
 
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-16">
@@ -30,9 +50,8 @@ export default function Profile() {
           <SectionTitle title="Perfil">
             <View className="mt-8">
               <Card
-                name="Joana Silva"
-                role="Cuidadora"
-                age={27}
+                name={displayName}
+                role={displayRole}
                 onEditPress={() =>
                   router.push('/navigation/shared/EditProfile')
                 }
