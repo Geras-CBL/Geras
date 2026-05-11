@@ -16,7 +16,14 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { ThemedText } from '@/components/ThemedText';
 
-const NOTIFICATION_CONFIG: Record<string, { variant: 'alert' | 'medication' | 'info' | 'pantry' | 'reminder'; icon: any; title: string }> = {
+const NOTIFICATION_CONFIG: Record<
+  string,
+  {
+    variant: 'alert' | 'medication' | 'info' | 'pantry' | 'reminder';
+    icon: any;
+    title: string;
+  }
+> = {
   medication: { variant: 'medication', icon: 'medication', title: 'Medicação' },
   alert: { variant: 'alert', icon: 'report', title: 'Urgente' },
   pantry: { variant: 'pantry', icon: 'shopping-basket', title: 'Despensa' },
@@ -26,7 +33,11 @@ const NOTIFICATION_CONFIG: Record<string, { variant: 'alert' | 'medication' | 'i
 export default function HomePage() {
   const sheetRef = React.useRef<any>(null);
   const router = useRouter();
-  const { selectedProfile, handleSelectProfile, isLoading: isProfilesLoading } = useProfile();
+  const {
+    selectedProfile,
+    handleSelectProfile,
+    isLoading: isProfilesLoading,
+  } = useProfile();
   const [notifications, setNotifications] = React.useState<any[]>([]);
   const [healthProblemsCount, setHealthProblemsCount] = React.useState(0);
   const [loadingData, setLoadingData] = React.useState(true);
@@ -46,7 +57,7 @@ export default function HomePage() {
         setLoadingData(true);
         try {
           const seniorId = selectedProfile!.id;
-          
+
           // 1. Notificações
           const { data: notifs, error: notifError } = await supabase
             .from('notifications')
@@ -64,13 +75,12 @@ export default function HomePage() {
             .eq('id_senior', seniorId);
 
           if (!monitorError && monitor) {
-            const problems = monitor.filter(m => {
+            const problems = monitor.filter((m) => {
               const value = m.custom_metric_value || m.value || 0;
               return value > 70; // Limiar de Moderado/Excessivo
             });
             setHealthProblemsCount(problems.length);
           }
-
         } catch (err) {
           console.error('Erro ao carregar dados do idoso:', err);
         } finally {
@@ -78,10 +88,10 @@ export default function HomePage() {
         }
       }
       fetchData();
-    }, [selectedProfile?.id])
+    }, [selectedProfile?.id]),
   );
 
-  const alertsCount = notifications.filter(n => n.type === 'alert').length;
+  const alertsCount = notifications.filter((n) => n.type === 'alert').length;
 
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-24">
@@ -98,17 +108,25 @@ export default function HomePage() {
         >
           <ProfilePicker onPress={handleOpenSheet} profile={selectedProfile} />
 
-          <Resume alertsCount={alertsCount} healthProblemsCount={healthProblemsCount} />
+          <Resume
+            alertsCount={alertsCount}
+            healthProblemsCount={healthProblemsCount}
+          />
 
           <View className="pt-6">
             <SectionTitle title="Notificações">
               {loadingData ? (
-                <ActivityIndicator size="large" color="#205a2d" className="py-4" />
+                <ActivityIndicator
+                  size="large"
+                  color="#205a2d"
+                  className="py-4"
+                />
               ) : notifications.length > 0 ? (
                 notifications.map((notification) => {
                   const typeKey = (notification.type || 'info').toLowerCase();
-                  const config = NOTIFICATION_CONFIG[typeKey] || NOTIFICATION_CONFIG.info;
-                  
+                  const config =
+                    NOTIFICATION_CONFIG[typeKey] || NOTIFICATION_CONFIG.info;
+
                   return (
                     <NotificationCard
                       key={notification.id}
@@ -121,7 +139,9 @@ export default function HomePage() {
                           <>
                             <ActionButton
                               icon="call"
-                              onPress={() => Linking.openURL(`tel:${963744454}`)}
+                              onPress={() =>
+                                Linking.openURL(`tel:${963744454}`)
+                              }
                             />
                             <ActionButton
                               icon="videocam"
@@ -134,7 +154,10 @@ export default function HomePage() {
                   );
                 })
               ) : (
-                <ThemedText type="body" className="text-neutralDark text-center py-10">
+                <ThemedText
+                  type="body"
+                  className="text-neutralDark py-10 text-center"
+                >
                   Não há notificações novas para este perfil.
                 </ThemedText>
               )}

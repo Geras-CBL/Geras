@@ -31,7 +31,7 @@ export default function VoicePage() {
       const { error } = await supabase.from('groceries').insert({
         name: groceryName.trim(),
         category: 'Geral',
-        unit: 1
+        unit: 1,
       });
 
       if (error) {
@@ -91,7 +91,7 @@ export default function VoicePage() {
         </View>
         <View className="flex-1">
           <Button
-            title={isSubmitting ? "A Guardar..." : "Adicionar"}
+            title={isSubmitting ? 'A Guardar...' : 'Adicionar'}
             className="w-full"
             onPress={handleAdd}
           />

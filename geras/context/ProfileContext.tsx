@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 import { SeniorProfile } from '@/data/profilesData';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
@@ -17,7 +24,9 @@ export function ProfileProvider({
 }: Readonly<{ children: React.ReactNode }>) {
   const { profile: currentUser } = useAuth();
   const [profiles, setProfiles] = useState<SeniorProfile[]>([]);
-  const [selectedProfile, setSelectedProfile] = useState<SeniorProfile | null>(null);
+  const [selectedProfile, setSelectedProfile] = useState<SeniorProfile | null>(
+    null,
+  );
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchProfiles = useCallback(async () => {
@@ -27,7 +36,10 @@ export function ProfileProvider({
       return;
     }
 
-    console.log('ProfileContext: Fetching seniors for caretaker ID:', currentUser.id);
+    console.log(
+      'ProfileContext: Fetching seniors for caretaker ID:',
+      currentUser.id,
+    );
 
     try {
       // 1. Tentar com id_senior / id_caretaker (padrão snake_case do projeto)
@@ -38,14 +50,16 @@ export function ProfileProvider({
 
       // 2. Se falhar ou não encontrar nada, tentar com senior_id / caretaker_id (padrão comum)
       if (assocError || !associations || associations.length === 0) {
-        console.log('ProfileContext: Falling back to alternative column names...');
+        console.log(
+          'ProfileContext: Falling back to alternative column names...',
+        );
         const { data: assocAlt, error: assocErrorAlt } = await supabase
           .from('senior_caretaker')
           .select('senior_id')
           .eq('caretaker_id', currentUser.id);
-        
+
         if (!assocErrorAlt && assocAlt && assocAlt.length > 0) {
-          associations = assocAlt.map(a => ({ id_senior: a.senior_id }));
+          associations = assocAlt.map((a) => ({ id_senior: a.senior_id }));
           assocError = null;
         }
       }
@@ -53,9 +67,9 @@ export function ProfileProvider({
       if (assocError) throw assocError;
 
       if (associations && associations.length > 0) {
-        const seniorIds = associations.map(a => a.id_senior);
+        const seniorIds = associations.map((a) => a.id_senior);
         console.log('ProfileContext: Found senior IDs:', seniorIds);
-        
+
         const { data: seniors, error: seniorsError } = await supabase
           .from('users')
           .select('*')
@@ -79,10 +93,15 @@ export function ProfileProvider({
 
           setProfiles(mappedProfiles);
           setSelectedProfile(mappedProfiles[0]);
-          console.log('ProfileContext: Successfully loaded profiles:', mappedProfiles.length);
+          console.log(
+            'ProfileContext: Successfully loaded profiles:',
+            mappedProfiles.length,
+          );
         }
       } else {
-        console.log('ProfileContext: No associations found in senior_caretaker');
+        console.log(
+          'ProfileContext: No associations found in senior_caretaker',
+        );
       }
     } catch (err) {
       console.error('ProfileContext: Erro ao carregar perfis associados:', err);
@@ -100,10 +119,12 @@ export function ProfileProvider({
       const newSelected = profiles.find((p) => p.id === profile.id);
       if (newSelected) {
         setSelectedProfile(newSelected);
-        setProfiles(prev => prev.map(p => ({
-          ...p,
-          selected: p.id === profile.id
-        })));
+        setProfiles((prev) =>
+          prev.map((p) => ({
+            ...p,
+            selected: p.id === profile.id,
+          })),
+        );
       }
     },
     [profiles],

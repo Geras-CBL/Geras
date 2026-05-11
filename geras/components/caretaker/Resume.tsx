@@ -7,7 +7,10 @@ interface ResumeProps {
   healthProblemsCount: number;
 }
 
-const Resume: React.FC<ResumeProps> = ({ alertsCount, healthProblemsCount }) => {
+const Resume: React.FC<ResumeProps> = ({
+  alertsCount,
+  healthProblemsCount,
+}) => {
   return (
     <View className="w-full flex-row items-center rounded-2xl bg-neutralLight px-4 py-2 shadow-lg">
       <View className="flex-1 flex-row">
@@ -17,7 +20,9 @@ const Resume: React.FC<ResumeProps> = ({ alertsCount, healthProblemsCount }) => 
 
             <ThemedText type="bodyInfo">
               {' '}
-              <ThemedText className={alertsCount > 0 ? "text-[#a20707]" : "text-primary"}>
+              <ThemedText
+                className={alertsCount > 0 ? 'text-[#a20707]' : 'text-primary'}
+              >
                 {alertsCount} {alertsCount === 1 ? 'aviso' : 'avisos'}
               </ThemedText>
               {` e ${healthProblemsCount} ${healthProblemsCount === 1 ? 'problema' : 'problemas'} saúde`}

@@ -48,7 +48,7 @@ export default function EditProfile() {
 
       if (profile.local) {
         const foundDistrict = locations.find((d) =>
-          d.municipalities.includes(profile.local!)
+          d.municipalities.includes(profile.local!),
         );
         if (foundDistrict) {
           setDistrict(foundDistrict.name);
@@ -102,7 +102,10 @@ export default function EditProfile() {
       router.back();
     } catch (error: any) {
       console.error('Erro ao guardar perfil:', error);
-      Alert.alert('Erro', error.message || 'Ocorreu um erro ao guardar o perfil.');
+      Alert.alert(
+        'Erro',
+        error.message || 'Ocorreu um erro ao guardar o perfil.',
+      );
     } finally {
       setIsSaving(false);
     }
@@ -218,7 +221,7 @@ export default function EditProfile() {
 
       <View className="mt-10 w-full gap-4">
         <Button
-          title={isSaving ? "A guardar..." : "Guardar"}
+          title={isSaving ? 'A guardar...' : 'Guardar'}
           onPress={handleSave}
           disabled={isSaving}
         />

@@ -45,7 +45,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     // 2. Escutar mudanças na autenticação
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (session) {
         fetchProfile(session.user.id);
@@ -89,7 +91,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ session, profile, isLoading, signOut, refreshProfile }}>
+    <AuthContext.Provider
+      value={{ session, profile, isLoading, signOut, refreshProfile }}
+    >
       {children}
     </AuthContext.Provider>
   );

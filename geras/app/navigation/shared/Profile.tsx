@@ -29,7 +29,10 @@ export default function Profile() {
 
   if (isLoading) {
     return (
-      <SafeAreaView edges={['top']} className="flex-1 items-center justify-center">
+      <SafeAreaView
+        edges={['top']}
+        className="flex-1 items-center justify-center"
+      >
         <ActivityIndicator size="large" color="#205a2d" />
         <ThemedText className="mt-4">A carregar perfil...</ThemedText>
       </SafeAreaView>
@@ -37,7 +40,9 @@ export default function Profile() {
   }
 
   const displayName = profile?.name ?? 'Utilizador';
-  const displayRole = profile?.role ? (ROLE_LABELS[profile.role] ?? profile.role) : 'Sem papel';
+  const displayRole = profile?.role
+    ? (ROLE_LABELS[profile.role] ?? profile.role)
+    : 'Sem papel';
 
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-16">
