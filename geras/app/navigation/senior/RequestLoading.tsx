@@ -119,12 +119,68 @@ const AnimatedStepText = ({
   );
 };
 
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
+
 export default function RequestLoading() {
-  const { type } = useLocalSearchParams<{ type?: string }>();
+  const { type, description } = useLocalSearchParams<{
+    type?: string;
+    description?: string;
+  }>();
+  const { profile } = useAuth();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [requestId, setRequestId] = useState<string | null>(null);
 
   useEffect(() => {
-    const duration = currentStepIndex === 2 ? 2000 : 5000;
+    async function createRequest() {
+      if (!profile?.id) return;
+
+      try {
+        const { data: associations, error: assocError } = await supabase
+          .from('senior_caretaker')
+          .select('id_caretaker')
+          .eq('id_senior', profile.id);
+
+        if (assocError) console.error('Erro ao buscar associação:', assocError);
+
+        const caretakerId =
+          associations && associations.length > 0
+            ? associations[0].id_caretaker
+            : null;
+
+        const categoryLabel =
+          type === 'food'
+            ? 'Compras'
+            : type === 'pharmacy'
+              ? 'Medicamentos'
+              : type === 'cleaning'
+                ? 'Limpeza'
+                : 'Outros';
+
+        const { data, error: insertError } = await supabase
+          .from('requests')
+          .insert({
+            id_senior: profile.id,
+            id_caretaker: caretakerId,
+            category: categoryLabel,
+            description: description || '',
+            state: 'PENDING',
+          })
+          .select()
+          .single();
+
+        if (insertError) throw insertError;
+        if (data) setRequestId(data.id.toString());
+      } catch (err) {
+        console.error('Error creating request:', err);
+      }
+    }
+
+    createRequest();
+  }, [profile?.id, type, description]);
+
+  useEffect(() => {
+    const duration = currentStepIndex === 2 ? 2000 : 3000;
 
     const timeout = setTimeout(() => {
       if (currentStepIndex < STEPS.length - 1) {
@@ -132,13 +188,13 @@ export default function RequestLoading() {
       } else {
         router.replace({
           pathname: './RequestDetails',
-          params: { type },
+          params: { type, requestId },
         });
       }
     }, duration);
 
     return () => clearTimeout(timeout);
-  }, [currentStepIndex, type]);
+  }, [currentStepIndex, type, requestId]);
 
   return (
     <SafeAreaView
