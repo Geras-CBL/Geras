@@ -101,6 +101,7 @@ export function MedicationSchedule({
                     ? new Date(med.scheduled_time).toLocaleTimeString('pt-PT', {
                         hour: '2-digit',
                         minute: '2-digit',
+                        hour12: false,
                       })
                     : 'Sem hora'}
                 </ThemedText>

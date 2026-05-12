@@ -45,10 +45,14 @@ export default function Requests() {
         setRequests(
           data.map((req) => ({
             id: req.id.toString(),
-            title: req.category?.toUpperCase() || 'PEDIDO',
-            subtitle: new Date(req.created_at).toLocaleTimeString([], {
+            title: `${req.category?.toUpperCase() || 'PEDIDO'}${req.description ? ` - ${req.description}` : ''}`,
+            subtitle: new Date(req.created_at).toLocaleString('pt-PT', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
               hour: '2-digit',
               minute: '2-digit',
+              hour12: false,
             }),
             type: (req.category?.toLowerCase() === 'compras'
               ? 'food'
@@ -123,11 +127,9 @@ export default function Requests() {
       <ScrollView
         className="flex-1 px-6"
         showsVerticalScrollIndicator={false}
-        contentContainerClassName="pb-60"
+        contentContainerClassName="gap-6 pb-10"
       >
-        <View className="mb-6">
-          <ProfilePicker onPress={handleOpenSheet} profile={selectedProfile} />
-        </View>
+        <ProfilePicker onPress={handleOpenSheet} profile={selectedProfile} />
 
         <SectionTitle title="Pedidos" />
 
@@ -148,7 +150,10 @@ export default function Requests() {
                   onPress={() =>
                     router.push({
                       pathname: '/navigation/caretaker/RequestDetails',
-                      params: { type: request.type },
+                      params: {
+                        type: request.type,
+                        requestId: request.id,
+                      },
                     })
                   }
                 >
