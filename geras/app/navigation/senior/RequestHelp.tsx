@@ -4,8 +4,10 @@ import SectionTitle from '@/components/shared/SectionTitle';
 import { ThemedText } from '@/components/ThemedText';
 import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from '@/context/AuthContext';
 
 export default function RequestHelp() {
+  const { profile } = useAuth();
   return (
     <SafeAreaView
       edges={['top']}
@@ -18,7 +20,8 @@ export default function RequestHelp() {
           style={{ fontSize: 16 }}
           accessibilityRole="header"
         >
-          Olá Senhor António, o que precisa...
+          Olá Sr(a). {profile?.name?.split(' ')[0] || 'Senhor'}, o que
+          precisa...
         </ThemedText>
 
         <RequestHelpButton

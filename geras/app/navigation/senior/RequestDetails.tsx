@@ -57,11 +57,18 @@ const requestConfig: Record<
   },
 };
 
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
+
 export default function RequestDetails() {
-  const { type } = useLocalSearchParams<{ type?: string }>();
+  const { profile } = useAuth();
+  const { type, requestId } = useLocalSearchParams<{
+    type?: string;
+    requestId?: string;
+  }>();
   const requestType = type && requestConfig[type] ? type : 'other';
 
-  const { title, image, description, alt } = requestConfig[requestType];
+  const { title, image, alt } = requestConfig[requestType];
 
   const [taskStatus, setTaskStatus] = useState<'inProgress' | 'complete'>(
     'inProgress',
@@ -71,21 +78,51 @@ export default function RequestDetails() {
     useState<EvaluationTaskVariant | null>(null);
 
   const [observation, setObservation] = useState('');
+  const [dbDescription, setDbDescription] = useState('');
+
+  const [caretaker, setCaretaker] = useState<{
+    name: string;
+    role: string;
+    profile_picture?: string;
+  } | null>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setTaskStatus('complete');
-    }, 3000);
+    if (!requestId) return;
 
-    return () => clearTimeout(timer);
-  }, []);
+    async function checkStatus() {
+      try {
+        const { data, error } = await supabase
+          .from('requests')
+          .select('*, caretaker:users!id_caretaker(*)')
+          .eq('id', requestId)
+          .single();
 
-  const volunteer = {
-    name: 'Lucas William',
-    age: 20,
-    role: 'Estudante',
-    avatarUri: undefined,
-  };
+        if (error) throw error;
+        if (data) {
+          if (data.description) {
+            setDbDescription(data.description);
+          }
+          if (data.state !== 'PENDING') {
+            setTaskStatus('complete');
+          }
+          if (data.caretaker) {
+            setCaretaker({
+              name: data.caretaker.name,
+              role: 'Cuidador',
+              profile_picture: data.caretaker.profile_picture,
+            });
+          }
+        }
+      } catch (err) {
+        console.error('Error checking request status:', err);
+      }
+    }
+
+    checkStatus();
+    const interval = setInterval(checkStatus, 5000);
+
+    return () => clearInterval(interval);
+  }, [requestId]);
 
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-20">
@@ -116,7 +153,9 @@ export default function RequestDetails() {
               <ThemedText type="title">{title}</ThemedText>
               <View
                 accessible={true}
-                accessibilityLabel={`Estado da tarefa: ${taskStatus === 'inProgress' ? 'Em progresso' : 'Completa'}`}
+                accessibilityLabel={`Estado da tarefa: ${
+                  taskStatus === 'inProgress' ? 'Em progresso' : 'Completa'
+                }`}
               >
                 <InfoPill
                   text={
@@ -130,17 +169,33 @@ export default function RequestDetails() {
             </View>
 
             <SectionTitle title="Descrição do Pedido" />
-            <ThemedText type="body">{description}</ThemedText>
+            <ThemedText type="body">
+              {profile?.name
+                ? `O/A Sr(a). ${profile.name.split(' ')[0]}`
+                : 'O sénior'}{' '}
+              precisa de ajuda com {title.toLowerCase()}. É pedido:
+              {dbDescription ? ` ${dbDescription}` : ''}
+            </ThemedText>
 
-            <SectionTitle title="Voluntário" />
+            <SectionTitle title="Cuidador" />
 
-            <View
-              accessible={true}
-              accessibilityRole="text"
-              accessibilityLabel={`Voluntário atribuído: ${volunteer.name}, ${volunteer.age} anos, perfil de ${volunteer.role}`}
-            >
-              <ContainerVoluntario {...volunteer} />
-            </View>
+            {caretaker ? (
+              <View
+                accessible={true}
+                accessibilityRole="text"
+                accessibilityLabel={`Cuidador atribuído: ${caretaker.name}`}
+              >
+                <ContainerVoluntario
+                  name={caretaker.name}
+                  role={caretaker.role}
+                  avatarUri={caretaker.profile_picture}
+                />
+              </View>
+            ) : (
+              <ThemedText type="bodySmall" className="text-gray-400">
+                A aguardar atribuição...
+              </ThemedText>
+            )}
 
             {taskStatus === 'complete' && (
               <>
