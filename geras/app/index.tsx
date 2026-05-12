@@ -1,26 +1,43 @@
-import { Link } from 'expo-router';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
+import { Redirect } from 'expo-router';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Index() {
-  return (
-    <View className="flex-1 items-center justify-center gap-8 bg-[#325439]">
-      <Link href="/navigation/volunteer/HomePage" asChild>
-        <TouchableOpacity className="w-[70%] items-center rounded-full bg-[#9FBFA0] p-5 shadow-md active:opacity-80">
-          <Text className="text-2xl font-bold text-white">Voluntário</Text>
-        </TouchableOpacity>
-      </Link>
+  const { session, profile, isLoading } = useAuth();
 
-      <Link href="/navigation/caretaker/HomePage" asChild>
-        <TouchableOpacity className="w-[70%] items-center rounded-full bg-[#9FBFA0] p-5 shadow-md active:opacity-80">
-          <Text className="text-2xl font-bold text-white">Cuidador</Text>
-        </TouchableOpacity>
-      </Link>
+  if (isLoading) {
+    return (
+      <View className="flex-1 items-center justify-center bg-[#325439]">
+        <ActivityIndicator size="large" color="#ffffff" />
+      </View>
+    );
+  }
 
-      <Link href="/navigation/senior/HomePage" asChild>
-        <TouchableOpacity className="w-[70%] items-center rounded-full bg-[#9FBFA0] p-5 shadow-md active:opacity-80">
-          <Text className="text-2xl font-bold text-white">Sénior</Text>
-        </TouchableOpacity>
-      </Link>
-    </View>
-  );
+  // Se não houver sessão, redirecionar para a página de Login
+  if (!session) {
+    return <Redirect href="/navigation/shared/LoginPage" />;
+  }
+
+  // Se houver sessão mas o perfil ainda estiver a carregar, podemos mostrar loading também
+  // O AuthContext atualiza o profile logo depois da sessão
+  if (!profile) {
+    return (
+      <View className="flex-1 items-center justify-center bg-[#325439]">
+        <ActivityIndicator size="large" color="#ffffff" />
+      </View>
+    );
+  }
+
+  // Redirecionamento consoante a Role do utilizador
+  switch (profile.role) {
+    case 'SENIOR':
+      return <Redirect href="/navigation/senior/HomePage" />;
+    case 'CARETAKER':
+      return <Redirect href="/navigation/caretaker/HomePage" />;
+    case 'VOLUNTEER':
+      return <Redirect href="/navigation/volunteer/HomePage" />;
+    default:
+      // Fallback de segurança
+      return <Redirect href="/navigation/shared/LoginPage" />;
+  }
 }

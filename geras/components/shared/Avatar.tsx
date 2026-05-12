@@ -5,9 +5,10 @@ import { ThemedText } from '@/components/ThemedText';
 interface AvatarProps {
   uri?: string | null;
   alt?: string;
+  initials?: string;
 }
 
-const Avatar = ({ uri, alt }: AvatarProps) => {
+const Avatar = ({ uri, alt, initials = 'U' }: AvatarProps) => {
   return (
     <View className="relative h-32 w-32 items-center justify-center overflow-hidden rounded-full border border-secondary bg-secondary/50">
       {uri ? (
@@ -22,7 +23,7 @@ const Avatar = ({ uri, alt }: AvatarProps) => {
         />
       ) : (
         <ThemedText type="title" className="momo font-bold text-neutral">
-          AS
+          {initials.toUpperCase()}
         </ThemedText>
       )}
 
