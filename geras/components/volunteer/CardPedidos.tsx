@@ -1,13 +1,13 @@
 import { View, Pressable, Image, ImageSourcePropType } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
-import srAntonio from '@/assets/images/srAntonio.png';
 
 interface CardPedidosProps {
   name: string;
+  gender?: string;
   task: string;
   type: string | number | (string | number)[] | null | undefined;
   category: string;
-  state: boolean; // true: a decorrer | false: disponível
+  state: boolean;
   isNew: boolean;
   date?: string;
   time?: string;
@@ -18,6 +18,7 @@ interface CardPedidosProps {
 
 export default function CardPedidos({
   name,
+  gender,
   task,
   type,
   category,
@@ -25,7 +26,7 @@ export default function CardPedidos({
   isNew,
   date,
   time,
-  imageUrl = 'https://i.pravatar.cc/309',
+  imageUrl,
   onPress,
   variant = 'home',
 }: Readonly<CardPedidosProps>) {
@@ -40,6 +41,25 @@ export default function CardPedidos({
 
   const statusBorderColor = isAvailable ? 'border-primary' : 'border-[#1d1d1b]';
   const statusTextColor = isAvailable ? 'text-primary' : 'text-[#1d1d1b]';
+
+  const nameParts = name.split(' ').filter(Boolean);
+  const prefix = gender === 'FEMALE' ? 'Sra.' : 'Sr.';
+  const firstAndLast =
+    nameParts.length > 1
+      ? `${nameParts[0]} ${nameParts[nameParts.length - 1]}`
+      : nameParts[0] || 'Sénior';
+  const displayName =
+    name === 'Sénior' || name.startsWith('Sr')
+      ? name
+      : `${prefix} ${firstAndLast}`;
+
+  const initials =
+    nameParts.length > 1
+      ? `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`.toUpperCase()
+      : (nameParts[0]?.[0] || '?').toUpperCase();
+
+  const hasValidImage =
+    typeof imageUrl === 'string' ? imageUrl.length > 0 : imageUrl != null;
   const imageSource =
     typeof imageUrl === 'string' ? { uri: imageUrl } : imageUrl;
 
@@ -61,7 +81,7 @@ export default function CardPedidos({
               type="bodyBold"
               className="mt-1 capitalize text-neutral"
             >
-              {name}
+              {displayName}
             </ThemedText>
           </View>
 
@@ -103,14 +123,22 @@ export default function CardPedidos({
         )}
       </View>
 
-      <Image
-        resizeMode="cover"
-        className="h-24 w-24 rounded-xl bg-gray-200"
-        source={srAntonio}
-        accessible={true}
-        accessibilityRole="image"
-        accessibilityLabel={`Foto de perfil de ${name}`}
-      />
+      {hasValidImage && imageSource ? (
+        <Image
+          resizeMode="cover"
+          className="h-24 w-24 rounded-xl bg-gray-200"
+          source={imageSource}
+          accessible={true}
+          accessibilityRole="image"
+          accessibilityLabel={`Foto de perfil de ${displayName}`}
+        />
+      ) : (
+        <View className="h-24 w-24 items-center justify-center rounded-3xl bg-[#ffefd3]">
+          <ThemedText type="bodyBold" className="text-2xl text-neutral">
+            {initials}
+          </ThemedText>
+        </View>
+      )}
     </Pressable>
   );
 }

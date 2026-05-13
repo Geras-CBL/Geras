@@ -8,7 +8,6 @@ import {
 import { ThemedText } from '@/components/ThemedText';
 import { RequestData } from '@/data/requestVolunteerData';
 import Button from '@/components/shared/Button';
-import srAntonio from '@/assets/images/srAntonio.png';
 
 interface RequestsBottomSheetProps {
   request: RequestData | null;
@@ -33,6 +32,25 @@ const RequestDetailsBottomSheet = forwardRef<
 
   if (!request) return null;
 
+  const nameParts = request.name.split(' ').filter(Boolean);
+  const prefix = request.gender === 'FEMALE' ? 'Sra.' : 'Sr.';
+  const firstAndLast =
+    nameParts.length > 1
+      ? `${nameParts[0]} ${nameParts[nameParts.length - 1]}`
+      : nameParts[0] || 'Sénior';
+  const displayName =
+    request.name === 'Sénior' || request.name.startsWith('Sr')
+      ? request.name
+      : `${prefix} ${firstAndLast}`;
+
+  const initials =
+    nameParts.length > 1
+      ? `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`.toUpperCase()
+      : (nameParts[0]?.[0] || '?').toUpperCase();
+
+  const hasValidImage =
+    typeof request.imageUrl === 'string' && request.imageUrl.length > 0;
+
   return (
     <BottomSheetModal
       ref={ref}
@@ -48,24 +66,30 @@ const RequestDetailsBottomSheet = forwardRef<
       }}
     >
       <BottomSheetView className="flex-1 items-center gap-6 px-[30px] pb-16 pt-3">
-        {/* --- Título --- */}
         <ThemedText type="title" className="text-center text-neutral">
           {request.category || 'Tarefa doméstica'}
         </ThemedText>
 
-        {/* --- Cartão de Perfil --- */}
         <View className="w-full flex-row items-center gap-6 rounded-2xl bg-neutralLight p-6 shadow-lg shadow-neutral">
-          <Image
-            className="h-[100px] w-[100px] rounded-lg bg-gray-200"
-            source={srAntonio}
-            resizeMode="cover"
-            accessible={true}
-            accessibilityRole="image"
-            accessibilityLabel="Foto do pedido"
-          />
+          {hasValidImage ? (
+            <Image
+              className="h-[100px] w-[100px] rounded-lg bg-gray-200"
+              source={{ uri: request.imageUrl as string }}
+              resizeMode="cover"
+              accessible={true}
+              accessibilityRole="image"
+              accessibilityLabel={`Foto de perfil de ${displayName}`}
+            />
+          ) : (
+            <View className="h-[100px] w-[100px] items-center justify-center rounded-lg bg-[#ffefd3]">
+              <ThemedText type="bodyBold" className="text-3xl text-neutral">
+                {initials}
+              </ThemedText>
+            </View>
+          )}
           <View className="flex-1 gap-2 overflow-hidden">
             <ThemedText type="subtitle" className="uppercase text-neutral">
-              {request.name}
+              {displayName}
             </ThemedText>
             {request.age && (
               <ThemedText type="body" className="text-neutral">
@@ -75,9 +99,7 @@ const RequestDetailsBottomSheet = forwardRef<
           </View>
         </View>
 
-        {/* --- Botões de Ação --- */}
         <View className="w-full flex-row gap-6">
-          {/* Botão Recusar */}
           <Button
             title="Recusar"
             onPress={onDecline}
@@ -85,7 +107,6 @@ const RequestDetailsBottomSheet = forwardRef<
             className="flex-1"
           />
 
-          {/* Botão Aceitar */}
           <Button
             title="Aceitar"
             onPress={onAccept}
@@ -94,28 +115,23 @@ const RequestDetailsBottomSheet = forwardRef<
           />
         </View>
 
-        {/* --- Detalhes (Lista) --- */}
         <View className="w-full gap-2">
-          {/* Distância */}
           <ThemedText className="text-base text-[#1d1d1b]">
             <ThemedText type="bodyBold">Distância: </ThemedText>
             {request.distance || '2.3 Km'}
           </ThemedText>
 
-          {/* Tempo */}
           <ThemedText className="text-base text-[#1d1d1b]">
             <ThemedText type="bodyBold">Tempo: </ThemedText>
             {request.time || '30min'}
           </ThemedText>
 
-          {/* Localização */}
           <ThemedText className="text-base text-[#1d1d1b]">
             <ThemedText type="bodyBold">Localização: </ThemedText>
             {request.location ||
               'Rua João Pereira Almeida 76, Safira, Portugal'}
           </ThemedText>
 
-          {/* Descrição */}
           <ThemedText className="text-base text-[#1d1d1b]">
             <ThemedText type="bodyBold">Descrição do pedido: </ThemedText>
             {request.task}
