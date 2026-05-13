@@ -368,6 +368,7 @@ export default function RootLayout() {
                           onRightPress={() =>
                             router.push('../shared/Notifications')
                           }
+                          onLogoutPress={handleLogout}
                         />
                       ),
                     }}
