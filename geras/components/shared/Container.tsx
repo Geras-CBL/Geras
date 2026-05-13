@@ -5,11 +5,17 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 type ContainerSeniorProps = {
   name: string;
-  age: number;
+  age?: number;
+  role?: string;
   avatarUri?: string;
 };
 
-const ContainerSenior = ({ name, age, avatarUri }: ContainerSeniorProps) => {
+const ContainerSenior = ({
+  name,
+  age,
+  role,
+  avatarUri,
+}: ContainerSeniorProps) => {
   return (
     <View className="h-32 w-full flex-row items-center rounded-2xl bg-white px-4 shadow-md">
       {avatarUri ? (
@@ -26,9 +32,16 @@ const ContainerSenior = ({ name, age, avatarUri }: ContainerSeniorProps) => {
         <ThemedText type="body" className="text-lg text-neutral">
           {name}
         </ThemedText>
-        <ThemedText type="bodyInfo" className="mt-2 text-sm text-neutral/60">
-          {age} anos
-        </ThemedText>
+        {age !== undefined && age > 0 && (
+          <ThemedText type="bodyInfo" className="mt-2 text-sm text-neutral/60">
+            {age} anos
+          </ThemedText>
+        )}
+        {role && (
+          <ThemedText type="bodyInfo" className="mt-1 text-sm text-neutral/60">
+            {role}
+          </ThemedText>
+        )}
       </View>
     </View>
   );

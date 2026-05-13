@@ -1,16 +1,18 @@
+import { supabase } from '@/lib/supabase';
 import { ThemedText } from '@/components/ThemedText';
 import Container from '@/components/shared/Container';
 import EvaluationTask from '@/components/shared/EvaluationTask';
 import { InfoPill } from '@/components/shared/InfoPill';
 import SectionTitle from '@/components/shared/SectionTitle';
 import { useLocalSearchParams } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Image,
   ScrollView,
   View,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -46,16 +48,58 @@ const requestConfig: Record<
 };
 
 export default function RequestDetails() {
-  const { type } = useLocalSearchParams<{ type?: string }>();
+  const { type, requestId } = useLocalSearchParams<{
+    type?: string;
+    requestId?: string;
+  }>();
   const requestType = type && requestConfig[type] ? type : 'other';
+  const { title, image, alt } = requestConfig[requestType];
 
-  const { title, image, description, alt } = requestConfig[requestType];
+  const [loading, setLoading] = useState(true);
+  const [requestData, setRequestData] = useState<any>(null);
+  const [senior, setSenior] = useState<{
+    name: string;
+    local: string;
+    avatarUri: string;
+  } | null>(null);
 
-  const volunteer = {
-    name: 'Lucas Williams',
-    age: 27,
-    avatarUri: '',
-  };
+  useEffect(() => {
+    async function fetchDetails() {
+      if (!requestId) return;
+      try {
+        const { data, error } = await supabase
+          .from('requests')
+          .select('*, senior:users!id_senior(*)')
+          .eq('id', requestId)
+          .single();
+
+        if (error) throw error;
+        if (data) {
+          setRequestData(data);
+          if (data.senior) {
+            setSenior({
+              name: data.senior.name,
+              local: data.senior.local || 'Local não especificado',
+              avatarUri: data.senior.profile_picture || '',
+            });
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching request details:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchDetails();
+  }, [requestId]);
+
+  if (loading) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white">
+        <ActivityIndicator size="large" color="#205a2d" />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-20">
@@ -84,31 +128,57 @@ export default function RequestDetails() {
           <View className="gap-6 px-6">
             <View className="items-center gap-4 pb-4">
               <ThemedText type="title">{title}</ThemedText>
-              <InfoPill text="Completa" variant="success" />
+              <InfoPill
+                text={
+                  requestData?.state === 'PENDING' ? 'Pendente' : 'Completa'
+                }
+                variant={
+                  requestData?.state === 'PENDING' ? 'secondary' : 'success'
+                }
+              />
             </View>
 
             <SectionTitle title="Descrição do Pedido" />
             <View className="-mt-4 pb-6">
-              <ThemedText type="body">{description}</ThemedText>
-            </View>
-
-            <SectionTitle title="Voluntári@" />
-            <Container {...volunteer} />
-
-            <View className="mt-6">
-              <ThemedText type="title">
-                Classificação de António Silva
+              <ThemedText type="body">
+                {senior?.name
+                  ? `O/A Sr(a). ${senior.name.split(' ')[0]}`
+                  : 'O sénior'}{' '}
+                precisa de ajuda com {title.toLowerCase()}.
+                {requestData?.description
+                  ? `\nPedido do sénior: "${requestData.description}"`
+                  : ''}
               </ThemedText>
             </View>
 
-            <View className="items-start">
-              <EvaluationTask
-                variant="sentiment_satisfied"
-                selected
-                isAnySelected
-                onPress={() => {}}
+            <SectionTitle title="Sénior" />
+            {senior && (
+              <Container
+                name={senior.name}
+                age={0}
+                role={senior.local}
+                avatarUri={senior.avatarUri}
               />
-            </View>
+            )}
+
+            {requestData?.state === 'COMPLETED' && (
+              <>
+                <View className="mt-6">
+                  <ThemedText type="title">
+                    Classificação de {senior?.name}
+                  </ThemedText>
+                </View>
+
+                <View className="items-start">
+                  <EvaluationTask
+                    variant="sentiment_satisfied"
+                    selected
+                    isAnySelected
+                    onPress={() => {}}
+                  />
+                </View>
+              </>
+            )}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
