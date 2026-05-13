@@ -1,20 +1,21 @@
 import { ThemedText } from '@/components/ThemedText';
 import Button from '@/components/shared/Button';
 import CommentBox from '@/components/shared/CommentBox';
-import ContainerSenior from '@/components/shared/Container';
 import EvaluationTask from '@/components/shared/EvaluationTask';
 import { InfoPill } from '@/components/shared/InfoPill';
 import SectionTitle from '@/components/shared/SectionTitle';
 import { useLocalSearchParams } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Image,
   ScrollView,
   View,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { supabase } from '@/lib/supabase';
 
 type EvaluationTaskVariant =
   | 'sentiment_dissatisfied'
@@ -23,55 +24,108 @@ type EvaluationTaskVariant =
 
 const requestConfig: Record<
   string,
-  { title: string; image: any; description: string; alt?: string }
+  { title: string; image: any; alt?: string }
 > = {
   food: {
     title: 'Pedido de Compras',
     image: require('@/assets/images/food.png'),
-    description:
-      'O Sr. António precisa de auxílio para realizar compras de alimentos essenciais.',
     alt: 'Imagem que representa um pedido de compras, com saco de supermercado',
   },
   pharmacy: {
     title: 'Pedido de Farmácia',
     image: require('@/assets/images/medicine.png'),
-    description:
-      'O Sr. António precisa de auxílio para buscar medicamentos na farmácia.',
     alt: 'Imagem que representa um pedido de farmácia, com uma caixa de remédios',
   },
   cleaning: {
     title: 'Tarefa Doméstica',
     image: require('@/assets/images/domestic-tasks.png'),
-    description:
-      'O Sr. António precisa de ajuda para realizar tarefas domésticas devido à sua mobilidade reduzida.',
     alt: 'Imagem que representa uma tarefa doméstica, com um balde e uma vassoura',
   },
   other: {
     title: 'Pedido Personalizado',
     image: require('@/assets/images/domestic-tasks.png'),
-    description:
-      'O Sr. António realizou um pedido personalizado que necessita de apoio.',
-    alt: 'Imagem que representa um pedido personalizado, com um ícone genérico de solicitação',
+    alt: 'Imagem que representa um pedido personalizado',
   },
 };
 
 export default function RequestDetails() {
-  const { type } = useLocalSearchParams<{ type?: string }>();
+  const { type, requestId } = useLocalSearchParams<{
+    type?: string;
+    requestId?: string;
+  }>();
   const requestType = type && requestConfig[type] ? type : 'other';
+  const { title, image, alt } = requestConfig[requestType];
 
-  const { title, image, description, alt } = requestConfig[requestType];
+  const [loading, setLoading] = useState(true);
+  const [requestData, setRequestData] = useState<any>(null);
 
   const [selectedVariant, setSelectedVariant] =
     useState<EvaluationTaskVariant | null>(null);
-
   const [observation, setObservation] = useState('');
 
-  const volunteer = {
-    name: 'António Silva',
-    age: 74,
-    avatarUri: '',
-    alt: 'Foto do perfil de António Silva',
-  };
+  const fetchRequestDetails = useCallback(async () => {
+    if (!requestId) return;
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('requests')
+        .select(
+          '*, senior:users!id_senior(name, gender, profile_picture, local)',
+        )
+        .eq('id', requestId)
+        .maybeSingle();
+
+      if (error) throw error;
+      setRequestData(data);
+    } catch (err) {
+      console.error('Error fetching request details:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [requestId]);
+
+  useEffect(() => {
+    fetchRequestDetails();
+  }, [fetchRequestDetails]);
+
+  const seniorName = requestData?.senior?.name || 'Sénior';
+  const nameParts = seniorName.split(' ').filter(Boolean);
+  const prefix = requestData?.senior?.gender === 'FEMALE' ? 'Sra.' : 'Sr.';
+  const firstAndLast =
+    nameParts.length > 1
+      ? `${nameParts[0]} ${nameParts[nameParts.length - 1]}`
+      : nameParts[0] || 'Sénior';
+  const displayName =
+    seniorName === 'Sénior' || seniorName.startsWith('Sr')
+      ? seniorName
+      : `${prefix} ${firstAndLast}`;
+
+  const initials =
+    nameParts.length > 1
+      ? `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`.toUpperCase()
+      : (nameParts[0]?.[0] || '?').toUpperCase();
+
+  const seniorPhoto = requestData?.senior?.profile_picture;
+  const hasPhoto = typeof seniorPhoto === 'string' && seniorPhoto.length > 0;
+
+  const reqState = requestData?.state;
+  const pillText = reqState === 'COMPLETED' ? 'Completa' : 'Pendente';
+  const pillVariant = reqState === 'COMPLETED' ? 'success' : 'secondary';
+
+  const description =
+    requestData?.description ||
+    `${displayName} realizou um pedido que necessita de apoio.`;
+
+  if (loading) {
+    return (
+      <SafeAreaView
+        edges={['top']}
+        className="flex-1 items-center justify-center pt-20"
+      >
+        <ActivityIndicator size="large" color="#205a2d" />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-20">
@@ -100,39 +154,69 @@ export default function RequestDetails() {
           <View className="gap-6 px-6">
             <View className="items-center gap-4">
               <ThemedText type="title">{title}</ThemedText>
-              <InfoPill text="Completa" variant="success" />
+              <InfoPill text={pillText} variant={pillVariant} />
             </View>
 
             <SectionTitle title="Descrição do Pedido" />
             <ThemedText type="body">{description}</ThemedText>
 
-            <ContainerSenior {...volunteer} />
-
-            <>
-              <ThemedText type="title">Como Correu A Tarefa</ThemedText>
-
-              <View className="flex-row gap-4">
-                {(
-                  [
-                    'sentiment_dissatisfied',
-                    'sentiment_neutral',
-                    'sentiment_satisfied',
-                  ] as EvaluationTaskVariant[]
-                ).map((variant) => (
-                  <EvaluationTask
-                    key={variant}
-                    variant={variant}
-                    selected={selectedVariant === variant}
-                    isAnySelected={!!selectedVariant}
-                    onPress={() =>
-                      setSelectedVariant(
-                        selectedVariant === variant ? null : variant,
-                      )
-                    }
+            <View className="h-32 w-full flex-row items-center rounded-2xl bg-white px-4 shadow-md">
+              {hasPhoto ? (
+                <View className="h-20 w-20 overflow-hidden rounded-full">
+                  <Image
+                    source={{ uri: seniorPhoto }}
+                    className="h-full w-full"
                   />
-                ))}
+                </View>
+              ) : (
+                <View className="h-20 w-20 items-center justify-center rounded-lg bg-[#ffefd3]">
+                  <ThemedText type="bodyBold" className="text-2xl text-neutral">
+                    {initials}
+                  </ThemedText>
+                </View>
+              )}
+              <View className="ml-4 justify-center">
+                <ThemedText type="body" className="text-lg text-neutral">
+                  {displayName}
+                </ThemedText>
+                {requestData?.senior?.local && (
+                  <ThemedText
+                    type="bodyInfo"
+                    className="mt-1 text-sm text-neutral/60"
+                  >
+                    {requestData.senior.local}
+                  </ThemedText>
+                )}
               </View>
-            </>
+            </View>
+
+            {reqState === 'COMPLETED' && (
+              <>
+                <ThemedText type="title">Como Correu A Tarefa</ThemedText>
+
+                <View className="flex-row gap-4">
+                  {(
+                    [
+                      'sentiment_dissatisfied',
+                      'sentiment_neutral',
+                      'sentiment_satisfied',
+                    ] as EvaluationTaskVariant[]
+                  ).map((variant) => (
+                    <EvaluationTask
+                      key={variant}
+                      variant={variant}
+                      selected={selectedVariant === variant}
+                      isAnySelected={!!selectedVariant}
+                      onPress={() =>
+                        setSelectedVariant(
+                          selectedVariant === variant ? null : variant,
+                        )
+                      }
+                    />
+                  ))}
+                </View>
+              </>
+            )}
 
             <SectionTitle title="Enviar Observação" />
             <CommentBox value={observation} onChangeText={setObservation} />
@@ -146,8 +230,6 @@ export default function RequestDetails() {
             )}
           </View>
         </ScrollView>
-
-        {/* FIXO NO FUNDO */}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
