@@ -3,19 +3,63 @@ import Button from '@/components/shared/Button';
 import { NotificationCard } from '@/components/shared/Notification';
 import SectionTitle from '@/components/shared/SectionTitle';
 import { ThemedText } from '@/components/ThemedText';
-import { GroceryItem, INITIAL_GROCERIES } from '@/data/groceryData';
+interface GroceryItem {
+  id: string;
+  name: string;
+  checked: boolean;
+}
 import { MaterialIcons } from '@expo/vector-icons';
 import { Checkbox } from '@futurejj/react-native-checkbox';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { ScrollView, TouchableOpacity, View } from 'react-native';
+import { useRouter, useFocusEffect } from 'expo-router';
+import { useState, useCallback } from 'react';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
+import {
+  ScrollView,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+} from 'react-native';
 import * as Progress from 'react-native-progress';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Groceries() {
   const router = useRouter();
+  const { profile } = useAuth();
 
-  const [items, setItems] = useState<GroceryItem[]>(INITIAL_GROCERIES);
+  const [items, setItems] = useState<GroceryItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useFocusEffect(
+    useCallback(() => {
+      async function fetchGroceries() {
+        if (!profile?.id) return;
+        try {
+          const { data, error } = await supabase
+            .from('senior_groceries')
+            .select('*, groceries(*)')
+            .eq('id_senior', profile.id);
+
+          if (error) {
+            console.error('Error fetching groceries:', error);
+          } else if (data) {
+            const formattedItems = data.map((item: any) => ({
+              id: item.id.toString(),
+              name: item.groceries?.name || 'Item desconhecido',
+              checked: false,
+            }));
+            setItems(formattedItems);
+          }
+        } catch (err) {
+          console.error('Unexpected error:', err);
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      fetchGroceries();
+    }, []),
+  );
 
   const toggleCheckbox = (id: string) => {
     setItems((currentItems) =>
@@ -63,28 +107,32 @@ export default function Groceries() {
           <SectionTitle title="Lista de Compras" />
 
           <View className="w-full">
-            {items.map((item) => (
-              <TouchableOpacity
-                key={item.id}
-                className="mb-3 flex-row items-center rounded-2xl border border-gray-100 bg-white p-3 shadow-lg"
-                onPress={() => toggleCheckbox(item.id)}
-                accessible={true}
-                accessibilityRole="checkbox"
-                accessibilityState={{ checked: item.checked }}
-                accessibilityLabel={item.name}
-                accessibilityHint={`Toca duas vezes para ${item.checked ? 'remover da' : 'adicionar à'} lista de compras`}
-              >
-                <Checkbox
-                  status={item.checked ? 'checked' : 'unchecked'}
+            {loading ? (
+              <ActivityIndicator size="large" color="#2F5C3E" />
+            ) : (
+              items.map((item) => (
+                <TouchableOpacity
+                  key={item.id}
+                  className="mb-3 flex-row items-center rounded-2xl border border-gray-100 bg-white p-3 shadow-lg"
                   onPress={() => toggleCheckbox(item.id)}
-                  color={item.checked ? '#205a2d' : '#969696'}
-                  style={{ transform: [{ scale: 1.4 }] }}
-                />
-                <ThemedText className={`ml-2 text-base text-neutral`}>
-                  {item.name}
-                </ThemedText>
-              </TouchableOpacity>
-            ))}
+                  accessible={true}
+                  accessibilityRole="checkbox"
+                  accessibilityState={{ checked: item.checked }}
+                  accessibilityLabel={item.name}
+                  accessibilityHint={`Toca duas vezes para ${item.checked ? 'remover da' : 'adicionar à'} lista de compras`}
+                >
+                  <Checkbox
+                    status={item.checked ? 'checked' : 'unchecked'}
+                    onPress={() => toggleCheckbox(item.id)}
+                    color={item.checked ? '#205a2d' : '#969696'}
+                    style={{ transform: [{ scale: 1.4 }] }}
+                  />
+                  <ThemedText className={`ml-2 text-base text-neutral`}>
+                    {item.name}
+                  </ThemedText>
+                </TouchableOpacity>
+              ))
+            )}
           </View>
         </View>
 

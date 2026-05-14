@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { supabase } from '@/lib/supabase';
 import {
   View,
   TextInput,
@@ -13,18 +14,20 @@ import { ThemedText } from '@/components/ThemedText';
 import Button from '@/components/shared/Button';
 import SectionTitle from '@/components/shared/SectionTitle';
 import BottomActions from '@/components/senior/BottomActions';
+import { useAuth } from '@/context/AuthContext';
 
 type MetricStatus = 'Adequado' | 'Moderado' | 'Excessivo';
 
 export default function AddHealthMetric() {
   const router = useRouter();
+  const { profile } = useAuth();
 
   const [title, setTitle] = useState('');
   const [value, setValue] = useState('');
   const [unit, setUnit] = useState('');
   const [status, setStatus] = useState<MetricStatus>('Adequado');
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!title || !value || !unit) {
       Alert.alert(
         'Falta Informação',
@@ -33,10 +36,32 @@ export default function AddHealthMetric() {
       return;
     }
 
-    const newMetric = { id: Date.now(), title, value, unit, status };
-    console.log('Saving:', newMetric);
+    if (!profile?.id) {
+      Alert.alert('Erro', 'Sessão inválida. Por favor faça login novamente.');
+      return;
+    }
 
-    router.back();
+    try {
+      const { error } = await supabase.from('monitoring').insert([
+        {
+          id_senior: profile.id,
+          custom_metric_name: title,
+          custom_metric_value: parseFloat(value),
+          unit: unit,
+          // Opcional: tentar mapear o título para um tipo enum se for um dos conhecidos
+        },
+      ]);
+
+      if (error) {
+        console.error('Error saving metric:', error);
+        Alert.alert('Erro', 'Não foi possível guardar o registo.');
+      } else {
+        router.back();
+      }
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      Alert.alert('Erro', 'Ocorreu um erro inesperado.');
+    }
   };
 
   return (

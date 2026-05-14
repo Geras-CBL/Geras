@@ -2,7 +2,15 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 
-const Resume = () => {
+interface ResumeProps {
+  alertsCount: number;
+  healthProblemsCount: number;
+}
+
+const Resume: React.FC<ResumeProps> = ({
+  alertsCount,
+  healthProblemsCount,
+}) => {
   return (
     <View className="w-full flex-row items-center rounded-2xl bg-neutralLight px-4 py-2 shadow-lg">
       <View className="flex-1 flex-row">
@@ -12,8 +20,12 @@ const Resume = () => {
 
             <ThemedText type="bodyInfo">
               {' '}
-              <ThemedText className="text-[#a20707]">1 aviso</ThemedText>
-              {' e 0 problemas saúde '}
+              <ThemedText
+                className={alertsCount > 0 ? 'text-[#a20707]' : 'text-primary'}
+              >
+                {alertsCount} {alertsCount === 1 ? 'aviso' : 'avisos'}
+              </ThemedText>
+              {` e ${healthProblemsCount} ${healthProblemsCount === 1 ? 'problema' : 'problemas'} saúde`}
             </ThemedText>
           </ThemedText>
         </View>

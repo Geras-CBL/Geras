@@ -46,7 +46,9 @@ export default function Home() {
     statusLabel = 'A Decorrer';
   }
 
-  const seniorLabel = seniorFilter ? `Sénior: ${seniorFilter}` : 'Sénior';
+  //Fica comentado para já, isto porque caso a aplicação cresça e seja necessário
+  //ordenar ou filtrar os pedidos por sénior, este código está pronto a ser usado
+  //const seniorLabel = seniorFilter ? `Sénior: ${seniorFilter}` : 'Sénior';
 
   let typeLabel = 'Tipo';
   if (typeFilter === 'cleaning') typeLabel = 'Limpeza';
@@ -81,11 +83,11 @@ export default function Home() {
                   isActive={typeFilter !== 'todos'}
                   onPress={handleTypeFilterPress}
                 />
-                <FilterButton
+                {/* <FilterButton
                   label={seniorLabel}
                   isActive={!!seniorFilter}
                   onPress={handleSeniorFilterPress}
-                />
+                /> */}
               </View>
             )}
 
