@@ -1,5 +1,5 @@
-import React, { forwardRef, useMemo } from 'react';
-import { View, Image } from 'react-native';
+import React, { forwardRef, useMemo, useState } from 'react';
+import { View, Image, Pressable, ActivityIndicator } from 'react-native';
 import {
   BottomSheetModal,
   BottomSheetView,
@@ -7,26 +7,32 @@ import {
 } from '@gorhom/bottom-sheet';
 import { ThemedText } from '@/components/ThemedText';
 import { MaterialIcons } from '@expo/vector-icons';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
 
 interface VoucherData {
+  id: string;
   name_store: string;
   value: string;
   address: string;
   currentTasks: number;
   totalTasks: number;
-  status: boolean; // Importante ter o status aqui
+  status: string;
 }
 
 interface VoucherBottomSheetProps {
   voucher: VoucherData | null;
   onChange?: (index: number) => void;
+  onVoucherUsed?: () => void;
 }
 
 const VoucherBottomSheet = forwardRef<
   BottomSheetModal,
   VoucherBottomSheetProps
->(({ voucher, onChange }, ref) => {
-  const snapPoints = useMemo(() => ['45%'], []);
+>(({ voucher, onChange, onVoucherUsed }, ref) => {
+  const { profile } = useAuth();
+  const [markingUsed, setMarkingUsed] = useState(false);
+  const snapPoints = useMemo(() => ['50%'], []);
 
   const renderBackdrop = (props: any) => (
     <BottomSheetBackdrop
@@ -39,9 +45,9 @@ const VoucherBottomSheet = forwardRef<
 
   if (!voucher) return null;
 
-  // --- LÓGICA DE ESTADOS ---
-  const isUsed = voucher.status === false;
-  const isCompleted = voucher.currentTasks >= voucher.totalTasks;
+  const isUsed = voucher.status === 'USED';
+  const isReady = voucher.status === 'AVAILABLE';
+  const isCompleted = isReady && voucher.currentTasks >= voucher.totalTasks;
 
   return (
     <BottomSheetModal
@@ -113,6 +119,48 @@ const VoucherBottomSheet = forwardRef<
               <ThemedText type="bodyBold">Localização: </ThemedText>
               <ThemedText className="font-rubik">{voucher.address}</ThemedText>
             </ThemedText>
+
+            <Pressable
+              className="mt-2 w-full rounded-xl bg-primary px-6 py-3"
+              onPress={async () => {
+                if (!profile?.id || !voucher.id) return;
+                setMarkingUsed(true);
+                try {
+                  const voucherId = parseInt(voucher.id);
+                  const volunteerId = profile.id;
+
+                  const { error } = await supabase
+                    .from('vouchers_volunteer')
+                    .update({ status: 'USED' })
+                    .eq('id_voucher', voucherId)
+                    .eq('id_volunteer', volunteerId);
+
+                  if (error) throw error;
+
+                  // Fechar o bottom sheet e notificar o pai
+                  if (ref && typeof ref !== 'function' && ref.current) {
+                    ref.current.dismiss();
+                  }
+                  onVoucherUsed?.();
+                } catch (err) {
+                  console.error('Erro ao marcar voucher como usado:', err);
+                } finally {
+                  setMarkingUsed(false);
+                }
+              }}
+              disabled={markingUsed}
+            >
+              {markingUsed ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <ThemedText
+                  type="bodyBold"
+                  className="text-center text-neutralLight"
+                >
+                  Marcar como Utilizado
+                </ThemedText>
+              )}
+            </Pressable>
           </>
         ) : (
           //  Incompleto - Não disponível
