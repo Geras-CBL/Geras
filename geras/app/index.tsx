@@ -1,9 +1,9 @@
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, Text, TouchableOpacity } from 'react-native';
 import { Redirect } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 
 export default function Index() {
-  const { session, profile, isLoading } = useAuth();
+  const { session, profile, isLoading, signOut } = useAuth();
 
   if (isLoading) {
     return (
@@ -18,12 +18,19 @@ export default function Index() {
     return <Redirect href="/navigation/shared/LoginPage" />;
   }
 
-  // Se houver sessão mas o perfil ainda estiver a carregar, podemos mostrar loading também
-  // O AuthContext atualiza o profile logo depois da sessão
+  // Se houver sessão mas o perfil não for encontrado ou falhar o carregamento, mostrar erro com opção de sair
   if (!profile) {
     return (
       <View className="flex-1 items-center justify-center bg-[#325439]">
-        <ActivityIndicator size="large" color="#ffffff" />
+        <Text className="text-white text-lg mb-4 text-center px-8">
+          Não foi possível carregar o perfil. Por favor, tente novamente ou use o botão para terminar sessão.
+        </Text>
+        <TouchableOpacity
+          onPress={signOut}
+          className="bg-white px-6 py-3 rounded-full"
+        >
+          <Text className="text-[#325439] font-semibold">Terminar Sessão</Text>
+        </TouchableOpacity>
       </View>
     );
   }
