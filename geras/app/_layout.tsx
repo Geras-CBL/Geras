@@ -75,378 +75,381 @@ export default function RootLayout() {
                       contentStyle: { backgroundColor: 'transparent' },
                     }}
                   >
-                  <Stack.Screen name="index" options={{ headerShown: false }} />
-                  {/* senior */}
-                  <Stack.Screen
-                    name="navigation/senior/HomePage"
-                    options={{
-                      headerShown: true,
-                      headerTransparent: true,
-                      contentStyle: { backgroundColor: '#fbfbfb' },
-                      header: () => (
-                        <Header
-                          leftIconName="home"
-                          rightIconName="settings"
-                          leftIconLabel="Ir para a página inicial"
-                          rightIconLabel="Abrir definições"
-                          onLeftPress={() => {}}
-                          onRightPress={() =>
-                            router.push('/navigation/senior/Settings')
-                          }
-                          onLogoutPress={handleLogout}
-                        />
-                      ),
-                    }}
-                  />
+                    <Stack.Screen
+                      name="index"
+                      options={{ headerShown: false }}
+                    />
+                    {/* senior */}
+                    <Stack.Screen
+                      name="navigation/senior/HomePage"
+                      options={{
+                        headerShown: true,
+                        headerTransparent: true,
+                        contentStyle: { backgroundColor: '#fbfbfb' },
+                        header: () => (
+                          <Header
+                            leftIconName="home"
+                            rightIconName="settings"
+                            leftIconLabel="Ir para a página inicial"
+                            rightIconLabel="Abrir definições"
+                            onLeftPress={() => {}}
+                            onRightPress={() =>
+                              router.push('/navigation/senior/Settings')
+                            }
+                            onLogoutPress={handleLogout}
+                          />
+                        ),
+                      }}
+                    />
 
-                  <Stack.Screen
-                    name="navigation/senior/RequestLoading"
-                    options={{
-                      headerShown: true,
-                      headerTransparent: true,
-                      contentStyle: { backgroundColor: '#fbfbfb' },
-                      header: () => (
-                        <Header
-                          leftIconName="home"
-                          rightIconName="settings"
-                          leftIconLabel="Ir para a página inicial"
-                          rightIconLabel="Abrir definições"
-                          onLeftPress={() => {}}
-                          onRightPress={() =>
-                            router.push('/navigation/senior/Settings')
-                          }
-                          isWhite={false}
-                          onLogoutPress={handleLogout}
-                        />
-                      ),
-                    }}
-                  />
-                  <Stack.Screen
-                    name="navigation/senior/Health"
-                    options={{
-                      headerShown: true,
-                      headerTransparent: true,
-                      contentStyle: { backgroundColor: '#fbfbfb' },
-                      header: () => (
-                        <Header
-                          leftIconName="home"
-                          rightIconName="settings"
-                          leftIconLabel="Ir para a página inicial"
-                          rightIconLabel="Abrir definições"
-                          onLeftPress={() =>
-                            router.push('/navigation/senior/HomePage')
-                          }
-                          onRightPress={() =>
-                            router.push('/navigation/senior/Settings')
-                          }
-                          onLogoutPress={handleLogout}
-                        />
-                      ),
-                    }}
-                  />
-                  <Stack.Screen
-                    name="navigation/senior/Settings"
-                    options={{
-                      headerShown: true,
-                      headerTransparent: true,
-                      contentStyle: { backgroundColor: '#fbfbfb' },
-                      header: () => (
-                        <Header
-                          leftIconName="home"
-                          rightIconName="settings"
-                          leftIconLabel="Ir para a página inicial"
-                          rightIconLabel="Abrir definições"
-                          onLeftPress={() =>
-                            router.push('/navigation/senior/HomePage')
-                          }
-                          onRightPress={() => {}}
-                          onLogoutPress={handleLogout}
-                        />
-                      ),
-                    }}
-                  />
-                  <Stack.Screen
-                    name="navigation/senior/EmergencyCall"
-                    options={{
-                      headerShown: true,
-                      headerTransparent: true,
-                      contentStyle: { backgroundColor: '#fbfbfb' },
-                      header: () => (
-                        <Header
-                          leftIconName="home"
-                          rightIconName="settings"
-                          leftIconLabel="Ir para a página inicial"
-                          rightIconLabel="Abrir definições"
-                          onLeftPress={() =>
-                            router.push('/navigation/senior/HomePage')
-                          }
-                          onRightPress={() =>
-                            router.push('/navigation/senior/Settings')
-                          }
-                          onLogoutPress={handleLogout}
-                        />
-                      ),
-                    }}
-                  />
-                  <Stack.Screen
-                    name="navigation/senior/CaretakerCall"
-                    options={{
-                      headerShown: true,
-                      headerTransparent: true,
-                      contentStyle: { backgroundColor: '#fbfbfb' },
-                      header: () => (
-                        <Header
-                          leftIconName="home"
-                          rightIconName="settings"
-                          leftIconLabel="Ir para a página inicial"
-                          rightIconLabel="Abrir definições"
-                          onLeftPress={() =>
-                            router.push('/navigation/senior/HomePage')
-                          }
-                          onRightPress={() =>
-                            router.push('/navigation/senior/Settings')
-                          }
-                          onLogoutPress={handleLogout}
-                        />
-                      ),
-                    }}
-                  />
-                  <Stack.Screen
-                    name="navigation/senior/RequestHelp"
-                    options={{
-                      headerShown: true,
-                      headerTransparent: true,
-                      contentStyle: { backgroundColor: '#fbfbfb' },
-                      header: () => (
-                        <Header
-                          leftIconName="home"
-                          rightIconName="settings"
-                          leftIconLabel="Ir para a página inicial"
-                          rightIconLabel="Abrir definições"
-                          onLeftPress={() =>
-                            router.push('/navigation/senior/HomePage')
-                          }
-                          onRightPress={() =>
-                            router.push('/navigation/senior/Settings')
-                          }
-                          onLogoutPress={handleLogout}
-                        />
-                      ),
-                    }}
-                  />
-                  <Stack.Screen
-                    name="navigation/senior/Requests"
-                    options={{
-                      headerShown: true,
-                      headerTransparent: true,
-                      contentStyle: { backgroundColor: '#fbfbfb' },
-                      header: () => (
-                        <Header
-                          leftIconName="home"
-                          rightIconName="settings"
-                          leftIconLabel="Ir para a página inicial"
-                          rightIconLabel="Abrir definições"
-                          onLeftPress={() =>
-                            router.push('/navigation/senior/HomePage')
-                          }
-                          onRightPress={() =>
-                            router.push('/navigation/senior/Settings')
-                          }
-                          onLogoutPress={handleLogout}
-                        />
-                      ),
-                    }}
-                  />
-                  <Stack.Screen
-                    name="navigation/senior/Voice"
-                    options={{
-                      headerShown: true,
-                      headerTransparent: true,
-                      contentStyle: { backgroundColor: '#fbfbfb' },
-                      header: () => (
-                        <Header
-                          leftIconName="home"
-                          rightIconName="settings"
-                          leftIconLabel="Ir para a página inicial"
-                          rightIconLabel="Abrir definições"
-                          onLeftPress={() =>
-                            router.push('/navigation/senior/HomePage')
-                          }
-                          onRightPress={() =>
-                            router.push('/navigation/senior/Settings')
-                          }
-                          onLogoutPress={handleLogout}
-                        />
-                      ),
-                    }}
-                  />
-                  <Stack.Screen
-                    name="navigation/senior/Groceries"
-                    options={{
-                      headerShown: true,
-                      headerTransparent: true,
-                      contentStyle: { backgroundColor: '#fbfbfb' },
-                      header: () => (
-                        <Header
-                          leftIconName="home"
-                          rightIconName="settings"
-                          leftIconLabel="Ir para a página inicial"
-                          rightIconLabel="Abrir definições"
-                          onLeftPress={() =>
-                            router.push('/navigation/senior/HomePage')
-                          }
-                          onRightPress={() =>
-                            router.push('/navigation/senior/Settings')
-                          }
-                          onLogoutPress={handleLogout}
-                        />
-                      ),
-                    }}
-                  />
-                  <Stack.Screen
-                    name="navigation/senior/AddGrocerieList"
-                    options={{
-                      headerShown: true,
-                      headerTransparent: true,
-                      contentStyle: { backgroundColor: '#fbfbfb' },
-                      header: () => (
-                        <Header
-                          leftIconName="home"
-                          rightIconName="settings"
-                          leftIconLabel="Ir para a página inicial"
-                          rightIconLabel="Abrir definições"
-                          onLeftPress={() =>
-                            router.push('/navigation/senior/HomePage')
-                          }
-                          onRightPress={() =>
-                            router.push('/navigation/senior/Settings')
-                          }
-                          onLogoutPress={handleLogout}
-                        />
-                      ),
-                    }}
-                  />
-                  <Stack.Screen
-                    name="navigation/senior/RequestDetails"
-                    options={{
-                      headerShown: true,
-                      headerTransparent: true,
-                      contentStyle: { backgroundColor: '#fbfbfb' },
-                      header: () => (
-                        <Header
-                          leftIconName="home"
-                          rightIconName="settings"
-                          leftIconLabel="Ir para a página inicial"
-                          rightIconLabel="Abrir definições"
-                          onLeftPress={() =>
-                            router.push('/navigation/senior/HomePage')
-                          }
-                          onRightPress={() =>
-                            router.push('/navigation/senior/Settings')
-                          }
-                          onLogoutPress={handleLogout}
-                        />
-                      ),
-                    }}
-                  />
-                  <Stack.Screen
-                    name="navigation/senior/ErrorPage"
-                    options={{ headerShown: false }}
-                  />
-                  {/* volunteer */}
-                  <Stack.Screen
-                    name="navigation/volunteer"
-                    options={{
-                      headerShown: true,
-                      headerTransparent: true,
-                      contentStyle: { backgroundColor: 'transparent' },
-                      header: () => (
-                        <Header
-                          leftIconName="arrow-back"
-                          rightIconName="notifications"
-                          leftIconLabel="Voltar"
-                          rightIconLabel="Notificações"
-                          onLeftPress={() => {
-                            router.back();
-                          }}
-                          onRightPress={() =>
-                            router.push('../shared/Notifications')
-                          }
-                        />
-                      ),
-                    }}
-                  />
-                  {/* caretaker */}
-                  <Stack.Screen
-                    name="navigation/caretaker"
-                    options={{
-                      headerShown: true,
-                      headerTransparent: true,
-                      contentStyle: { backgroundColor: 'transparent' },
-                      header: () => (
-                        <Header
-                          leftIconName="arrow-back"
-                          rightIconName="notifications"
-                          leftIconLabel="Voltar"
-                          rightIconLabel="Notificações"
-                          onLeftPress={() => {
-                            router.back();
-                          }}
-                          onRightPress={() =>
-                            router.push('../caretaker/Notifications')
-                          }
-                          onLogoutPress={handleLogout}
-                        />
-                      ),
-                    }}
-                  />
-                  <Stack.Screen
-                    name="navigation/shared/EditProfile"
-                    options={{
-                      headerShown: true,
-                      headerTransparent: true,
-                      contentStyle: { backgroundColor: 'transparent' },
-                      header: () => (
-                        <Header
-                          leftIconName="arrow-back"
-                          rightIconName="notifications"
-                          leftIconLabel="Voltar"
-                          rightIconLabel="Notificações"
-                          onLeftPress={() => {
-                            router.back();
-                          }}
-                          onRightPress={() =>
-                            router.push('../caretaker/Notifications')
-                          }
-                          onLogoutPress={handleLogout}
-                        />
-                      ),
-                    }}
-                  />
-                  {/* Shared */}
-                  <Stack.Screen
-                    name="navigation/shared/AddHealthMetric"
-                    options={{
-                      headerShown: true,
-                      headerTransparent: true,
-                      contentStyle: { backgroundColor: '#fbfbfb' },
-                      header: () => (
-                        <Header
-                          leftIconName="home"
-                          rightIconName="settings"
-                          leftIconLabel="Ir para a página inicial"
-                          rightIconLabel="Abrir definições"
-                          onLeftPress={() =>
-                            router.push('/navigation/senior/HomePage')
-                          }
-                          onRightPress={() =>
-                            router.push('/navigation/senior/Settings')
-                          }
-                          onLogoutPress={handleLogout}
-                        />
-                      ),
-                    }}
-                  />
+                    <Stack.Screen
+                      name="navigation/senior/RequestLoading"
+                      options={{
+                        headerShown: true,
+                        headerTransparent: true,
+                        contentStyle: { backgroundColor: '#fbfbfb' },
+                        header: () => (
+                          <Header
+                            leftIconName="home"
+                            rightIconName="settings"
+                            leftIconLabel="Ir para a página inicial"
+                            rightIconLabel="Abrir definições"
+                            onLeftPress={() => {}}
+                            onRightPress={() =>
+                              router.push('/navigation/senior/Settings')
+                            }
+                            isWhite={false}
+                            onLogoutPress={handleLogout}
+                          />
+                        ),
+                      }}
+                    />
+                    <Stack.Screen
+                      name="navigation/senior/Health"
+                      options={{
+                        headerShown: true,
+                        headerTransparent: true,
+                        contentStyle: { backgroundColor: '#fbfbfb' },
+                        header: () => (
+                          <Header
+                            leftIconName="home"
+                            rightIconName="settings"
+                            leftIconLabel="Ir para a página inicial"
+                            rightIconLabel="Abrir definições"
+                            onLeftPress={() =>
+                              router.push('/navigation/senior/HomePage')
+                            }
+                            onRightPress={() =>
+                              router.push('/navigation/senior/Settings')
+                            }
+                            onLogoutPress={handleLogout}
+                          />
+                        ),
+                      }}
+                    />
+                    <Stack.Screen
+                      name="navigation/senior/Settings"
+                      options={{
+                        headerShown: true,
+                        headerTransparent: true,
+                        contentStyle: { backgroundColor: '#fbfbfb' },
+                        header: () => (
+                          <Header
+                            leftIconName="home"
+                            rightIconName="settings"
+                            leftIconLabel="Ir para a página inicial"
+                            rightIconLabel="Abrir definições"
+                            onLeftPress={() =>
+                              router.push('/navigation/senior/HomePage')
+                            }
+                            onRightPress={() => {}}
+                            onLogoutPress={handleLogout}
+                          />
+                        ),
+                      }}
+                    />
+                    <Stack.Screen
+                      name="navigation/senior/EmergencyCall"
+                      options={{
+                        headerShown: true,
+                        headerTransparent: true,
+                        contentStyle: { backgroundColor: '#fbfbfb' },
+                        header: () => (
+                          <Header
+                            leftIconName="home"
+                            rightIconName="settings"
+                            leftIconLabel="Ir para a página inicial"
+                            rightIconLabel="Abrir definições"
+                            onLeftPress={() =>
+                              router.push('/navigation/senior/HomePage')
+                            }
+                            onRightPress={() =>
+                              router.push('/navigation/senior/Settings')
+                            }
+                            onLogoutPress={handleLogout}
+                          />
+                        ),
+                      }}
+                    />
+                    <Stack.Screen
+                      name="navigation/senior/CaretakerCall"
+                      options={{
+                        headerShown: true,
+                        headerTransparent: true,
+                        contentStyle: { backgroundColor: '#fbfbfb' },
+                        header: () => (
+                          <Header
+                            leftIconName="home"
+                            rightIconName="settings"
+                            leftIconLabel="Ir para a página inicial"
+                            rightIconLabel="Abrir definições"
+                            onLeftPress={() =>
+                              router.push('/navigation/senior/HomePage')
+                            }
+                            onRightPress={() =>
+                              router.push('/navigation/senior/Settings')
+                            }
+                            onLogoutPress={handleLogout}
+                          />
+                        ),
+                      }}
+                    />
+                    <Stack.Screen
+                      name="navigation/senior/RequestHelp"
+                      options={{
+                        headerShown: true,
+                        headerTransparent: true,
+                        contentStyle: { backgroundColor: '#fbfbfb' },
+                        header: () => (
+                          <Header
+                            leftIconName="home"
+                            rightIconName="settings"
+                            leftIconLabel="Ir para a página inicial"
+                            rightIconLabel="Abrir definições"
+                            onLeftPress={() =>
+                              router.push('/navigation/senior/HomePage')
+                            }
+                            onRightPress={() =>
+                              router.push('/navigation/senior/Settings')
+                            }
+                            onLogoutPress={handleLogout}
+                          />
+                        ),
+                      }}
+                    />
+                    <Stack.Screen
+                      name="navigation/senior/Requests"
+                      options={{
+                        headerShown: true,
+                        headerTransparent: true,
+                        contentStyle: { backgroundColor: '#fbfbfb' },
+                        header: () => (
+                          <Header
+                            leftIconName="home"
+                            rightIconName="settings"
+                            leftIconLabel="Ir para a página inicial"
+                            rightIconLabel="Abrir definições"
+                            onLeftPress={() =>
+                              router.push('/navigation/senior/HomePage')
+                            }
+                            onRightPress={() =>
+                              router.push('/navigation/senior/Settings')
+                            }
+                            onLogoutPress={handleLogout}
+                          />
+                        ),
+                      }}
+                    />
+                    <Stack.Screen
+                      name="navigation/senior/Voice"
+                      options={{
+                        headerShown: true,
+                        headerTransparent: true,
+                        contentStyle: { backgroundColor: '#fbfbfb' },
+                        header: () => (
+                          <Header
+                            leftIconName="home"
+                            rightIconName="settings"
+                            leftIconLabel="Ir para a página inicial"
+                            rightIconLabel="Abrir definições"
+                            onLeftPress={() =>
+                              router.push('/navigation/senior/HomePage')
+                            }
+                            onRightPress={() =>
+                              router.push('/navigation/senior/Settings')
+                            }
+                            onLogoutPress={handleLogout}
+                          />
+                        ),
+                      }}
+                    />
+                    <Stack.Screen
+                      name="navigation/senior/Groceries"
+                      options={{
+                        headerShown: true,
+                        headerTransparent: true,
+                        contentStyle: { backgroundColor: '#fbfbfb' },
+                        header: () => (
+                          <Header
+                            leftIconName="home"
+                            rightIconName="settings"
+                            leftIconLabel="Ir para a página inicial"
+                            rightIconLabel="Abrir definições"
+                            onLeftPress={() =>
+                              router.push('/navigation/senior/HomePage')
+                            }
+                            onRightPress={() =>
+                              router.push('/navigation/senior/Settings')
+                            }
+                            onLogoutPress={handleLogout}
+                          />
+                        ),
+                      }}
+                    />
+                    <Stack.Screen
+                      name="navigation/senior/AddGrocerieList"
+                      options={{
+                        headerShown: true,
+                        headerTransparent: true,
+                        contentStyle: { backgroundColor: '#fbfbfb' },
+                        header: () => (
+                          <Header
+                            leftIconName="home"
+                            rightIconName="settings"
+                            leftIconLabel="Ir para a página inicial"
+                            rightIconLabel="Abrir definições"
+                            onLeftPress={() =>
+                              router.push('/navigation/senior/HomePage')
+                            }
+                            onRightPress={() =>
+                              router.push('/navigation/senior/Settings')
+                            }
+                            onLogoutPress={handleLogout}
+                          />
+                        ),
+                      }}
+                    />
+                    <Stack.Screen
+                      name="navigation/senior/RequestDetails"
+                      options={{
+                        headerShown: true,
+                        headerTransparent: true,
+                        contentStyle: { backgroundColor: '#fbfbfb' },
+                        header: () => (
+                          <Header
+                            leftIconName="home"
+                            rightIconName="settings"
+                            leftIconLabel="Ir para a página inicial"
+                            rightIconLabel="Abrir definições"
+                            onLeftPress={() =>
+                              router.push('/navigation/senior/HomePage')
+                            }
+                            onRightPress={() =>
+                              router.push('/navigation/senior/Settings')
+                            }
+                            onLogoutPress={handleLogout}
+                          />
+                        ),
+                      }}
+                    />
+                    <Stack.Screen
+                      name="navigation/senior/ErrorPage"
+                      options={{ headerShown: false }}
+                    />
+                    {/* volunteer */}
+                    <Stack.Screen
+                      name="navigation/volunteer"
+                      options={{
+                        headerShown: true,
+                        headerTransparent: true,
+                        contentStyle: { backgroundColor: 'transparent' },
+                        header: () => (
+                          <Header
+                            leftIconName="arrow-back"
+                            rightIconName="notifications"
+                            leftIconLabel="Voltar"
+                            rightIconLabel="Notificações"
+                            onLeftPress={() => {
+                              router.back();
+                            }}
+                            onRightPress={() =>
+                              router.push('../shared/Notifications')
+                            }
+                          />
+                        ),
+                      }}
+                    />
+                    {/* caretaker */}
+                    <Stack.Screen
+                      name="navigation/caretaker"
+                      options={{
+                        headerShown: true,
+                        headerTransparent: true,
+                        contentStyle: { backgroundColor: 'transparent' },
+                        header: () => (
+                          <Header
+                            leftIconName="arrow-back"
+                            rightIconName="notifications"
+                            leftIconLabel="Voltar"
+                            rightIconLabel="Notificações"
+                            onLeftPress={() => {
+                              router.back();
+                            }}
+                            onRightPress={() =>
+                              router.push('../caretaker/Notifications')
+                            }
+                            onLogoutPress={handleLogout}
+                          />
+                        ),
+                      }}
+                    />
+                    <Stack.Screen
+                      name="navigation/shared/EditProfile"
+                      options={{
+                        headerShown: true,
+                        headerTransparent: true,
+                        contentStyle: { backgroundColor: 'transparent' },
+                        header: () => (
+                          <Header
+                            leftIconName="arrow-back"
+                            rightIconName="notifications"
+                            leftIconLabel="Voltar"
+                            rightIconLabel="Notificações"
+                            onLeftPress={() => {
+                              router.back();
+                            }}
+                            onRightPress={() =>
+                              router.push('../caretaker/Notifications')
+                            }
+                            onLogoutPress={handleLogout}
+                          />
+                        ),
+                      }}
+                    />
+                    {/* Shared */}
+                    <Stack.Screen
+                      name="navigation/shared/AddHealthMetric"
+                      options={{
+                        headerShown: true,
+                        headerTransparent: true,
+                        contentStyle: { backgroundColor: '#fbfbfb' },
+                        header: () => (
+                          <Header
+                            leftIconName="home"
+                            rightIconName="settings"
+                            leftIconLabel="Ir para a página inicial"
+                            rightIconLabel="Abrir definições"
+                            onLeftPress={() =>
+                              router.push('/navigation/senior/HomePage')
+                            }
+                            onRightPress={() =>
+                              router.push('/navigation/senior/Settings')
+                            }
+                            onLogoutPress={handleLogout}
+                          />
+                        ),
+                      }}
+                    />
                   </Stack>
                 </BottomSheetModalProvider>
               </FontProvider>

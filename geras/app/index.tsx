@@ -22,14 +22,15 @@ export default function Index() {
   if (!profile) {
     return (
       <View className="flex-1 items-center justify-center bg-[#325439]">
-        <Text className="text-white text-lg mb-4 text-center px-8">
-          Não foi possível carregar o perfil. Por favor, tente novamente ou use o botão para terminar sessão.
+        <Text className="mb-4 px-8 text-center text-lg text-white">
+          Não foi possível carregar o perfil. Por favor, tente novamente ou use
+          o botão para terminar sessão.
         </Text>
         <TouchableOpacity
           onPress={signOut}
-          className="bg-white px-6 py-3 rounded-full"
+          className="rounded-full bg-white px-6 py-3"
         >
-          <Text className="text-[#325439] font-semibold">Terminar Sessão</Text>
+          <Text className="font-semibold text-[#325439]">Terminar Sessão</Text>
         </TouchableOpacity>
       </View>
     );

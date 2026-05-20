@@ -43,7 +43,10 @@ export default function AddHealthMetric() {
 
     const parsedValue = Number.parseFloat(value.trim().replace(',', '.'));
     if (!Number.isFinite(parsedValue)) {
-      Alert.alert('Valor inválido', 'Por favor insira um valor numérico válido.');
+      Alert.alert(
+        'Valor inválido',
+        'Por favor insira um valor numérico válido.',
+      );
       return;
     }
 
