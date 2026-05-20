@@ -7,7 +7,7 @@ import { ThemedText } from '@/components/ThemedText';
 type CardProps = {
   name: string;
   role: string;
-  age: number;
+  age?: number;
   onEditPress?: () => void;
 };
 
@@ -28,9 +28,11 @@ export function Card({ name, role, age, onEditPress }: CardProps) {
             {role}
           </ThemedText>
 
-          <ThemedText type="bodyInfo" className="text-neutral">
-            {age} anos
-          </ThemedText>
+          {age && age > 0 ? (
+            <ThemedText type="bodyInfo" className="text-neutral">
+              {age} anos
+            </ThemedText>
+          ) : null}
         </View>
 
         {onEditPress && (
