@@ -41,12 +41,18 @@ export default function AddHealthMetric() {
       return;
     }
 
+    const parsedValue = Number.parseFloat(value.trim().replace(',', '.'));
+    if (!Number.isFinite(parsedValue)) {
+      Alert.alert('Valor inválido', 'Por favor insira um valor numérico válido.');
+      return;
+    }
+
     try {
       const { error } = await supabase.from('monitoring').insert([
         {
           id_senior: profile.id,
           custom_metric_name: title,
-          custom_metric_value: parseFloat(value),
+          custom_metric_value: parsedValue,
           unit: unit,
           // Opcional: tentar mapear o título para um tipo enum se for um dos conhecidos
         },
