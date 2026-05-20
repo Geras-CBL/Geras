@@ -13,6 +13,9 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ProfileProvider } from '@/context/ProfileContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 SplashScreen.preventAutoHideAsync();
 
@@ -53,24 +56,25 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <AuthProvider>
-        <ProfileProvider>
-          <ImageBackground
-            source={require('../assets/images/background.png')}
-            style={{ flex: 1 }}
-            resizeMode="cover"
-          >
-            <FontProvider>
-              <StatusBar style="dark" />
-              <BottomSheetModalProvider>
-                <Stack
-                  initialRouteName="index"
-                  screenOptions={{
-                    animation: 'fade',
-                    contentStyle: { backgroundColor: 'transparent' },
-                  }}
-                >
+    <QueryClientProvider client={queryClient}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <AuthProvider>
+          <ProfileProvider>
+            <ImageBackground
+              source={require('../assets/images/background.png')}
+              style={{ flex: 1 }}
+              resizeMode="cover"
+            >
+              <FontProvider>
+                <StatusBar style="dark" />
+                <BottomSheetModalProvider>
+                  <Stack
+                    initialRouteName="index"
+                    screenOptions={{
+                      animation: 'fade',
+                      contentStyle: { backgroundColor: 'transparent' },
+                    }}
+                  >
                   <Stack.Screen name="index" options={{ headerShown: false }} />
                   {/* senior */}
                   <Stack.Screen
@@ -443,12 +447,13 @@ export default function RootLayout() {
                       ),
                     }}
                   />
-                </Stack>
-              </BottomSheetModalProvider>
-            </FontProvider>
-          </ImageBackground>
-        </ProfileProvider>
-      </AuthProvider>
-    </GestureHandlerRootView>
+                  </Stack>
+                </BottomSheetModalProvider>
+              </FontProvider>
+            </ImageBackground>
+          </ProfileProvider>
+        </AuthProvider>
+      </GestureHandlerRootView>
+    </QueryClientProvider>
   );
 }
