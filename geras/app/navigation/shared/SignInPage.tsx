@@ -131,12 +131,7 @@ export default function SignInPage() {
                 accessibilityHint="Introduza uma palavra-passe com pelo menos 6 caracteres"
               />
 
-              <View
-                className="mt-2 w-full flex-row justify-between"
-                accessible={true}
-                accessibilityRole="radiogroup"
-                accessibilityLabel="Tipo de utilizador"
-              >
+              <View className="mt-2 w-full flex-row justify-between">
                 <TouchableOpacity
                   className={`mx-1 flex-1 items-center rounded-full p-2 ${role === 'SENIOR' ? 'bg-[#325439]' : 'bg-neutralLight/40'}`}
                   onPress={() => setRole('SENIOR')}
