@@ -66,7 +66,7 @@ export function MedicationSchedule({
   return (
     <View className="w-full flex-col gap-4">
       {/* Seleção de Dia */}
-      <View className="flex-row items-center gap-2" role="tablist">
+      <View className="flex-row items-center gap-2">
         {days.map((day, index) => {
           const isSelected = selectedDayIndex === index;
           return (
