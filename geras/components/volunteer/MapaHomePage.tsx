@@ -49,9 +49,7 @@ export default function MapaHomePage() {
         provider={PROVIDER_DEFAULT}
         showsUserLocation={true}
         onPress={() => bottomSheetModalRef.current?.dismiss()}
-        accessible={true}
-        accessibilityLabel="Mapa interactivo com a localização dos pedidos de ajuda"
-      >
+        accessible={false}
         {requests.map((request) => (
           <Marker
             key={request.id}
