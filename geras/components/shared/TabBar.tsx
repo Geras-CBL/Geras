@@ -1,7 +1,8 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, View, Text } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
+import { ThemedText } from '../ThemedText';
 import Animated, {
   useAnimatedProps,
   useAnimatedStyle,
@@ -163,16 +164,16 @@ export default function TabBar({
                 size={28}
               />
 
-              <Text
+              <ThemedText
+                type="bodySmall"
                 style={{
-                  fontSize: 11,
                   color: COLORS.activeIcon,
                   marginTop: 2,
                   fontWeight: '600',
                 }}
               >
                 {getLabel(visibleRoutes[activeIndex].name)}
-              </Text>
+              </ThemedText>
             </View>
           )}
         </Animated.View>

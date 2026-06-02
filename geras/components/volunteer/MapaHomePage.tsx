@@ -50,6 +50,7 @@ export default function MapaHomePage() {
         showsUserLocation={true}
         onPress={() => bottomSheetModalRef.current?.dismiss()}
         accessible={false}
+      >
         {requests.map((request) => (
           <Marker
             key={request.id}

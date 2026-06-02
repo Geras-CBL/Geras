@@ -1,4 +1,4 @@
-import { View, TextInput, TouchableOpacity, Text, Alert } from 'react-native';
+import { View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ThemedText } from '@/components/ThemedText';
@@ -141,7 +141,9 @@ export default function SignInPage() {
                   accessibilityState={{ checked: role === 'SENIOR' }}
                   accessibilityHint="Define o seu perfil como Sénior"
                 >
-                  <Text className="font-bold text-white">Sénior</Text>
+                  <ThemedText className="font-bold text-white">
+                    Sénior
+                  </ThemedText>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -153,7 +155,9 @@ export default function SignInPage() {
                   accessibilityState={{ checked: role === 'CARETAKER' }}
                   accessibilityHint="Define o seu perfil como Cuidador"
                 >
-                  <Text className="font-bold text-white">Cuidador</Text>
+                  <ThemedText className="font-bold text-white">
+                    Cuidador
+                  </ThemedText>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -165,7 +169,9 @@ export default function SignInPage() {
                   accessibilityState={{ checked: role === 'VOLUNTEER' }}
                   accessibilityHint="Define o seu perfil como Voluntário"
                 >
-                  <Text className="font-bold text-white">Voluntário</Text>
+                  <ThemedText className="font-bold text-white">
+                    Voluntário
+                  </ThemedText>
                 </TouchableOpacity>
               </View>
             </View>
@@ -187,9 +193,9 @@ export default function SignInPage() {
               accessibilityLabel="Já tem conta? Inicie sessão"
               accessibilityHint="Volta para o ecrã de início de sessão"
             >
-              <Text className="text-base text-white">
+              <ThemedText className="text-base text-white">
                 Já tem conta? Inicie sessão
-              </Text>
+              </ThemedText>
             </TouchableOpacity>
           </View>
         </View>

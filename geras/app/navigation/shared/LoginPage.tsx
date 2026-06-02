@@ -1,4 +1,4 @@
-import { View, TextInput, Alert, TouchableOpacity, Text } from 'react-native';
+import { View, TextInput, Alert, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ThemedText } from '@/components/ThemedText';
@@ -130,9 +130,9 @@ export default function LoginPage() {
               accessibilityLabel="Não tem conta? Registe-se"
               accessibilityHint="Abre o formulário para registar uma nova conta"
             >
-              <Text className="text-base font-bold text-white">
+              <ThemedText className="text-base font-bold text-white">
                 Não tem conta? Registe-se
-              </Text>
+              </ThemedText>
             </TouchableOpacity>
           </View>
         </View>

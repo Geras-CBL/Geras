@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Text, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
+import { ThemedText } from '../ThemedText';
 
 type ActionButtonProps = {
   title: string;
@@ -31,13 +32,14 @@ const ActionButton: React.FC<ActionButtonProps> = ({
           : 'bg-green-800'
       } ${className}`}
     >
-      <Text
+      <ThemedText
+        type="bodyInfo"
         className={`font-rubik text-sm ${
           variant === 'outlined' ? 'text-green-800' : 'text-white'
         }`}
       >
         {title}
-      </Text>
+      </ThemedText>
     </TouchableOpacity>
   );
 };

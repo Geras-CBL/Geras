@@ -426,6 +426,29 @@ export default function RootLayout() {
                         ),
                       }}
                     />
+                    <Stack.Screen
+                      name="navigation/shared/Settings"
+                      options={{
+                        headerShown: true,
+                        headerTransparent: true,
+                        contentStyle: { backgroundColor: '#fbfbfb' },
+                        header: () => (
+                          <Header
+                            leftIconName="arrow-back"
+                            rightIconName="notifications"
+                            leftIconLabel="Voltar"
+                            rightIconLabel="Notificações"
+                            onLeftPress={() => {
+                              router.back();
+                            }}
+                            onRightPress={() =>
+                              router.push('/navigation/shared/Notifications')
+                            }
+                            onLogoutPress={handleLogout}
+                          />
+                        ),
+                      }}
+                    />
                     {/* Shared */}
                     <Stack.Screen
                       name="navigation/shared/AddHealthMetric"
