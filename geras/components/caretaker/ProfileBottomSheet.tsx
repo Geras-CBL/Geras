@@ -69,7 +69,7 @@ const ProfileBottomSheet = React.forwardRef<
         {isLoading ? (
           <ActivityIndicator size="large" color="#205a2d" className="mt-10" />
         ) : (
-          <View className="gap-5" role="radiogroup">
+          <View className="gap-5">
             {profiles.map((profile) => (
               <TouchableOpacity
                 key={profile.id}
