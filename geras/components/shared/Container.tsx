@@ -11,7 +11,12 @@ type ContainerSeniorProps = {
 
 const ContainerSenior = ({ name, age, avatarUri }: ContainerSeniorProps) => {
   return (
-    <View className="h-32 w-full flex-row items-center rounded-2xl bg-white px-4 shadow-md">
+    <View
+      accessible={true}
+      accessibilityRole="text"
+      accessibilityLabel={`Sénior: ${name}, ${age} anos`}
+      className="h-32 w-full flex-row items-center rounded-2xl bg-white px-4 shadow-md"
+    >
       {avatarUri ? (
         <View className="h-20 w-20 overflow-hidden rounded-full">
           <Image source={{ uri: avatarUri }} className="h-full w-full" />

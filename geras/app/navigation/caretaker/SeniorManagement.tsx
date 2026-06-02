@@ -167,6 +167,11 @@ export default function SeniorManagement() {
                     key={item.id}
                     className="mb-3 flex-row items-center rounded-2xl border border-gray-100 bg-white p-3 shadow-lg"
                     onPress={() => toggleCheckbox(item.id)}
+                    accessible={true}
+                    accessibilityRole="checkbox"
+                    accessibilityState={{ checked: item.checked }}
+                    accessibilityLabel={item.name}
+                    accessibilityHint={`Toca duas vezes para ${item.checked ? 'remover da' : 'adicionar à'} lista de compras`}
                   >
                     <Checkbox
                       status={item.checked ? 'checked' : 'unchecked'}

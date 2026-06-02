@@ -19,7 +19,12 @@ export function Card({ name, role, age, onEditPress }: CardProps) {
       </View>
 
       <View className="flex-1 justify-between gap-4">
-        <View className="gap-1">
+        <View
+          accessible={true}
+          accessibilityRole="text"
+          accessibilityLabel={`Perfil de ${name}, papel: ${role}${age && age > 0 ? `, ${age} anos` : ''}`}
+          className="gap-1"
+        >
           <ThemedText type="bodyBold" className="uppercase text-neutral">
             {name}
           </ThemedText>
@@ -36,7 +41,13 @@ export function Card({ name, role, age, onEditPress }: CardProps) {
         </View>
 
         {onEditPress && (
-          <Pressable onPress={onEditPress}>
+          <Pressable
+            onPress={onEditPress}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel="Editar perfil"
+            accessibilityHint="Toca duas vezes para editar as informações de perfil"
+          >
             <ThemedText type="bodyBold" className="text-primary">
               Editar perfil
             </ThemedText>

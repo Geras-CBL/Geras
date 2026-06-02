@@ -99,7 +99,9 @@ export default function RequestDetails() {
         >
           <View className="gap-6 px-6">
             <View className="items-center gap-4">
-              <ThemedText type="title">{title}</ThemedText>
+              <ThemedText type="title" accessibilityRole="header">
+                {title}
+              </ThemedText>
               <InfoPill text="Completa" variant="success" />
             </View>
 
@@ -108,8 +110,18 @@ export default function RequestDetails() {
 
             <ContainerSenior {...volunteer} />
 
-            <>
-              <ThemedText type="title">Como Correu A Tarefa</ThemedText>
+            <View
+              accessible={true}
+              accessibilityRole="radiogroup"
+              accessibilityLabel="Avaliação da tarefa"
+            >
+              <ThemedText
+                type="title"
+                accessibilityRole="header"
+                className="mb-4"
+              >
+                Como Correu A Tarefa
+              </ThemedText>
 
               <View className="flex-row gap-4">
                 {(
@@ -132,7 +144,7 @@ export default function RequestDetails() {
                   />
                 ))}
               </View>
-            </>
+            </View>
 
             <SectionTitle title="Enviar Observação" />
             <CommentBox value={observation} onChangeText={setObservation} />

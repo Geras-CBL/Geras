@@ -5,9 +5,16 @@ import { MaterialIcons } from '@expo/vector-icons';
 interface CommentBoxProps {
   value: string;
   onChangeText: (text: string) => void;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
 }
 
-const CommentBox = ({ value, onChangeText }: CommentBoxProps) => {
+const CommentBox = ({
+  value,
+  onChangeText,
+  accessibilityLabel,
+  accessibilityHint,
+}: CommentBoxProps) => {
   return (
     <View className="h-32 w-full flex-row items-start rounded-xl bg-white p-4 shadow-md">
       <TextInput
@@ -18,6 +25,11 @@ const CommentBox = ({ value, onChangeText }: CommentBoxProps) => {
         textAlignVertical="top"
         placeholder="Escreva a sua observação..."
         placeholderTextColor="#999999"
+        accessibilityLabel={accessibilityLabel ?? 'Observações'}
+        accessibilityHint={
+          accessibilityHint ??
+          'Escreva a sua observação ou comentário adicional'
+        }
       />
       <MaterialIcons
         name="edit"

@@ -26,6 +26,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
         placeholder="Procurar"
         placeholderTextColor="#1d1d1b"
         className="flex-1 text-lg text-neutral"
+        accessible={true}
+        accessibilityLabel="Campo de pesquisa"
+        accessibilityHint="Escreva para realizar uma pesquisa rápida"
       />
     </View>
   );

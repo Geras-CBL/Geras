@@ -67,7 +67,7 @@ const Button: React.FC<ButtonProps> = ({
       activeOpacity={0.7}
       disabled={disabled}
       accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel}
+      accessibilityLabel={accessibilityLabel ?? title}
       accessibilityHint={accessibilityHint}
       className={`${baseButtonStyles} ${currentStyle.button} ${className}`}
     >

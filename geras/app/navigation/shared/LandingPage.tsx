@@ -47,7 +47,12 @@ export default function Home() {
       className="flex-1"
     >
       <SafeAreaView className="flex-1">
-        <View className="flex-1 items-center justify-center">
+        <View
+          className="flex-1 items-center justify-center"
+          accessible={true}
+          accessibilityLabel="Logótipo do Geras. Carregando a aplicação..."
+          accessibilityRole="header"
+        >
           <View className="mb-4">
             <Logo />
           </View>

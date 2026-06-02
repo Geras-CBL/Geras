@@ -26,8 +26,15 @@ const ProfilePicker: React.FC<ProfilePickerProps> = ({ onPress, profile }) => {
       style={({ pressed }) => ({
         opacity: pressed ? 0.7 : 1,
       })}
+      accessible={true}
+      accessibilityRole="combobox"
+      accessibilityLabel={`Perfil de sénior selecionado: ${name}`}
+      accessibilityHint="Toca duas vezes para escolher outro sénior"
     >
-      <View className="h-14 w-14 items-center justify-center rounded-full border border-secondary bg-secondary/50">
+      <View
+        className="h-14 w-14 items-center justify-center rounded-full border border-secondary bg-secondary/50"
+        importantForAccessibility="no"
+      >
         <ThemedText type="subtitle">{initials}</ThemedText>
       </View>
 

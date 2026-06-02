@@ -26,8 +26,14 @@ const MedicationCard = ({
   return (
     <TouchableOpacity
       className="h-full w-full items-start justify-around rounded-3xl bg-white p-4 shadow-2xl"
-      activeOpacity={1}
+      activeOpacity={onPress ? 0.7 : 1}
       onPress={onPress}
+      accessible={true}
+      accessibilityRole={onPress ? 'button' : 'text'}
+      accessibilityLabel={`Métrica ${title}: ${value} ${unit}, Estado: ${status}`}
+      accessibilityHint={
+        onPress ? 'Toca duas vezes para ver detalhes' : undefined
+      }
     >
       <ThemedText
         type="subtitle"
@@ -55,6 +61,10 @@ export const AddMedicationCard = ({ onPress }: { onPress: () => void }) => {
       className="h-full w-full items-center justify-evenly rounded-3xl bg-white p-5 shadow-xl"
       activeOpacity={0.7}
       onPress={onPress}
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel="Adicionar métrica"
+      accessibilityHint="Toca duas vezes para registar uma nova métrica de saúde"
     >
       <ThemedText
         type="subtitle"

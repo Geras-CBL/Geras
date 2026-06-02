@@ -55,7 +55,12 @@ export default function EmergencyCall() {
   return (
     <View className="flex-1 bg-white px-6 py-12">
       {/* CENTER CONTENT CONTAINER */}
-      <View className="flex-1 items-center justify-center gap-10">
+      <View
+        className="flex-1 items-center justify-center gap-10"
+        accessible={true}
+        accessibilityLiveRegion="assertive"
+        accessibilityLabel={`A ligar para o 112 em ${seconds} segundos.`}
+      >
         {/* Header Text - Now Bigger and Centered */}
         <View className="w-full items-center">
           <ThemedText
@@ -77,6 +82,7 @@ export default function EmergencyCall() {
         <View
           className="relative items-center justify-center"
           style={{ width: CIRCLE_SIZE, height: CIRCLE_SIZE }}
+          importantForAccessibility="no"
         >
           {/* Layer 1: SVG Background & Progress */}
           <Svg
@@ -113,8 +119,6 @@ export default function EmergencyCall() {
             <Text className="text-9xl font-black leading-tight text-red-600">
               {seconds}
             </Text>
-            {/* Optional: label under number */}
-            {/* <Text className="text-xl font-bold uppercase text-red-400">seg</Text> */}
           </View>
         </View>
       </View>
@@ -126,13 +130,22 @@ export default function EmergencyCall() {
             className="w-full items-center rounded-3xl bg-red-600 py-6 shadow-xl shadow-red-200"
             activeOpacity={0.8}
             onPress={handleCancel}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel="Cancelar chamada de emergência"
+            accessibilityHint="Para a contagem decrescente e volta ao ecrã anterior"
           >
             <ThemedText type="title" className="tracking-wider text-white">
               CANCELAR
             </ThemedText>
           </TouchableOpacity>
         ) : (
-          <View className="items-center py-6">
+          <View
+            className="items-center py-6"
+            accessible={true}
+            accessibilityLiveRegion="polite"
+            accessibilityLabel="Chamada cancelada"
+          >
             <ThemedText type="title" className="uppercase text-gray-300">
               Cancelado
             </ThemedText>

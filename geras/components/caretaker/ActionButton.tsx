@@ -6,6 +6,8 @@ type ActionButtonProps = {
   variant?: 'outlined' | 'default';
   onPress?: () => void;
   className?: string; // permite passar classes externas
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
 };
 
 const ActionButton: React.FC<ActionButtonProps> = ({
@@ -13,10 +15,16 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   variant = 'default',
   onPress,
   className = '',
+  accessibilityLabel,
+  accessibilityHint,
 }) => {
   return (
     <TouchableOpacity
       onPress={onPress}
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel ?? title}
+      accessibilityHint={accessibilityHint}
       className={`flex-row items-center justify-center rounded-md px-6 py-3 ${
         variant === 'outlined'
           ? 'border border-green-800 bg-transparent'

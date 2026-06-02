@@ -9,25 +9,36 @@ interface AvatarProps {
 }
 
 const Avatar = ({ uri, alt, initials = 'U' }: AvatarProps) => {
+  const finalAlt = alt || 'Foto de perfil do utilizador';
   return (
-    <View className="relative h-32 w-32 items-center justify-center overflow-hidden rounded-full border border-secondary bg-secondary/50">
+    <View
+      accessible={true}
+      accessibilityRole="image"
+      accessibilityLabel={finalAlt}
+      className="relative h-32 w-32 items-center justify-center overflow-hidden rounded-full border border-secondary bg-secondary/50"
+    >
       {uri ? (
         <Image
           source={{ uri }}
           className="h-full w-full rounded-full"
           resizeMode="cover"
-          alt={alt || 'Foto de perfil do utilizador'}
-          accessible={true}
-          accessibilityRole="image"
-          accessibilityLabel={alt || 'Foto de perfil do utilizador'}
+          alt={finalAlt}
+          accessible={false}
         />
       ) : (
-        <ThemedText type="title" className="momo font-bold text-neutral">
+        <ThemedText
+          type="title"
+          className="momo font-bold text-neutral"
+          importantForAccessibility="no"
+        >
           {initials.toUpperCase()}
         </ThemedText>
       )}
 
-      <View className="absolute bottom-2 right-2 z-10 h-8 w-8 items-center justify-center rounded-full border border-white bg-neutral">
+      <View
+        className="absolute bottom-2 right-2 z-10 h-8 w-8 items-center justify-center rounded-full border border-white bg-neutral"
+        importantForAccessibility="no"
+      >
         <MaterialIcons name="photo-camera" size={16} color="white" />
       </View>
     </View>

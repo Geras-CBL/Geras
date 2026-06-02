@@ -17,6 +17,8 @@ type FormFieldProps =
       placeholder?: string;
       onPress: () => void;
       className?: string;
+      accessibilityLabel?: string;
+      accessibilityHint?: string;
     };
 
 export function FormField(props: FormFieldProps) {
@@ -42,7 +44,14 @@ export function FormField(props: FormFieldProps) {
   };
 
   if (props.variant === 'dropdown') {
-    const { value, placeholder = 'Selecionar', onPress, className } = props;
+    const {
+      value,
+      placeholder = 'Selecionar',
+      onPress,
+      className,
+      accessibilityLabel,
+      accessibilityHint,
+    } = props;
 
     return (
       <Pressable
@@ -50,6 +59,11 @@ export function FormField(props: FormFieldProps) {
         className="relative rounded-lg"
         accessible={true}
         focusable={true}
+        accessibilityRole="combobox"
+        accessibilityLabel={accessibilityLabel ?? value ?? placeholder}
+        accessibilityHint={
+          accessibilityHint ?? 'Toca duas vezes para selecionar uma opção'
+        }
         {...dropdownFocus.bindFocusHandlers()}
       >
         <FocusRingOverlay

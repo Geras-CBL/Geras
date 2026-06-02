@@ -4,7 +4,11 @@ import { ThemedText } from '@/components/ThemedText';
 export default function Home() {
   return (
     <View className="flex-1 items-center justify-center">
-      <ThemedText type="title" className="text-primary">
+      <ThemedText
+        type="title"
+        className="text-primary"
+        accessibilityRole="header"
+      >
         Escolha de Perfil
       </ThemedText>
     </View>

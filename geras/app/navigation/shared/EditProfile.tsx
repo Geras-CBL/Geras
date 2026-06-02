@@ -152,7 +152,13 @@ export default function EditProfile() {
       keyboardShouldPersistTaps="handled"
     >
       <View className="mb-6 items-center">
-        <TouchableOpacity onPress={takePhoto}>
+        <TouchableOpacity
+          onPress={takePhoto}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel="Alterar foto de perfil"
+          accessibilityHint="Toca duas vezes para tirar uma nova foto de perfil"
+        >
           <Avatar uri={image} initials={getInitials(name)} />
         </TouchableOpacity>
       </View>
@@ -241,7 +247,10 @@ export default function EditProfile() {
       >
         <View className="flex-1 justify-end bg-black/40">
           <View className="max-h-96 rounded-t-xl bg-white p-4">
-            <Text className="mb-4 text-center text-lg font-bold">
+            <Text
+              className="mb-4 text-center text-lg font-bold"
+              accessibilityRole="header"
+            >
               Selecionar Distrito
             </Text>
             <FlatList
@@ -251,6 +260,9 @@ export default function EditProfile() {
                 <TouchableOpacity
                   className="border-b border-neutral/15 py-3"
                   onPress={() => handleDistrictSelect(item.name)}
+                  accessible={true}
+                  accessibilityRole="button"
+                  accessibilityLabel={item.name}
                 >
                   <Text className="text-base text-neutral">{item.name}</Text>
                 </TouchableOpacity>
@@ -273,7 +285,10 @@ export default function EditProfile() {
       >
         <View className="flex-1 justify-end bg-black/40">
           <View className="max-h-96 rounded-t-xl bg-white p-4">
-            <Text className="mb-4 text-center text-lg font-bold">
+            <Text
+              className="mb-4 text-center text-lg font-bold"
+              accessibilityRole="header"
+            >
               Selecionar Concelho ({district})
             </Text>
             <FlatList
@@ -283,6 +298,9 @@ export default function EditProfile() {
                 <TouchableOpacity
                   className="border-b border-neutral/15 py-3"
                   onPress={() => handleMunicipalitySelect(item)}
+                  accessible={true}
+                  accessibilityRole="button"
+                  accessibilityLabel={item}
                 >
                   <Text className="text-base text-neutral">{item}</Text>
                 </TouchableOpacity>

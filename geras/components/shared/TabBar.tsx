@@ -199,7 +199,8 @@ export default function TabBar({
               key={route.key}
               onPress={onPress}
               accessibilityLabel={getLabel(route.name)}
-              accessibilityRole="button"
+              accessibilityRole="tab"
+              accessibilityState={{ selected: isFocused }}
               className="flex-1 items-center justify-center"
               activeOpacity={1}
             >
