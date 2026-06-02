@@ -110,11 +110,7 @@ export default function RequestDetails() {
 
             <ContainerSenior {...volunteer} />
 
-            <View
-              accessible={true}
-              accessibilityRole="radiogroup"
-              accessibilityLabel="Avaliação da tarefa"
-            >
+            <View>
               <ThemedText
                 type="title"
                 accessibilityRole="header"
