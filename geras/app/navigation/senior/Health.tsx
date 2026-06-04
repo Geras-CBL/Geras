@@ -1,7 +1,6 @@
 import BottomActions from '@/components/senior/BottomActions';
 import { MedicationSchedule } from '@/components/senior/MedicineDrawer';
 import Button from '@/components/shared/Button';
-import ClockPill from '@/components/shared/InfoPill';
 import MedicationCard, {
   AddMedicationCard,
 } from '@/components/shared/MedicationCard';
