@@ -124,10 +124,11 @@ export default function AddHealthMetric() {
                     <TouchableOpacity
                       key={s}
                       onPress={() => setStatus(s)}
-                      className={`flex-1 items-center justify-center rounded-xl border py-3 ${isSelected
+                      className={`flex-1 items-center justify-center rounded-xl border py-3 ${
+                        isSelected
                           ? `border-4 ${activeColor}`
                           : 'border-gray-200 bg-white'
-                        }`}
+                      }`}
                     >
                       <ThemedText
                         type="body"

@@ -88,7 +88,7 @@ export default function RootLayout() {
                           rightIconName="settings"
                           leftIconLabel="Ir para a página inicial"
                           rightIconLabel="Abrir definições"
-                          onLeftPress={() => { }}
+                          onLeftPress={() => {}}
                           onRightPress={() =>
                             router.push('/navigation/senior/Settings')
                           }
@@ -110,7 +110,7 @@ export default function RootLayout() {
                           rightIconName="settings"
                           leftIconLabel="Ir para a página inicial"
                           rightIconLabel="Abrir definições"
-                          onLeftPress={() => { }}
+                          onLeftPress={() => {}}
                           onRightPress={() =>
                             router.push('/navigation/senior/Settings')
                           }
@@ -158,7 +158,7 @@ export default function RootLayout() {
                           onLeftPress={() =>
                             router.push('/navigation/senior/HomePage')
                           }
-                          onRightPress={() => { }}
+                          onRightPress={() => {}}
                           onLogoutPress={handleLogout}
                         />
                       ),
