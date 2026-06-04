@@ -94,7 +94,7 @@ export default function Health() {
                   config?.label ||
                   item.type ||
                   'Métrica';
-                const value = item.custom_metric_value || item.value || 0;
+                const value = item.custom_metric_value ?? item.value ?? 0;
                 const unit = item.unit || config?.unit || '';
 
                 let status: 'Adequado' | 'Moderado' | 'Excessivo' = 'Adequado';
