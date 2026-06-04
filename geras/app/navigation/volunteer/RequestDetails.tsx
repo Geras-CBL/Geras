@@ -16,6 +16,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
+import { router } from 'expo-router';
 
 type EvaluationTaskVariant =
   | 'sentiment_dissatisfied'
@@ -53,6 +55,7 @@ export default function RequestDetails() {
     type?: string;
     requestId?: string;
   }>();
+  const { profile } = useAuth();
   const requestType = type && requestConfig[type] ? type : 'other';
   const { title, image, alt } = requestConfig[requestType];
 
@@ -62,6 +65,7 @@ export default function RequestDetails() {
   const [selectedVariant, setSelectedVariant] =
     useState<EvaluationTaskVariant | null>(null);
   const [observation, setObservation] = useState('');
+  const [hasEvaluated, setHasEvaluated] = useState(false);
 
   const fetchRequestDetails = useCallback(async () => {
     if (!requestId) return;
@@ -70,19 +74,66 @@ export default function RequestDetails() {
       const { data, error } = await supabase
         .from('requests')
         .select(
-          '*, senior:users!id_senior(name, gender, profile_picture, local)',
+          '*, senior:users!id_senior(id, name, gender, profile_picture, local), evaluations(*)',
         )
         .eq('id', requestId)
         .maybeSingle();
 
       if (error) throw error;
       setRequestData(data);
+
+      // Verificar se já existe uma avaliação do voluntário atual
+      const myEvaluation = data?.evaluations?.find(
+        (ev: any) => ev.id_volunteer === profile?.id,
+      );
+
+      if (myEvaluation) {
+        const rateToVariant: Record<string, EvaluationTaskVariant> = {
+          SATISFIED: 'sentiment_satisfied',
+          NEUTRAL: 'sentiment_neutral',
+          DISSATISFIED: 'sentiment_dissatisfied',
+        };
+        setSelectedVariant(rateToVariant[myEvaluation.evaluation]);
+        setObservation(myEvaluation.description || '');
+        setHasEvaluated(true);
+      }
     } catch (err) {
       console.error('Error fetching request details:', err);
     } finally {
       setLoading(false);
     }
   }, [requestId]);
+
+  const handleEvaluationSubmit = async () => {
+    if (
+      !requestId ||
+      !selectedVariant ||
+      !profile?.id ||
+      !requestData?.id_senior
+    )
+      return;
+
+    const variantToRate: Record<EvaluationTaskVariant, string> = {
+      sentiment_satisfied: 'SATISFIED',
+      sentiment_neutral: 'NEUTRAL',
+      sentiment_dissatisfied: 'DISSATISFIED',
+    };
+
+    try {
+      const { error } = await supabase.from('evaluations').insert({
+        id_request: parseInt(requestId),
+        id_volunteer: profile.id,
+        id_senior: requestData.id_senior,
+        evaluation: variantToRate[selectedVariant],
+        description: observation,
+      });
+
+      if (error) throw error;
+      router.back();
+    } catch (err) {
+      console.error('Error submitting evaluation:', err);
+    }
+  };
 
   useEffect(() => {
     fetchRequestDetails();
@@ -207,26 +258,35 @@ export default function RequestDetails() {
                       variant={variant}
                       selected={selectedVariant === variant}
                       isAnySelected={!!selectedVariant}
-                      onPress={() =>
+                      onPress={() => {
+                        if (hasEvaluated) return;
                         setSelectedVariant(
                           selectedVariant === variant ? null : variant,
-                        )
-                      }
+                        );
+                      }}
                     />
                   ))}
                 </View>
+
+                <SectionTitle
+                  title={
+                    hasEvaluated ? 'Observação Enviada' : 'Enviar Observação'
+                  }
+                />
+                <CommentBox
+                  value={observation}
+                  onChangeText={setObservation}
+                  editable={!hasEvaluated}
+                />
+
+                {selectedVariant && !hasEvaluated && (
+                  <Button
+                    title="Submeter"
+                    className="mt-4"
+                    onPress={handleEvaluationSubmit}
+                  />
+                )}
               </>
-            )}
-
-            <SectionTitle title="Enviar Observação" />
-            <CommentBox value={observation} onChangeText={setObservation} />
-
-            {selectedVariant && (
-              <Button
-                title="Submeter"
-                className="mt-4"
-                onPress={() => console.log(selectedVariant, observation)}
-              />
             )}
           </View>
         </ScrollView>

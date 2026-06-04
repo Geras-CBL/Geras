@@ -5,9 +5,14 @@ import { MaterialIcons } from '@expo/vector-icons';
 interface CommentBoxProps {
   value: string;
   onChangeText: (text: string) => void;
+  editable?: boolean;
 }
 
-const CommentBox = ({ value, onChangeText }: CommentBoxProps) => {
+const CommentBox = ({
+  value,
+  onChangeText,
+  editable = true,
+}: CommentBoxProps) => {
   return (
     <View className="h-32 w-full flex-row items-start rounded-xl bg-white p-4 shadow-md">
       <TextInput
@@ -18,13 +23,16 @@ const CommentBox = ({ value, onChangeText }: CommentBoxProps) => {
         textAlignVertical="top"
         placeholder="Escreva a sua observação..."
         placeholderTextColor="#999999"
+        editable={editable}
       />
-      <MaterialIcons
-        name="edit"
-        size={24}
-        color="black"
-        className="ml-2 mt-1"
-      />
+      {editable && (
+        <MaterialIcons
+          name="edit"
+          size={24}
+          color="black"
+          className="ml-2 mt-1"
+        />
+      )}
     </View>
   );
 };
