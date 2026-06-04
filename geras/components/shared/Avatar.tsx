@@ -11,12 +11,7 @@ interface AvatarProps {
 const Avatar = ({ uri, alt, initials = 'U' }: AvatarProps) => {
   const finalAlt = alt || 'Foto de perfil do utilizador';
   return (
-    <View
-      accessible={true}
-      accessibilityRole="image"
-      accessibilityLabel={finalAlt}
-      className="relative h-32 w-32 items-center justify-center overflow-hidden rounded-full border border-secondary bg-secondary/50"
-    >
+    <View className="relative h-32 w-32 items-center justify-center overflow-hidden rounded-full border border-secondary bg-secondary/50">
       {uri ? (
         <Image
           source={{ uri }}
