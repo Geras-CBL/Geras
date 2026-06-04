@@ -20,7 +20,8 @@ export default function RequestHelp() {
           style={{ fontSize: 16 }}
           accessibilityRole="header"
         >
-          Olá {profile?.name?.split(' ')[0] || 'Senhor'}, o que precisa...
+          Olá Sr(a). {profile?.name?.split(' ')[0] || 'Senhor'}, o que
+          precisa...
         </ThemedText>
 
         <RequestHelpButton

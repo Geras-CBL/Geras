@@ -175,6 +175,8 @@ export default function Requests() {
     </View>
   );
 
+  const [description, setDescription] = useState('');
+
   const renderGenericContent = () => (
     <View className="h-full w-full gap-4">
       <ThemedText type="bodyBold" className="mb-6 text-center text-neutral">
@@ -188,6 +190,8 @@ export default function Requests() {
           multiline
           className="flex-1 pb-8 font-rubik text-lg text-neutral"
           textAlignVertical="top"
+          value={description}
+          onChangeText={setDescription}
         />
 
         <View className="absolute bottom-4 right-4">
@@ -198,17 +202,28 @@ export default function Requests() {
   );
 
   const renderActions = () => {
+    const handleMakeRequest = () => {
+      let finalDescription = description;
+      if (requestType === 'pharmacy') {
+        const selectedNames = items.filter((i) => i.checked).map((i) => i.name);
+        finalDescription = selectedNames.join(', ');
+      }
+
+      router.push({
+        pathname: './RequestLoading',
+        params: {
+          type: requestType,
+          description: finalDescription,
+        },
+      });
+    };
+
     if (requestType === 'pharmacy') {
       return (
         <Button
           title="Fazer Pedido"
           className="w-2/3"
-          onPress={() =>
-            router.push({
-              pathname: './RequestLoading',
-              params: { type: requestType },
-            })
-          }
+          onPress={handleMakeRequest}
         />
       );
     }
@@ -227,12 +242,7 @@ export default function Requests() {
         <Button
           title="Fazer pedido"
           className="w-full"
-          onPress={() =>
-            router.push({
-              pathname: './RequestLoading',
-              params: { type: requestType },
-            })
-          }
+          onPress={handleMakeRequest}
         />
       </View>
     );
@@ -249,7 +259,8 @@ export default function Requests() {
             style={{ fontSize: 16 }}
             accessibilityRole="header"
           >
-            Olá {profile?.name?.split(' ')[0] || 'Senhor'}, o que precisa...
+            Olá Sr(a).{profile?.name?.split(' ')[0] || 'Senhor'}, o que
+            precisa...
           </ThemedText>
         </View>
       </View>

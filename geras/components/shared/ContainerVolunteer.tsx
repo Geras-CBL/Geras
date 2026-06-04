@@ -5,7 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 type ContainerVoluntarioProps = {
   name: string;
-  age: number;
+  age?: number;
   role: string;
   avatarUri?: string;
 };
@@ -37,9 +37,11 @@ const ContainerVoluntario = ({
         <ThemedText type="body" className="text-lg text-neutral">
           {name}
         </ThemedText>
-        <ThemedText type="bodyInfo" className="mt-2 text-sm text-neutral/60">
-          {age} anos
-        </ThemedText>
+        {age !== undefined && (
+          <ThemedText type="bodyInfo" className="mt-2 text-sm text-neutral/60">
+            {age} anos
+          </ThemedText>
+        )}
         <ThemedText type="bodyInfo" className="mt-1 text-sm text-neutral/60">
           {role}
         </ThemedText>

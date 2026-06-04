@@ -31,27 +31,40 @@ export default function Home() {
   const { profile } = useAuth();
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [caretakerName, setCaretakerName] = useState<string>('');
 
   useFocusEffect(
     useCallback(() => {
-      async function fetchNotifications() {
+      async function fetchData() {
         if (!profile?.id) return;
+        setLoading(true);
         try {
-          const { data, error } = await supabase
+          const { data: notifs } = await supabase
             .from('notifications')
             .select('*')
             .eq('id_senior', profile.id);
+          if (notifs) setNotifications(notifs);
 
-          if (!error && data) {
-            setNotifications(data);
+          const { data: assoc } = await supabase
+            .from('senior_caretaker')
+            .select('caretaker:users!id_caretaker(name)')
+            .eq('id_senior', profile.id)
+            .limit(1)
+            .maybeSingle();
+
+          if (assoc?.caretaker) {
+            const name = Array.isArray(assoc.caretaker)
+              ? assoc.caretaker[0]?.name
+              : (assoc.caretaker as any).name;
+            if (name) setCaretakerName(name.split(' ')[0]);
           }
         } catch (err) {
-          console.error('Error fetching notifications:', err);
+          console.error('Error fetching homepage data:', err);
         } finally {
           setLoading(false);
         }
       }
-      fetchNotifications();
+      fetchData();
     }, [profile?.id]),
   );
 
@@ -117,7 +130,7 @@ export default function Home() {
           <View className="aspect-square w-1/2 p-4">
             <BigButton
               iconName={'phone'}
-              label={'Ligar a Sofia'}
+              label={caretakerName ? `Ligar a ${caretakerName}` : 'Ligar'}
               onPress={() => {
                 Linking.openURL(`tel:${963744454}`);
               }}
