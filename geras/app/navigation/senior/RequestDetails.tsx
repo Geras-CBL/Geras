@@ -6,7 +6,7 @@ import ContainerVoluntario from '@/components/shared/ContainerVolunteer';
 import EvaluationTask from '@/components/shared/EvaluationTask';
 import { InfoPill } from '@/components/shared/InfoPill';
 import SectionTitle from '@/components/shared/SectionTitle';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   Image,
@@ -14,6 +14,7 @@ import {
   Platform,
   ScrollView,
   View,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -62,6 +63,7 @@ import { useAuth } from '@/context/AuthContext';
 
 export default function RequestDetails() {
   const { profile } = useAuth();
+  const router = useRouter();
   const { type, requestId } = useLocalSearchParams<{
     type?: string;
     requestId?: string;
@@ -79,6 +81,7 @@ export default function RequestDetails() {
 
   const [observation, setObservation] = useState('');
   const [dbDescription, setDbDescription] = useState('');
+  const [taskData, setTaskData] = useState<any>(null);
 
   const [caretaker, setCaretaker] = useState<{
     name: string;
@@ -100,6 +103,7 @@ export default function RequestDetails() {
 
         if (error) throw error;
         if (data) {
+          setTaskData(data);
           if (data.description) {
             setDbDescription(data.description);
           }
@@ -124,6 +128,36 @@ export default function RequestDetails() {
 
     return () => clearInterval(interval);
   }, [requestId, profile?.id]);
+
+  const handleSubmit = async () => {
+    if (!selectedVariant || !taskData) return;
+
+    const evaluationMapping: Record<EvaluationTaskVariant, string> = {
+      sentiment_satisfied: 'SATISFIED',
+      sentiment_neutral: 'NEUTRAL',
+      sentiment_dissatisfied: 'DISSATISFIED',
+    };
+
+    const evaluation = evaluationMapping[selectedVariant];
+    const volunteerId = taskData.id_volunteer || taskData.id_caretaker || 1;
+
+    try {
+      const { error } = await supabase.from('evaluations').insert({
+        id_request: Number(requestId),
+        id_volunteer: volunteerId,
+        id_senior: taskData.id_senior || profile?.id,
+        evaluation,
+        description: observation,
+      });
+
+      if (error) throw error;
+      Alert.alert('Sucesso', 'Avaliação submetida com sucesso!');
+      router.back();
+    } catch (err) {
+      console.error('Error submitting evaluation:', err);
+      Alert.alert('Erro', 'Não foi possível submeter a avaliação.');
+    }
+  };
 
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-20">
@@ -239,13 +273,11 @@ export default function RequestDetails() {
               <Button
                 title="Submeter"
                 className="mt-4"
-                onPress={() => console.log(selectedVariant, observation)}
+                onPress={handleSubmit}
               />
             )}
           </View>
         </ScrollView>
-
-        {/* FIXO NO FUNDO */}
       </KeyboardAvoidingView>
       <BottomActions />
     </SafeAreaView>
