@@ -4,7 +4,7 @@ import FloatingIconCard from '@/components/senior/FloatingIconCard';
 import Button from '@/components/shared/Button';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { TextInput, View } from 'react-native';
+import { Alert, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
@@ -36,11 +36,13 @@ export default function VoicePage() {
 
       if (error) {
         console.error('Error adding grocery:', error);
+        Alert.alert('Erro', 'Não foi possível adicionar o item. Tente novamente.');
       } else {
         handleBack();
       }
     } catch (err) {
       console.error('Unexpected error:', err);
+      Alert.alert('Erro', 'Ocorreu um erro inesperado. Tente novamente.');
     } finally {
       setIsSubmitting(false);
     }

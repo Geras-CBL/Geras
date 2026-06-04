@@ -48,8 +48,7 @@ export default function Requests() {
         try {
           const { data, error } = await supabase
             .from('medicine')
-            .select('name')
-            .eq('id_senior', profile.id);
+            .select('name');
           if (error) {
             console.error('Error fetching medicines:', error);
           } else if (data) {
@@ -69,7 +68,7 @@ export default function Requests() {
       }
 
       fetchMedicines();
-    }, [requestType, profile]),
+    }, [requestType]),
   );
 
   const toggleCheckbox = (id: string) => {
