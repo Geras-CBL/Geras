@@ -18,9 +18,11 @@ import ProfilePicker from '@/components/caretaker/ProfilePicker';
 import ProfileBottomSheet from '@/components/caretaker/ProfileBottomSheet';
 import { useProfile } from '@/context/ProfileContext';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Requests() {
   const router = useRouter();
+  const { profile } = useAuth();
   const [requests, setRequests] = useState<Pedido[]>([]);
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -29,7 +31,7 @@ export default function Requests() {
   const { selectedProfile, handleSelectProfile } = useProfile();
 
   const fetchRequests = useCallback(async () => {
-    if (!selectedProfile?.id) return;
+    if (!selectedProfile?.id || !profile?.id) return;
     setIsLoading(true);
 
     try {
@@ -37,7 +39,8 @@ export default function Requests() {
         .from('requests')
         .select('*')
         .eq('id_senior', selectedProfile.id)
-        .eq('state', 'PENDING');
+        .eq('state', 'PENDING')
+        .eq('id_caretaker', profile.id);
 
       if (error) throw error;
 
@@ -69,7 +72,7 @@ export default function Requests() {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedProfile?.id]);
+  }, [selectedProfile?.id, profile?.id]);
 
   useFocusEffect(
     useCallback(() => {
@@ -96,8 +99,26 @@ export default function Requests() {
     }
   };
 
-  const handleForward = () =>
-    Alert.alert('Sucesso', 'Reencaminhado para a rede de voluntários');
+  const handleForward = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('requests')
+        .update({ id_caretaker: null })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      Alert.alert('Sucesso', 'Reencaminhado para a rede de voluntários', [
+        {
+          text: 'OK',
+          onPress: () => setRequests((prev) => prev.filter((r) => r.id !== id)),
+        },
+      ]);
+    } catch (err) {
+      console.error('Error forwarding request:', err);
+      Alert.alert('Erro', 'Não foi possível reencaminhar o pedido.');
+    }
+  };
 
   const handleOpenSheet = () => sheetRef.current?.present();
 
@@ -113,7 +134,7 @@ export default function Requests() {
       Alert.alert('Sucesso', 'Pedido aceite', [
         {
           text: 'OK',
-          onPress: () => fetchRequests(),
+          onPress: () => setRequests((prev) => prev.filter((r) => r.id !== id)),
         },
       ]);
     } catch (err) {
@@ -177,7 +198,7 @@ export default function Requests() {
                       title="Reencaminhar"
                       variant="outlined"
                       className="flex-1"
-                      onPress={handleForward}
+                      onPress={() => handleForward(request.id)}
                     />
                     <Button
                       title="Aceitar Pedido"

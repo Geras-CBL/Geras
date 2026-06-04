@@ -50,6 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (session) {
+        setIsLoading(true);
         fetchProfile(session.user.id);
       } else {
         setProfile(null);
@@ -61,6 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const fetchProfile = async (authUserId: string) => {
+    setIsLoading(true);
     try {
       const { data, error } = await supabase
         .from('users')

@@ -395,6 +395,7 @@ export default function RootLayout() {
                           onRightPress={() =>
                             router.push('../caretaker/Notifications')
                           }
+                          onLogoutPress={handleLogout}
                         />
                       ),
                     }}
@@ -417,6 +418,7 @@ export default function RootLayout() {
                           onRightPress={() =>
                             router.push('../caretaker/Notifications')
                           }
+                          onLogoutPress={handleLogout}
                         />
                       ),
                     }}

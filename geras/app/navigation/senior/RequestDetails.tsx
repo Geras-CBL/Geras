@@ -87,9 +87,10 @@ export default function RequestDetails() {
   } | null>(null);
 
   useEffect(() => {
-    if (!requestId) return;
+    if (!requestId || !profile?.id) return;
 
     async function checkStatus() {
+      if (!profile?.id) return;
       try {
         const { data, error } = await supabase
           .from('requests')
@@ -122,7 +123,7 @@ export default function RequestDetails() {
     const interval = setInterval(checkStatus, 5000);
 
     return () => clearInterval(interval);
-  }, [requestId]);
+  }, [requestId, profile?.id]);
 
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-20">
