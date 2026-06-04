@@ -43,6 +43,7 @@ export default function Requests() {
       if (requestType !== 'pharmacy') return;
 
       async function fetchMedicines() {
+        if (!profile?.id) return;
         setLoading(true);
         try {
           const { data, error } = await supabase
