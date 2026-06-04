@@ -13,6 +13,9 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ProfileProvider } from '@/context/ProfileContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 SplashScreen.preventAutoHideAsync();
 
