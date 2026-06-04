@@ -6,14 +6,18 @@ import { SeniorProfile } from '@/data/profilesData';
 
 interface ProfilePickerProps {
   onPress?: () => void;
-  profile: SeniorProfile;
+  profile: SeniorProfile | null;
 }
 
 const ProfilePicker: React.FC<ProfilePickerProps> = ({ onPress, profile }) => {
-  const initials = profile.name
-    .split(' ')
-    .map((n) => n[0])
-    .join('');
+  const initials = profile?.name
+    ? profile.name
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+    : '?';
+
+  const name = profile?.name ?? 'Selecionar idoso';
 
   return (
     <Pressable
@@ -27,7 +31,7 @@ const ProfilePicker: React.FC<ProfilePickerProps> = ({ onPress, profile }) => {
         <ThemedText type="subtitle">{initials}</ThemedText>
       </View>
 
-      <ThemedText type="subtitle">{profile.name}</ThemedText>
+      <ThemedText type="subtitle">{name}</ThemedText>
 
       <MaterialIcons name="keyboard-arrow-down" size={18} color="#1d1d1b" />
     </Pressable>
