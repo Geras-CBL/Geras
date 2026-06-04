@@ -19,15 +19,14 @@ const SensorComponent = ({
     <View className="mb-4 w-[48%]">
       <Pressable
         onPress={onPress}
-        className={`h-32 w-full flex-row items-center justify-center gap-2 rounded-3xl ${
+        className={`h-32 w-full flex-row items-center justify-center gap-2 rounded-3xl active:opacity-80 ${
           isActive
             ? 'bg-primary'
             : 'border border-slate-200 bg-white shadow-sm shadow-black/5'
         }`}
-        style={({ pressed }) => ({
-          opacity: pressed ? 0.8 : 1,
+        style={{
           elevation: isActive ? 0 : 3,
-        })}
+        }}
       >
         <MaterialIcons
           name={iconName}
