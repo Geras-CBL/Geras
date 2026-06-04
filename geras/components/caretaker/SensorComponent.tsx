@@ -19,6 +19,11 @@ const SensorComponent = ({
     <View className="mb-4 w-[48%]">
       <Pressable
         onPress={onPress}
+        accessible={true}
+        accessibilityRole="switch"
+        accessibilityState={{ checked: isActive }}
+        accessibilityLabel={`Sensor: ${name}`}
+        accessibilityHint={`Toca duas vezes para ${isActive ? 'desativar' : 'ativar'} o sensor`}
         className={`h-32 w-full flex-row items-center justify-center gap-2 rounded-3xl ${
           isActive
             ? 'bg-primary'
@@ -33,6 +38,7 @@ const SensorComponent = ({
           name={iconName}
           size={24}
           color={isActive ? '#FFFFFF' : '#000000'}
+          importantForAccessibility="no"
         />
 
         <ThemedText

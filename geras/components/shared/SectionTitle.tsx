@@ -12,7 +12,11 @@ export default function SectionTitle({
 }: Readonly<SectionTitleProps>) {
   return (
     <View className="w-full flex-col items-start gap-4">
-      <ThemedText type="title" className="text-center">
+      <ThemedText
+        type="title"
+        className="text-center"
+        accessibilityRole="header"
+      >
         {title}
       </ThemedText>
       {children}

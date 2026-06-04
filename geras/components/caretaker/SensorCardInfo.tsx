@@ -23,6 +23,10 @@ const SensorCardInfo = ({
   return (
     <Pressable
       onPress={onPress}
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={`Sensores: ${data.title}. ${data.subtitle(sensorCount)}`}
+      accessibilityHint="Toca duas vezes para ver os detalhes dos sensores"
       className="w-full flex-row items-center justify-between gap-[15px] rounded-2xl bg-neutralLight p-4 shadow-lg"
     >
       <View className="h-20 flex-row">

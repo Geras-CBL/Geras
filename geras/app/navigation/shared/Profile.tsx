@@ -66,6 +66,11 @@ export default function Profile() {
         </View>
 
         <View className="mt-2 gap-4">
+          <Button
+            title="Definições de Acessibilidade"
+            onPress={() => router.push('/navigation/shared/Settings')}
+          />
+
           <Button title="Termos e condições" onPress={openTerms} />
 
           <Button title="Política de privacidade" onPress={openPrivacy} />

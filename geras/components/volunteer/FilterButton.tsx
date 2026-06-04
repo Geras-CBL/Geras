@@ -8,11 +8,22 @@ interface FilterButtonProps {
   onPress?: () => void;
 }
 
-export default function FilterButton({ label, onPress }: FilterButtonProps) {
+export default function FilterButton({
+  label,
+  isActive = false,
+  onPress,
+}: FilterButtonProps) {
   return (
     <Pressable
       onPress={onPress}
-      className="flex-row items-center gap-2 rounded-full bg-neutralLight px-4 py-3 shadow-lg"
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={`Filtro: ${label}`}
+      accessibilityState={{ selected: isActive }}
+      accessibilityHint="Toca duas vezes para alterar este filtro"
+      className={`flex-row items-center gap-2 rounded-full px-4 py-3 shadow-lg ${
+        isActive ? 'bg-[#d0e7d7]' : 'bg-neutralLight'
+      }`}
     >
       <ThemedText type="body" className="text-neutral">
         {label}

@@ -46,6 +46,14 @@ export default function CardPedidos({
   return (
     <Pressable
       onPress={onPress}
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={`Pedido de ${category} para ${name}: ${task}. ${
+        variant === 'home'
+          ? 'Estado: ' + statusLabel + (isNew ? '. Novo.' : '')
+          : 'Realizado em ' + date + ' às ' + time
+      }`}
+      accessibilityHint="Toca duas vezes para ver os detalhes do pedido"
       className={`relative w-full flex-row items-center justify-between gap-4 overflow-hidden rounded-3xl p-6 shadow-sm ${cardBackgroundColor}`}
     >
       <View className="flex-1 gap-4">

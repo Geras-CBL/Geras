@@ -37,11 +37,20 @@ export default function CaretakerCall() {
 
   return (
     <View className="flex-1 items-center justify-center bg-white p-6">
-      <ThemedText type="subtitle" className="mb-2 text-center">
+      <ThemedText
+        type="subtitle"
+        className="mb-2 text-center"
+        accessibilityRole="header"
+      >
         A ligar a Sofia, telemóvel
       </ThemedText>
 
-      <View className="my-16 items-center justify-center">
+      <View
+        className="my-16 items-center justify-center"
+        accessible={true}
+        accessibilityLiveRegion="assertive"
+        accessibilityLabel={`A ligar a Sofia em ${seconds} segundos.`}
+      >
         <ThemedText type="title" style={{ fontSize: 40, lineHeight: 40 }}>
           {seconds}
         </ThemedText>
@@ -54,6 +63,10 @@ export default function CaretakerCall() {
         <TouchableOpacity
           className="items-center rounded-xl bg-primary p-8"
           onPress={makeCall}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel="Ligar agora"
+          accessibilityHint="Efetua a chamada telefónica imediatamente"
         >
           <ThemedText type="title" className="text-white">
             Ligar Agora
@@ -64,13 +77,22 @@ export default function CaretakerCall() {
           <TouchableOpacity
             className="items-center rounded-xl border border-tertiary bg-orange-100 p-8"
             onPress={handleCancel}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel="Cancelar chamada"
+            accessibilityHint="Cancela a contagem decrescente e volta ao ecrã anterior"
           >
             <ThemedText type="title" className="text-tertiary">
               Cancelar
             </ThemedText>
           </TouchableOpacity>
         ) : (
-          <View className="items-center">
+          <View
+            className="items-center"
+            accessible={true}
+            accessibilityLiveRegion="polite"
+            accessibilityLabel="Chamada cancelada"
+          >
             <ThemedText type="title" className="text-tertiary">
               Cancelado
             </ThemedText>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import Settings from '../../app/navigation/senior/Settings';
 import { FontProvider } from '@/components/FontContext';
+import Settings from '../../app/navigation/shared/Settings';
 import { StyleSheet } from 'react-native';
 
 // 1. Mocks Essenciais
@@ -12,6 +12,12 @@ jest.mock('@expo/vector-icons', () => ({
 
 jest.mock('expo-router', () => ({
   useRouter: () => ({ push: jest.fn(), back: jest.fn() }),
+}));
+
+jest.mock('@/context/AuthContext', () => ({
+  useAuth: () => ({
+    profile: { role: 'SENIOR' },
+  }),
 }));
 
 jest.mock('expo-audio', () => ({

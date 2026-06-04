@@ -171,7 +171,7 @@ export const NotificationCard = ({
             className="uppercase"
             accessible={true}
             accessibilityRole="text"
-            accessibilityLabel={`${title}'}`}
+            accessibilityLabel={title}
           >
             {title}
           </ThemedText>

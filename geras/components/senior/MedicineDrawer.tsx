@@ -76,6 +76,11 @@ export function MedicationSchedule({
               className={`${
                 isSelected ? 'rounded-full bg-primary px-7 py-1.5' : 'px-2'
               }`}
+              accessible={true}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: isSelected }}
+              accessibilityLabel={`Dia ${day.label}`}
+              accessibilityHint="Toca duas vezes para mudar o dia da medicação"
             >
               <ThemedText
                 className={`${isSelected ? 'font-semibold text-white' : 'text-neutral'}`}
@@ -92,6 +97,16 @@ export function MedicationSchedule({
         currentDay.medicines.map((med) => (
           <View
             key={med.id}
+            accessible={true}
+            accessibilityRole="text"
+            accessibilityLabel={`Medicação das ${
+              med.scheduled_time
+                ? new Date(med.scheduled_time).toLocaleTimeString('pt-PT', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })
+                : 'Sem hora definida'
+            }: ${med.name}${med.dosage ? `, ${med.dosage} miligramas` : ''}`}
             className="w-full rounded-2xl bg-white p-5 shadow-sm"
           >
             <View className="mb-4 flex-row items-start justify-between">

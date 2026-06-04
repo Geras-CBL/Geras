@@ -38,6 +38,8 @@ const BigButton = ({
         {...focusRing.bindFocusHandlers()}
         accessible={true}
         focusable={true}
+        accessibilityRole="button"
+        accessibilityLabel={label}
         importantForAccessibility="yes"
         onPress={() => {
           if (route) router.push(route as Route);

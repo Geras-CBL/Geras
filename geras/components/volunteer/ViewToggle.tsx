@@ -67,6 +67,11 @@ export default function ViewToggle({
             key={option.value}
             onPress={() => onSelect(option.value)}
             className="z-10 flex-1 items-center justify-center"
+            accessible={true}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: isActive }}
+            accessibilityLabel={`Visualização em ${option.label}`}
+            accessibilityHint="Toca duas vezes para alterar a visualização"
           >
             <ThemedText
               type="body"

@@ -71,6 +71,10 @@ export default function Requests() {
             return (
               <Pressable
                 key={request.id}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel={`Pedido: ${request.title}. ${request.subtitle}`}
+                accessibilityHint="Toca duas vezes para ver os detalhes do pedido"
                 className="rounded-2xl bg-white p-5 shadow-md"
                 onPress={() =>
                   router.push({

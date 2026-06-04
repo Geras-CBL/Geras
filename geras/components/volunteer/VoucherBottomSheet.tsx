@@ -60,13 +60,21 @@ const VoucherBottomSheet = forwardRef<
     >
       <BottomSheetView className="z-10 flex-1 items-center gap-6 px-[30px] pb-16 pt-3">
         {/* Título da Loja */}
-        <ThemedText type="title" className="text-center text-neutral">
+        <ThemedText
+          type="title"
+          className="text-center text-neutral"
+          accessibilityRole="header"
+        >
           {voucher.name_store}
         </ThemedText>
 
         {/*Usado*/}
         {isUsed ? (
-          <View className="mt-2 items-center justify-center gap-4">
+          <View
+            accessible={true}
+            accessibilityLabel={`Voucher já utilizado no valor de ${voucher.value}. Este voucher já foi descontado e não pode ser usado novamente.`}
+            className="mt-2 items-center justify-center gap-4"
+          >
             <View className="rounded-full bg-gray-200 p-6">
               <MaterialIcons
                 name="check-circle-outline"
@@ -94,7 +102,11 @@ const VoucherBottomSheet = forwardRef<
           </View>
         ) : isCompleted ? (
           // Disponível - Completo
-          <>
+          <View
+            accessible={true}
+            accessibilityLabel={`Voucher disponível no valor de ${voucher.value}. Código QR para resgate. Localização: ${voucher.address}`}
+            className="items-center justify-center gap-4"
+          >
             <View className="items-center justify-center overflow-hidden rounded-full bg-primary px-4 py-2">
               <ThemedText type="body" className="text-neutralLight">
                 {voucher.value}
@@ -107,16 +119,23 @@ const VoucherBottomSheet = forwardRef<
                 uri: 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example',
               }}
               resizeMode="cover"
+              accessible={true}
+              accessibilityRole="image"
+              accessibilityLabel="Código QR para resgate do voucher"
             />
 
             <ThemedText className="text-center text-base capitalize text-neutral">
               <ThemedText type="bodyBold">Localização: </ThemedText>
               <ThemedText className="font-rubik">{voucher.address}</ThemedText>
             </ThemedText>
-          </>
+          </View>
         ) : (
           //  Incompleto - Não disponível
-          <View className="mt-4 items-center justify-center gap-4">
+          <View
+            accessible={true}
+            accessibilityLabel={`Voucher bloqueado. Completa as tarefas restantes para desbloquear. Progresso atual: ${voucher.currentTasks} de ${voucher.totalTasks} tarefas concluídas.`}
+            className="mt-4 items-center justify-center gap-4"
+          >
             <View className="rounded-full bg-orange-100 p-6">
               <MaterialIcons name="lock-outline" size={48} color="#db6536" />
             </View>

@@ -60,6 +60,9 @@ export default function HelpButton() {
           <TouchableOpacity
             activeOpacity={1}
             onPress={toggleOpen}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel="Fechar assistente virtual"
             className="h-full w-full bg-neutral/60"
           />
         </Animated.View>
@@ -79,6 +82,10 @@ export default function HelpButton() {
             <View className="relative">
               <TouchableOpacity
                 onPress={toggleOpen}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel="Assistente virtual"
+                accessibilityHint="Toca duas vezes para abrir o assistente por voz"
                 className="absolute -top-10 left-0 right-0 z-20 items-center shadow-sm"
               >
                 <View className="h-20 w-20 items-center justify-center rounded-full bg-primary">
@@ -89,6 +96,10 @@ export default function HelpButton() {
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={toggleOpen}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel="Tenho dúvidas"
+                accessibilityHint="Toca duas vezes para abrir o assistente por voz"
                 className="relative h-28 w-80 items-center justify-center"
               >
                 <View
@@ -105,9 +116,8 @@ export default function HelpButton() {
                     source={HelpShape}
                     className="h-full w-full"
                     resizeMode="contain"
-                    accessible={true}
-                    accessibilityRole="image"
-                    accessibilityLabel="Forma decorativa de ajuda"
+                    accessible={false}
+                    importantForAccessibility="no"
                   />
                 </View>
 
@@ -261,6 +271,9 @@ export const HelpContent = ({ toggleOpen }: { toggleOpen: () => void }) => {
 
         <TouchableOpacity
           onPress={toggleOpen}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel="Fechar assistente virtual"
           className="absolute right-6 top-6 rounded-full bg-gray-100 p-2"
         >
           <MaterialIcons name="close" size={24} color="black" />

@@ -49,19 +49,25 @@ const RequestDetailsBottomSheet = forwardRef<
     >
       <BottomSheetView className="flex-1 items-center gap-6 px-[30px] pb-16 pt-3">
         {/* --- Título --- */}
-        <ThemedText type="title" className="text-center text-neutral">
+        <ThemedText
+          type="title"
+          className="text-center text-neutral"
+          accessibilityRole="header"
+        >
           {request.category || 'Tarefa doméstica'}
         </ThemedText>
 
         {/* --- Cartão de Perfil --- */}
-        <View className="w-full flex-row items-center gap-6 rounded-2xl bg-neutralLight p-6 shadow-lg shadow-neutral">
+        <View
+          accessible={true}
+          accessibilityLabel={`Utente: ${request.name}, ${request.age ? request.age + ' anos' : ''}`}
+          className="w-full flex-row items-center gap-6 rounded-2xl bg-neutralLight p-6 shadow-lg shadow-neutral"
+        >
           <Image
             className="h-[100px] w-[100px] rounded-lg bg-gray-200"
             source={srAntonio}
             resizeMode="cover"
-            accessible={true}
-            accessibilityRole="image"
-            accessibilityLabel="Foto do pedido"
+            accessible={false}
           />
           <View className="flex-1 gap-2 overflow-hidden">
             <ThemedText type="subtitle" className="uppercase text-neutral">
@@ -95,7 +101,11 @@ const RequestDetailsBottomSheet = forwardRef<
         </View>
 
         {/* --- Detalhes (Lista) --- */}
-        <View className="w-full gap-2">
+        <View
+          accessible={true}
+          accessibilityLabel={`Detalhes do pedido: Distância de ${request.distance || '2.3 Km'}, Tempo estimado de ${request.time || '30 minutos'}, Localização em ${request.location || 'Rua João Pereira Almeida 76, Safira, Portugal'}, Descrição do pedido: ${request.task}`}
+          className="w-full gap-2"
+        >
           {/* Distância */}
           <ThemedText className="text-base text-[#1d1d1b]">
             <ThemedText type="bodyBold">Distância: </ThemedText>

@@ -49,6 +49,7 @@ export default function MapaHomePage() {
         provider={PROVIDER_DEFAULT}
         showsUserLocation={true}
         onPress={() => bottomSheetModalRef.current?.dismiss()}
+        accessible={false}
       >
         {requests.map((request) => (
           <Marker
@@ -59,6 +60,10 @@ export default function MapaHomePage() {
             }}
             onPress={() => handleMarkerPress(request)}
             image={Pin_Marker_}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel={`Pedido de ${request.category || 'ajuda'} do utente ${request.name}`}
+            accessibilityHint="Toca duas vezes para ver os detalhes do pedido no painel inferior"
           >
             {/* --- UI PIN --- */}
           </Marker>

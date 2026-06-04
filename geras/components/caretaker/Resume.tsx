@@ -12,7 +12,12 @@ const Resume: React.FC<ResumeProps> = ({
   healthProblemsCount,
 }) => {
   return (
-    <View className="w-full flex-row items-center rounded-2xl bg-neutralLight px-4 py-2 shadow-lg">
+    <View
+      accessible={true}
+      accessibilityRole="text"
+      accessibilityLabel={`Resumo: ${alertsCount} ${alertsCount === 1 ? 'aviso' : 'avisos'} e ${healthProblemsCount} ${healthProblemsCount === 1 ? 'problema' : 'problemas'} de saúde`}
+      className="w-full flex-row items-center rounded-2xl bg-neutralLight px-4 py-2 shadow-lg"
+    >
       <View className="flex-1 flex-row">
         <View className="justify-center self-stretch px-1 py-2">
           <ThemedText>

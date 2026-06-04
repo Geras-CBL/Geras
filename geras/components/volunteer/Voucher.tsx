@@ -77,6 +77,12 @@ const Voucher = ({
   return (
     <Pressable
       onPress={onPress}
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={`Voucher de ${value} em ${name_store}, ${address}. Progresso de ${currentTasks} de ${totalTasks} tarefas concluídas. ${
+        isCompleted ? 'Disponível para resgatar.' : 'Ainda em progresso.'
+      }`}
+      accessibilityHint="Toca duas vezes para ver os detalhes do voucher"
       className={`relative mb-2 w-full overflow-hidden rounded-xl shadow-md ${
         !isCompleted ? 'bg-neutralLight' : ''
       }`}
@@ -132,7 +138,13 @@ const Voucher = ({
           </View>
 
           {/* Barra de Progresso */}
-          <View className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
+          <View
+            className="h-2 w-full overflow-hidden rounded-full bg-gray-200"
+            accessible={true}
+            accessibilityRole="progressbar"
+            accessibilityValue={{ min: 0, max: totalTasks, now: currentTasks }}
+            accessibilityLabel={`${currentTasks} de ${totalTasks} tarefas concluídas`}
+          >
             {/* Dynamic Bar Color */}
             <View
               className={`h-full rounded-full ${progressBgClass}`}

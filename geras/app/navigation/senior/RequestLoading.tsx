@@ -1,7 +1,9 @@
 import { FontAwesome } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import { ThemedText } from '@/components/ThemedText';
+import { useFontScale } from '@/components/FontContext';
 import Animated, {
   Easing,
   interpolateColor,
@@ -86,12 +88,14 @@ const AnimatedStepText = ({
   index: number;
   currentIndex: number;
 }) => {
+  const { scale } = useFontScale();
   const isActive = index === currentIndex;
   const isPast = index < currentIndex;
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: withTiming(isActive || isPast ? 1 : 0.4, { duration: 300 }),
     transform: [{ translateX: withTiming(isActive ? 10 : 0) }],
+    fontSize: 20 * scale,
     color: interpolateColor(
       isPast ? 1 : 0,
       [0, 1],
@@ -101,7 +105,7 @@ const AnimatedStepText = ({
 
   return (
     <Animated.Text
-      className="my-2 text-xl font-bold"
+      className="my-2 font-bold"
       style={animatedStyle}
       accessible={true}
       accessibilityRole="text"
@@ -145,12 +149,13 @@ export default function RequestLoading() {
       edges={['top']}
       className="flex-1 justify-between bg-primary px-10 pb-20 pt-16"
     >
-      <Text
-        className="mb-2 pt-8 text-3xl font-bold text-neutralLight"
+      <ThemedText
+        type="title"
+        className="mb-2 pt-8 text-neutralLight"
         accessibilityRole="header"
       >
         Aguarde...
-      </Text>
+      </ThemedText>
 
       <View className="flex-1 items-center justify-center">
         <CentralAnimation stepIndex={currentStepIndex} />

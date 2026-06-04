@@ -58,7 +58,11 @@ const ProfileBottomSheet = React.forwardRef<
       }}
     >
       <BottomSheetView className="flex-1 px-8 pb-16 pt-3">
-        <ThemedText type="title" className="mb-6 text-center">
+        <ThemedText
+          type="title"
+          className="mb-6 text-center"
+          accessibilityRole="header"
+        >
           Selecionar Perfil do Sénior
         </ThemedText>
 
@@ -71,13 +75,21 @@ const ProfileBottomSheet = React.forwardRef<
                 key={profile.id}
                 onPress={() => handleProfileSelect(profile)}
                 activeOpacity={0.8}
+                accessible={true}
+                accessibilityRole="radio"
+                accessibilityState={{ checked: !!profile.selected }}
+                accessibilityLabel={`Sénior ${profile.name}, ${profile.age > 0 ? profile.age + ' anos' : ''}`}
+                accessibilityHint="Toca duas vezes para mudar para este perfil de sénior"
                 className={`h-42 flex-row items-center justify-between rounded-2xl p-6 shadow-sm ${
                   profile.selected
                     ? 'bg-primary/40 shadow-green-200/20'
                     : 'bg-neutralLight shadow-black/10'
                 }`}
               >
-                <View className="flex-row items-center gap-5">
+                <View
+                  className="flex-row items-center gap-5"
+                  importantForAccessibility="no"
+                >
                   {profile.image ? (
                     <Image
                       source={profile.image}

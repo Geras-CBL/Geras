@@ -1,4 +1,5 @@
-import { View, ActivityIndicator, Text, TouchableOpacity } from 'react-native';
+import { View, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { ThemedText } from '@/components/ThemedText';
 import { Redirect } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 
@@ -22,15 +23,17 @@ export default function Index() {
   if (!profile) {
     return (
       <View className="flex-1 items-center justify-center bg-[#325439]">
-        <Text className="mb-4 px-8 text-center text-lg text-white">
+        <ThemedText className="mb-4 px-8 text-center text-lg text-white">
           Não foi possível carregar o perfil. Por favor, tente novamente ou use
           o botão para terminar sessão.
-        </Text>
+        </ThemedText>
         <TouchableOpacity
           onPress={signOut}
           className="rounded-full bg-white px-6 py-3"
         >
-          <Text className="font-semibold text-[#325439]">Terminar Sessão</Text>
+          <ThemedText className="font-semibold text-[#325439]">
+            Terminar Sessão
+          </ThemedText>
         </TouchableOpacity>
       </View>
     );

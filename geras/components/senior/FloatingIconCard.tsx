@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import RequestCardBackground from '@/components/senior/RequestCardBackground';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -27,13 +27,18 @@ export default function FloatingIconCard({
 
       <View className="flex-1 gap-4 px-6 pb-10 pt-6">
         <View className="mb-4 flex-row items-center justify-end">
-          <MaterialIcons
-            name="close"
-            className="pr-4"
-            size={30}
-            color="#0000"
-            onPress={onClose}
-          />
+          {onClose && (
+            <TouchableOpacity
+              onPress={onClose}
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="Fechar"
+              accessibilityHint="Volta ao ecrã anterior"
+              className="pr-4"
+            >
+              <MaterialIcons name="close" size={30} color="#4B5563" />
+            </TouchableOpacity>
+          )}
         </View>
 
         <View className="flex-1">{children}</View>

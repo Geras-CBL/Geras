@@ -74,11 +74,16 @@ export default function BottomActions() {
               activeOpacity={0.8}
               onPress={handleBack}
               className="relative"
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="Voltar atrás"
+              accessibilityHint="Regressa ao ecrã anterior"
             >
               <Image
                 source={LeftActionImage}
                 style={{ width: BTN_WIDTH, height: BTN_HEIGHT }}
                 resizeMode="contain"
+                accessible={false}
               />
               <View className="absolute inset-0 justify-center pl-8">
                 <ThemedText
@@ -95,12 +100,16 @@ export default function BottomActions() {
               activeOpacity={0.8}
               onPress={toggleOpen}
               className="relative"
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="Tenho dúvidas"
+              accessibilityHint="Abre o assistente de ajuda por voz"
             >
               <Image
                 source={RightActionImage}
                 style={{ width: BTN_WIDTH, height: BTN_HEIGHT }}
                 resizeMode="contain"
-                alt="Imagem do botão de ajuda para dúvidas"
+                accessible={false}
               />
               <View className="absolute inset-0 justify-center pb-1 pr-8">
                 <ThemedText

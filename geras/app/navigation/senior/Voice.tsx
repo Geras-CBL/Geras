@@ -51,7 +51,11 @@ const WaveBar = ({ index }: { index: number }) => {
 };
 
 const AudioWaveform = () => (
-  <View className="mb-8 h-8 w-full flex-row items-center justify-center">
+  <View
+    className="mb-8 h-8 w-full flex-row items-center justify-center"
+    accessible={false}
+    importantForAccessibility="no"
+  >
     {Array.from({ length: NUM_BARS }).map((_, i) => (
       <WaveBar key={i} index={i} />
     ))}
@@ -83,6 +87,8 @@ export default function VoicePage() {
           <TextInput
             value="Uvas sem grainha."
             multiline
+            accessibilityLabel="Texto reconhecido por voz"
+            accessibilityHint="Pré-visualização do texto gravado por voz"
             className="flex-1 font-rubik text-lg text-neutral"
             textAlignVertical="top"
             editable={false}
