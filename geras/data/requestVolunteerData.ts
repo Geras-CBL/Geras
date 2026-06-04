@@ -14,6 +14,8 @@ export interface RequestData {
   imageUrl?: string;
   latitude: number;
   longitude: number;
+  gender?: string;
+  role?: string;
 }
 
 export const REQUESTS_DATA: RequestData[] = [

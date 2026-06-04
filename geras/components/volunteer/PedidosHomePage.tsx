@@ -1,12 +1,14 @@
 import { useRef, useState, useCallback, useMemo } from 'react';
-import { FlatList, View } from 'react-native';
-import { REQUESTS_DATA, RequestData } from '@/data/requestVolunteerData';
+import { FlatList, View, ActivityIndicator } from 'react-native';
+import { RequestData } from '@/data/requestVolunteerData';
 import CardPedidos from '@/components/volunteer/CardPedidos';
 import { ThemedText } from '@/components/ThemedText';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import RequestDetailsBottomSheet from '@/components/volunteer/RequestsBottomSheet';
-import { router } from 'expo-router';
-import srAntonio from '@/assets/images/srAntonio.png';
+import { useRouter, useFocusEffect } from 'expo-router';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface PedidosHomePageProps {
   filterStatus: 'todos' | 'disponivel' | 'decorrer';
@@ -19,10 +21,82 @@ export default function PedidosHomePage({
   filterSenior,
   filterType,
 }: Readonly<PedidosHomePageProps>) {
-  const [requests, setRequests] = useState<RequestData[]>(REQUESTS_DATA);
+  const router = useRouter();
+  const { profile } = useAuth();
+  const [requests, setRequests] = useState<RequestData[]>([]);
+  const [loading, setLoading] = useState(true);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const [selectedRequest, setSelectedRequest] = useState<RequestData | null>(
     null,
+  );
+  const [declinedIds, setDeclinedIds] = useState<string[]>([]);
+
+  const fetchRequests = useCallback(async () => {
+    if (!profile?.id) return;
+    setLoading(true);
+
+    const storedDeclined = await AsyncStorage.getItem(
+      `declined_requests_${profile.id}`,
+    );
+    const declinedList: string[] = storedDeclined
+      ? JSON.parse(storedDeclined)
+      : [];
+    setDeclinedIds(declinedList);
+    try {
+      const { data, error } = await supabase
+        .from('requests')
+        .select('*, senior:users!id_senior(name, profile_picture, gender)')
+        .or(
+          `state.eq.PENDING,and(state.eq.ACCEPTED,id_volunteer.eq.${profile.id})`,
+        );
+
+      if (error) throw error;
+      console.log('Volunteer Requests Data:', data);
+
+      if (data) {
+        const formatted: RequestData[] = data.map((req) => ({
+          id: req.id.toString(),
+          name: req.senior?.name || 'Sénior',
+          gender: req.senior?.gender,
+          category: req.category || 'Pedido',
+          task: req.description || '',
+          type:
+            req.category?.toLowerCase() === 'compras'
+              ? 'food'
+              : req.category?.toLowerCase() === 'medicamentos'
+                ? 'pharmacy'
+                : req.category?.toLowerCase() === 'limpeza'
+                  ? 'cleaning'
+                  : 'other',
+          state: req.state === 'ACCEPTED',
+          isNew:
+            req.state === 'PENDING' &&
+            Date.now() - new Date(req.created_at).getTime() <
+              24 * 60 * 60 * 1000,
+          date: new Date(req.created_at).toLocaleDateString('pt-PT'),
+          time: new Date(req.created_at).toLocaleTimeString('pt-PT', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          }),
+          imageUrl: req.senior?.profile_picture || '',
+          latitude: req.latitude || 40.6405,
+          longitude: req.longitude || -8.6538,
+        }));
+        const filtered = formatted.filter((r) => !declinedList.includes(r.id));
+        setRequests(filtered);
+      }
+    } catch (err) {
+      console.error('Error fetching volunteer requests:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [profile?.id]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchRequests();
+    }, [fetchRequests]),
   );
 
   const filteredRequests = useMemo(() => {
@@ -47,38 +121,63 @@ export default function PedidosHomePage({
     });
   }, [requests, filterStatus, filterSenior, filterType]);
 
-  const handleCardPress = useCallback((item: RequestData) => {
-    if (item.state === false) {
-      setSelectedRequest(item);
-      bottomSheetModalRef.current?.present();
-    } else {
-      router.push({
-        pathname: '/navigation/volunteer/RequestDetails',
-        params: { type: String(item.type) },
-      });
+  const handleCardPress = useCallback(
+    (item: RequestData) => {
+      if (item.state === false) {
+        setSelectedRequest(item);
+        bottomSheetModalRef.current?.present();
+      } else {
+        router.push({
+          pathname: '/navigation/volunteer/RequestDetails',
+          params: { type: String(item.type), requestId: item.id },
+        });
+      }
+    },
+    [router],
+  );
+
+  const handleAcceptRequest = async () => {
+    if (!selectedRequest || !profile?.id) return;
+    try {
+      const { error } = await supabase
+        .from('requests')
+        .update({
+          id_volunteer: profile.id,
+          state: 'ACCEPTED',
+        })
+        .eq('id', selectedRequest.id);
+
+      if (error) throw error;
+      bottomSheetModalRef.current?.dismiss();
+      fetchRequests();
+    } catch (err) {
+      console.error('Error accepting request:', err);
     }
-  }, []);
+  };
 
-  const handleAcceptRequest = () => {
-    if (!selectedRequest) return;
+  const handleDeclineRequest = async () => {
+    if (!selectedRequest || !profile?.id) return;
 
-    const updatedList = requests.map((req) =>
-      req.id === selectedRequest.id ? { ...req, state: true } : req,
+    // Guardar o ID recusado localmente
+    const updatedDeclined = [...declinedIds, selectedRequest.id];
+    setDeclinedIds(updatedDeclined);
+    await AsyncStorage.setItem(
+      `declined_requests_${profile.id}`,
+      JSON.stringify(updatedDeclined),
     );
 
-    setRequests(updatedList);
+    // Remover da lista local imediatamente
+    setRequests((prev) => prev.filter((r) => r.id !== selectedRequest.id));
     bottomSheetModalRef.current?.dismiss();
   };
 
-  const handleDeclineRequest = () => {
-    if (!selectedRequest) return;
-
-    const updatedList = requests.map((req) =>
-      req.id === selectedRequest.id ? { ...req, state: false } : req,
+  if (loading) {
+    return (
+      <View className="mt-10 items-center justify-center">
+        <ActivityIndicator size="large" color="#205a2d" />
+      </View>
     );
-    setRequests(updatedList);
-    bottomSheetModalRef.current?.dismiss();
-  };
+  }
 
   return (
     <View className="flex-1">
@@ -93,6 +192,7 @@ export default function PedidosHomePage({
             <View className="mb-4">
               <CardPedidos
                 name={item.name}
+                gender={item.gender}
                 category={item.category || ''}
                 task={item.task}
                 state={item.state}
@@ -100,7 +200,7 @@ export default function PedidosHomePage({
                 date={item.date}
                 time={item.time}
                 variant="home"
-                imageUrl={srAntonio}
+                imageUrl={item.imageUrl}
                 onPress={() => handleCardPress(item)}
                 type={String(item.type)}
               />
