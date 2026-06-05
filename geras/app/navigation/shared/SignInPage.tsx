@@ -6,6 +6,7 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
+import { Slider } from '@miblanchard/react-native-slider';
 import { Checkbox } from '@futurejj/react-native-checkbox';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -26,7 +27,7 @@ export default function SignInPage() {
   const [city, setCity] = useState('');
   const [address, setAddress] = useState('');
   const [postalCode, setPostalCode] = useState('');
-  const [actionRadius, setActionRadius] = useState('');
+  const [actionRadius, setActionRadius] = useState(5);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [role, setRole] = useState<'SENIOR' | 'CARETAKER' | 'VOLUNTEER'>(
     'SENIOR',
@@ -51,11 +52,6 @@ export default function SignInPage() {
 
     if (role === 'SENIOR' && (!address || !postalCode)) {
       Alert.alert('Erro', 'Por favor preencha a morada e código postal.');
-      return;
-    }
-
-    if (role === 'VOLUNTEER' && !actionRadius) {
-      Alert.alert('Erro', 'Por favor preencha a distância (km).');
       return;
     }
 
@@ -98,7 +94,7 @@ export default function SignInPage() {
         updateData.address = address;
         updateData.zip_code = postalCode;
       } else if (role === 'VOLUNTEER') {
-        updateData.action_radius = Number(actionRadius);
+        updateData.action_radius = actionRadius;
       }
 
       const { error: updateError } = await supabase
@@ -241,14 +237,31 @@ export default function SignInPage() {
               )}
 
               {role === 'VOLUNTEER' && (
-                <TextInput
-                  className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
-                  placeholder="Distância de Ação (km)"
-                  placeholderTextColor="#fbfbfb"
-                  keyboardType="numeric"
-                  value={actionRadius}
-                  onChangeText={setActionRadius}
-                />
+                <View className="w-full">
+                  <Text className="mb-2 px-4 text-base font-bold text-neutralLight">
+                    Distância de Ação: {actionRadius} km
+                  </Text>
+                  <View
+                    style={{
+                      width: '100%',
+                      height: 40,
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Slider
+                      minimumValue={0}
+                      maximumValue={20}
+                      step={1}
+                      value={actionRadius}
+                      onValueChange={(val) =>
+                        setActionRadius(Array.isArray(val) ? val[0] : val)
+                      }
+                      minimumTrackTintColor="#325439"
+                      maximumTrackTintColor="#fbfbfb"
+                      thumbTintColor="#325439"
+                    />
+                  </View>
+                </View>
               )}
 
               <View className="mt-2 w-full flex-row justify-between">
