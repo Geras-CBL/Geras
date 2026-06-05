@@ -1,4 +1,12 @@
-import { View, TextInput, TouchableOpacity, Text, Alert } from 'react-native';
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  Alert,
+  ScrollView,
+} from 'react-native';
+import { Checkbox } from '@futurejj/react-native-checkbox';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ThemedText } from '@/components/ThemedText';
@@ -13,28 +21,95 @@ export default function SignInPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [gender, setGender] = useState('');
+  const [city, setCity] = useState('');
+  const [address, setAddress] = useState('');
+  const [postalCode, setPostalCode] = useState('');
+  const [actionRadius, setActionRadius] = useState('');
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [role, setRole] = useState<'SENIOR' | 'CARETAKER' | 'VOLUNTEER'>(
     'SENIOR',
   );
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
-    if (!name || !email || !password) {
-      Alert.alert('Erro', 'Por favor preencha todos os campos.');
+    if (!name || !email || !password || !confirmPassword || !gender || !city) {
+      Alert.alert('Erro', 'Por favor preencha todos os campos obrigatórios.');
+      return;
+    }
+
+    if (!termsAccepted) {
+      Alert.alert('Erro', 'Tem de aceitar os termos e condições.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert('Erro', 'As palavras-passe não coincidem.');
+      return;
+    }
+
+    if (role === 'SENIOR' && (!address || !postalCode)) {
+      Alert.alert('Erro', 'Por favor preencha a morada e código postal.');
+      return;
+    }
+
+    if (role === 'VOLUNTEER' && !actionRadius) {
+      Alert.alert('Erro', 'Por favor preencha a distância (km).');
       return;
     }
 
     setLoading(true);
+
+    const userMetadata: any = {
+      name,
+      role,
+      gender,
+    };
+
+    if (role === 'SENIOR') {
+      userMetadata.address = address;
+      userMetadata.postal_code = postalCode;
+    } else if (role === 'VOLUNTEER') {
+      userMetadata.action_radius = Number(actionRadius);
+    }
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: {
-          name,
-          role,
-        },
+        data: userMetadata,
       },
     });
+
+    if (data?.user) {
+      // O trigger da base de dados pode não estar a copiar estes campos novos,
+      // por isso fazemos um update explícito à tabela 'users'
+      let genderEnum = gender.toUpperCase();
+      if (genderEnum === 'MASCULINO') genderEnum = 'MALE';
+      if (genderEnum === 'FEMININO') genderEnum = 'FEMALE';
+
+      const updateData: any = {
+        gender: genderEnum,
+        local: city,
+      };
+
+      if (role === 'SENIOR') {
+        updateData.address = address;
+        updateData.zip_code = postalCode;
+      } else if (role === 'VOLUNTEER') {
+        updateData.action_radius = Number(actionRadius);
+      }
+
+      const { error: updateError } = await supabase
+        .from('users')
+        .update(updateData)
+        .eq('auth_user_id', data.user.id);
+
+      if (updateError) {
+        console.error('Erro ao atualizar campos extras:', updateError);
+      }
+    }
 
     setLoading(false);
 
@@ -65,7 +140,14 @@ export default function SignInPage() {
       />
 
       <SafeAreaView style={{ flex: 1 }} edges={['top']}>
-        <View className="flex-1 justify-center">
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: 'center',
+            paddingVertical: 24,
+          }}
+          showsVerticalScrollIndicator={false}
+        >
           {/* Logo */}
           <View className="mb-6 items-center">
             <Svg width={80} height={111} viewBox="0 0 117 163" fill="none">
@@ -114,6 +196,61 @@ export default function SignInPage() {
                 onChangeText={setPassword}
               />
 
+              <TextInput
+                className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
+                placeholder="Confirmar Palavra-Passe"
+                placeholderTextColor="#fbfbfb"
+                secureTextEntry
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+              />
+
+              <TextInput
+                className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
+                placeholder="Género"
+                placeholderTextColor="#fbfbfb"
+                value={gender}
+                onChangeText={setGender}
+              />
+
+              <TextInput
+                className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
+                placeholder="Cidade"
+                placeholderTextColor="#fbfbfb"
+                value={city}
+                onChangeText={setCity}
+              />
+
+              {role === 'SENIOR' && (
+                <>
+                  <TextInput
+                    className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
+                    placeholder="Morada"
+                    placeholderTextColor="#fbfbfb"
+                    value={address}
+                    onChangeText={setAddress}
+                  />
+                  <TextInput
+                    className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
+                    placeholder="Código Postal"
+                    placeholderTextColor="#fbfbfb"
+                    value={postalCode}
+                    onChangeText={setPostalCode}
+                  />
+                </>
+              )}
+
+              {role === 'VOLUNTEER' && (
+                <TextInput
+                  className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
+                  placeholder="Distância de Ação (km)"
+                  placeholderTextColor="#fbfbfb"
+                  keyboardType="numeric"
+                  value={actionRadius}
+                  onChangeText={setActionRadius}
+                />
+              )}
+
               <View className="mt-2 w-full flex-row justify-between">
                 <TouchableOpacity
                   className={`mx-1 flex-1 items-center rounded-full p-2 ${role === 'SENIOR' ? 'bg-[#325439]' : 'bg-neutralLight/40'}`}
@@ -136,6 +273,19 @@ export default function SignInPage() {
                   <Text className="font-bold text-white">Voluntário</Text>
                 </TouchableOpacity>
               </View>
+
+              <View className="mt-4 w-full flex-row">
+                <Checkbox
+                  status={termsAccepted ? 'checked' : 'unchecked'}
+                  onPress={() => setTermsAccepted(!termsAccepted)}
+                  color={termsAccepted ? '#fff' : '#fbfbfb'}
+                  style={{ transform: [{ scale: 1.5 }] }}
+                />
+                <Text className="ml-3 flex-shrink text-sm text-white">
+                  Concordo com a Política de Privacidade e com os Termos e
+                  Condições.
+                </Text>
+              </View>
             </View>
 
             <View className="mt-6 w-2/3">
@@ -153,7 +303,7 @@ export default function SignInPage() {
               </Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </ScrollView>
       </SafeAreaView>
     </LinearGradient>
   );
