@@ -38,57 +38,124 @@ export default function HomePage() {
     handleSelectProfile,
     isLoading: isProfilesLoading,
   } = useProfile();
+  const { profile } = useAuth();
   const [notifications, setNotifications] = React.useState<any[]>([]);
   const [healthProblemsCount, setHealthProblemsCount] = React.useState(0);
   const [loadingData, setLoadingData] = React.useState(true);
+  const [activeSensors, setActiveSensors] = React.useState<any[]>([]);
+  const [recentReadings, setRecentReadings] = React.useState<
+    { value: string; type: string; triggeredAt: string; sensorName: string }[]
+  >([]);
 
   const handleOpenSheet = () => {
     sheetRef.current?.present();
   };
 
-  useFocusEffect(
-    React.useCallback(() => {
-      async function fetchData() {
-        if (!selectedProfile?.id) {
-          setLoadingData(false);
-          return;
-        }
+  const fetchData = React.useCallback(async () => {
+    if (!selectedProfile?.id) {
+      setLoadingData(false);
+      return;
+    }
 
-        setLoadingData(true);
-        try {
-          const seniorId = selectedProfile!.id;
+    setLoadingData(true);
+    try {
+      const seniorId = selectedProfile!.id;
+      const caretakerId = profile?.id;
 
-          // 1. Notificações
-          const { data: notifs, error: notifError } = await supabase
-            .from('notifications')
-            .select('*')
-            .eq('id_senior', seniorId);
+      // 1. Notificações
+      const { data: notifs, error: notifError } = await supabase
+        .from('notifications')
+        .select('*')
+        .eq('id_senior', seniorId);
 
-          if (!notifError && notifs) {
-            setNotifications(notifs);
-          }
+      if (!notifError && notifs) {
+        setNotifications(notifs);
+      }
 
-          // 2. Monitorização (para contar problemas de saúde)
-          const { data: monitor, error: monitorError } = await supabase
-            .from('monitoring')
-            .select('*')
-            .eq('id_senior', seniorId);
+      // 2. Monitorização (para contar problemas de saúde)
+      const { data: monitor, error: monitorError } = await supabase
+        .from('monitoring')
+        .select('*')
+        .eq('id_senior', seniorId);
 
-          if (!monitorError && monitor) {
-            const problems = monitor.filter((m) => {
-              const value = m.custom_metric_value || m.value || 0;
-              return value > 70; // Limiar de Moderado/Excessivo
+      if (!monitorError && monitor) {
+        const problems = monitor.filter((m) => {
+          const value = m.custom_metric_value || m.value || 0;
+          return value > 70;
+        });
+        setHealthProblemsCount(problems.length);
+      }
+
+      // 3. Sensores ativos + última leitura de movimento
+      if (caretakerId) {
+        const { data: sensorData } = await supabase
+          .from('sensors')
+          .select('*, sensor_readings(type, value, triggered_at)')
+          .eq('id_senior', seniorId)
+          .eq('id_caretaker', caretakerId)
+          .eq('active', true);
+
+        if (sensorData) {
+          setActiveSensors(sensorData);
+
+          const readings: {
+            value: string;
+            type: string;
+            triggeredAt: string;
+            sensorName: string;
+          }[] = [];
+
+          sensorData.forEach((s: any) => {
+            (s.sensor_readings || []).forEach((r: any) => {
+              readings.push({
+                value: r.value || 'Alerta',
+                type: r.type || 'info',
+                triggeredAt: r.triggered_at,
+                sensorName: s.name,
+              });
             });
-            setHealthProblemsCount(problems.length);
-          }
-        } catch (err) {
-          console.error('Erro ao carregar dados do idoso:', err);
-        } finally {
-          setLoadingData(false);
+          });
+
+          const twoHoursAgo = Date.now() - 2 * 60 * 60 * 1000;
+
+          readings.sort(
+            (a, b) =>
+              new Date(b.triggeredAt).getTime() -
+              new Date(a.triggeredAt).getTime(),
+          );
+
+          const recentOnly = readings.filter(
+            (r) => new Date(r.triggeredAt).getTime() > twoHoursAgo,
+          );
+
+          setRecentReadings(recentOnly);
         }
       }
+    } catch (err) {
+      console.error('Erro ao carregar dados do idoso:', err);
+    } finally {
+      setLoadingData(false);
+    }
+  }, [selectedProfile?.id, profile?.id]);
+
+  useFocusEffect(
+    React.useCallback(() => {
       fetchData();
-    }, [selectedProfile?.id]),
+
+      // Subscrição realtime: atualiza quando há nova leitura de sensor
+      const channel = supabase
+        .channel('sensor_readings_home')
+        .on(
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'sensor_readings' },
+          () => fetchData(),
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }, [fetchData]),
   );
 
   const alertsCount = notifications.filter((n) => n.type === 'alert').length;
@@ -103,7 +170,7 @@ export default function HomePage() {
       ) : (
         <ScrollView
           className="flex-1"
-          contentContainerClassName="px-6 gap-6 pb-10"
+          contentContainerClassName="px-6 gap-6 pb-40"
           showsVerticalScrollIndicator={false}
         >
           <ProfilePicker onPress={handleOpenSheet} profile={selectedProfile} />
@@ -166,16 +233,46 @@ export default function HomePage() {
 
           <View className="pt-6">
             <SectionTitle title="Sensores">
-              <SensorCardInfo
-                status="motion"
-                sensorCount={3}
-                onPress={() => router.push('./Sensors')}
-              />
-              <SensorCardInfo
-                status="noMotion"
-                sensorCount={2}
-                onPress={() => router.push('./Sensors')}
-              />
+              {loadingData ? (
+                <ActivityIndicator size="small" color="#205a2d" />
+              ) : activeSensors.length === 0 ? (
+                <SensorCardInfo
+                  title="SEM SENSORES"
+                  subtitle="Nenhum sensor configurado"
+                  isAlert={false}
+                  onPress={() => router.push('./Sensors')}
+                />
+              ) : recentReadings.length === 0 ? (
+                <SensorCardInfo
+                  title="SEM ALERTAS RECENTES"
+                  subtitle="Nenhum alerta nas últimas 2 horas"
+                  isAlert={false}
+                  onPress={() => router.push('./Sensors')}
+                />
+              ) : (
+                recentReadings.map((reading, index) => {
+                  const isAlert = reading.type === 'alert';
+                  const date = new Date(reading.triggeredAt);
+                  const formattedTime = date.toLocaleTimeString('pt-PT', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  });
+                  const formattedDate = date.toLocaleDateString('pt-PT', {
+                    day: '2-digit',
+                    month: '2-digit',
+                  });
+
+                  return (
+                    <SensorCardInfo
+                      key={index}
+                      title={reading.value.toUpperCase()}
+                      subtitle={`${reading.sensorName} · ${formattedDate} ${formattedTime}`}
+                      isAlert={isAlert}
+                      onPress={() => router.push('./Sensors')}
+                    />
+                  );
+                })
+              )}
             </SectionTitle>
           </View>
         </ScrollView>

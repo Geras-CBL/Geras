@@ -164,7 +164,7 @@ export default function SeniorManagement() {
       <ScrollView
         className="flex-1 px-6"
         showsVerticalScrollIndicator={false}
-        contentContainerClassName="flex-col pb-60 gap-6"
+        contentContainerClassName="flex-col pb-40 gap-6"
       >
         <ProfilePicker onPress={handleOpenSheet} profile={selectedProfile} />
 

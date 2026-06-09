@@ -385,21 +385,35 @@ export default function RootLayout() {
                       contentStyle: { backgroundColor: 'transparent' },
                       header: () => (
                         <Header
-                          leftIconName="arrow-back"
+                          showLeftIcon={false}
                           rightIconName="notifications"
-                          leftIconLabel="Voltar"
                           rightIconLabel="Notificações"
-                          onLeftPress={() => {
-                            router.back();
-                          }}
                           onRightPress={() =>
-                            router.push('../caretaker/Notifications')
+                            router.push('/navigation/caretaker/Notifications')
                           }
                           onLogoutPress={handleLogout}
                         />
                       ),
                     }}
                   />
+                  {/* caretaker Notifications */}
+                  <Stack.Screen
+                    name="navigation/caretaker/Notifications"
+                    options={{
+                      headerShown: true,
+                      headerTransparent: true,
+                      contentStyle: { backgroundColor: 'transparent' },
+                      header: () => (
+                        <Header
+                          leftIconName="arrow-back"
+                          leftIconLabel="Voltar"
+                          onLeftPress={() => router.back()}
+                          onLogoutPress={handleLogout}
+                        />
+                      ),
+                    }}
+                  />
+
                   <Stack.Screen
                     name="navigation/shared/EditProfile"
                     options={{

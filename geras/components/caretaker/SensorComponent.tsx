@@ -1,4 +1,4 @@
-import { Pressable, View } from 'react-native';
+import { Pressable, View, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
 
@@ -16,17 +16,13 @@ const SensorComponent = ({
   onPress,
 }: SensorProps) => {
   return (
-    <View className="mb-4 w-[48%]">
+    <View style={styles.wrapper}>
       <Pressable
         onPress={onPress}
-        className={`h-32 w-full flex-row items-center justify-center gap-2 rounded-3xl active:opacity-80 ${
-          isActive
-            ? 'bg-primary'
-            : 'border border-slate-200 bg-white shadow-sm shadow-black/5'
-        }`}
-        style={{
-          elevation: isActive ? 0 : 3,
-        }}
+        style={[
+          styles.card,
+          isActive ? styles.cardActive : styles.cardInactive,
+        ]}
       >
         <MaterialIcons
           name={iconName}
@@ -36,7 +32,7 @@ const SensorComponent = ({
 
         <ThemedText
           type="bodyBold"
-          className={`${isActive ? 'text-white' : 'text-black'}`}
+          style={{ color: isActive ? '#FFFFFF' : '#000000' }}
         >
           {name}
         </ThemedText>
@@ -44,5 +40,34 @@ const SensorComponent = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  wrapper: {
+    width: '48%',
+    marginBottom: 16,
+  },
+  card: {
+    height: 128,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    borderRadius: 24,
+  },
+  cardActive: {
+    backgroundColor: '#205a2d',
+  },
+  cardInactive: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+  },
+});
 
 export default SensorComponent;

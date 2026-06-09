@@ -40,7 +40,8 @@ export default function Requests() {
         .select('*')
         .eq('id_senior', selectedProfile.id)
         .eq('state', 'PENDING')
-        .eq('id_caretaker', profile.id);
+        .eq('id_caretaker', profile.id)
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
 
@@ -57,6 +58,7 @@ export default function Requests() {
               minute: '2-digit',
               hour12: false,
             }),
+            createdAt: req.created_at,
             type: (req.category?.toLowerCase() === 'compras'
               ? 'food'
               : req.category?.toLowerCase() === 'medicamentos'
@@ -148,7 +150,7 @@ export default function Requests() {
       <ScrollView
         className="flex-1 px-6"
         showsVerticalScrollIndicator={false}
-        contentContainerClassName="gap-6 pb-10"
+        contentContainerClassName="gap-6"
       >
         <ProfilePicker onPress={handleOpenSheet} profile={selectedProfile} />
 
@@ -164,10 +166,15 @@ export default function Requests() {
           <View className="gap-6">
             {filteredRequests.map((request) => {
               const iconProps = getIconProps(request.type);
+              const isNew =
+                Date.now() - new Date((request as any).createdAt).getTime() <
+                3_600_000;
               return (
                 <Pressable
                   key={request.id}
-                  className="rounded-2xl bg-white p-5 shadow-md"
+                  className={`rounded-2xl p-5 shadow-md ${
+                    isNew ? 'border border-green-200 bg-green-50' : 'bg-white'
+                  }`}
                   onPress={() =>
                     router.push({
                       pathname: '/navigation/caretaker/RequestDetails',
@@ -192,6 +199,16 @@ export default function Requests() {
                         {request.subtitle}
                       </ThemedText>
                     </View>
+                    {isNew && (
+                      <View className="rounded-full bg-green-500 px-2 py-1">
+                        <ThemedText
+                          type="bodySmall"
+                          className="text-xs font-bold text-white"
+                        >
+                          Novo
+                        </ThemedText>
+                      </View>
+                    )}
                   </View>
                   <View className="flex-row gap-3">
                     <Button
