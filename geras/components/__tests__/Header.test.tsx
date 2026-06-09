@@ -3,7 +3,6 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import Header from '../shared/Header';
 
-
 jest.mock('expo-router', () => ({
   useRouter: () => ({
     push: jest.fn(),
