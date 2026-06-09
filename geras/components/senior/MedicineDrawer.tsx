@@ -7,6 +7,8 @@ interface MedicineItem {
   name: string;
   dosage?: number;
   scheduled_time?: string;
+  start_date?: string;
+  end_date?: string;
 }
 
 export function MedicationSchedule({
@@ -19,45 +21,40 @@ export function MedicationSchedule({
   // Agrupar medicamentos por data
   const groupMedicinesByDay = () => {
     const today = new Date();
-    const tomorrow = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
 
-    const formatDate = (date: Date) => date.toISOString().split('T')[0];
-    const todayStr = formatDate(today);
-    const tomorrowStr = formatDate(tomorrow);
-
-    const daysMap: Record<
-      string,
-      { label: string; medicines: MedicineItem[] }
-    > = {
-      [todayStr]: { label: 'Hoje', medicines: [] },
-      [tomorrowStr]: { label: 'Amanhã', medicines: [] },
-    };
+    const daysMap = [
+      { label: 'Hoje', date: today, medicines: [] as MedicineItem[] },
+      { label: 'Amanhã', date: tomorrow, medicines: [] as MedicineItem[] },
+    ];
 
     medicines.forEach((med) => {
-      if (med.scheduled_time) {
-        const medDate = med.scheduled_time.split('T')[0];
-        if (!daysMap[medDate]) {
-          daysMap[medDate] = {
-            label: new Date(medDate).toLocaleDateString('pt-PT', {
-              weekday: 'long',
-            }),
-            medicines: [],
-          };
+      const medStart = med.start_date ? new Date(med.start_date) : null;
+      if (medStart) medStart.setHours(0, 0, 0, 0);
+
+      const medEnd = med.end_date ? new Date(med.end_date) : null;
+      if (medEnd) medEnd.setHours(23, 59, 59, 999);
+
+      daysMap.forEach((dayObj) => {
+        const checkDate = dayObj.date;
+        let isActive = true;
+
+        if (!medStart && !medEnd) {
+          isActive = false;
+        } else {
+          if (medStart && checkDate < medStart) isActive = false;
+          if (medEnd && checkDate > medEnd) isActive = false;
         }
-        daysMap[medDate].medicines.push(med);
-      } else {
-        // Se não tiver data, pomos em Hoje por defeito para teste
-        daysMap[todayStr].medicines.push(med);
-      }
+
+        if (isActive) {
+          dayObj.medicines.push(med);
+        }
+      });
     });
 
-    return Object.values(daysMap).filter(
-      (day) =>
-        day.medicines.length > 0 ||
-        day.label === 'Hoje' ||
-        day.label === 'Amanhã',
-    );
+    return daysMap;
   };
 
   const days = groupMedicinesByDay();
