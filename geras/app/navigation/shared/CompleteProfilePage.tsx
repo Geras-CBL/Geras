@@ -182,7 +182,7 @@ export default function CompleteProfilePage() {
             </Svg>
           </View>
 
-          <View className="mb-6  px-8">
+          <View className="mb-6 px-8">
             <ThemedText type="title" className="text-left text-neutralLight">
               Completar Perfil
             </ThemedText>
@@ -235,20 +235,22 @@ export default function CompleteProfilePage() {
               </Text>
               <View className="mb-2 w-full flex-row justify-between">
                 <TouchableOpacity
-                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${gender === 'Masculino'
+                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${
+                    gender === 'Masculino'
                       ? 'bg-[#325439]'
                       : 'bg-neutralLight/40'
-                    }`}
+                  }`}
                   onPress={() => setGender('Masculino')}
                 >
                   <Text className="font-bold text-white">Masculino</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${gender === 'Feminino'
+                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${
+                    gender === 'Feminino'
                       ? 'bg-[#325439]'
                       : 'bg-neutralLight/40'
-                    }`}
+                  }`}
                   onPress={() => setGender('Feminino')}
                 >
                   <Text className="font-bold text-white">Feminino</Text>
@@ -289,24 +291,27 @@ export default function CompleteProfilePage() {
               </Text>
               <View className="w-full flex-row justify-between">
                 <TouchableOpacity
-                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${role === 'SENIOR' ? 'bg-[#325439]' : 'bg-neutralLight/40'
-                    }`}
+                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${
+                    role === 'SENIOR' ? 'bg-[#325439]' : 'bg-neutralLight/40'
+                  }`}
                   onPress={() => setRole('SENIOR')}
                 >
                   <Text className="font-bold text-white">Sénior</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${role === 'CARETAKER' ? 'bg-[#325439]' : 'bg-neutralLight/40'
-                    }`}
+                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${
+                    role === 'CARETAKER' ? 'bg-[#325439]' : 'bg-neutralLight/40'
+                  }`}
                   onPress={() => setRole('CARETAKER')}
                 >
                   <Text className="font-bold text-white">Cuidador</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${role === 'VOLUNTEER' ? 'bg-[#325439]' : 'bg-neutralLight/40'
-                    }`}
+                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${
+                    role === 'VOLUNTEER' ? 'bg-[#325439]' : 'bg-neutralLight/40'
+                  }`}
                   onPress={() => setRole('VOLUNTEER')}
                 >
                   <Text className="font-bold text-white">Voluntário</Text>
@@ -326,8 +331,6 @@ export default function CompleteProfilePage() {
                 </Text>
               </View>
             </View>
-
-
 
             {/* Actions */}
             <View className="mt-8 w-2/3 gap-y-3">
