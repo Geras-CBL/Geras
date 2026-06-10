@@ -126,10 +126,9 @@ export default function Notifications() {
                           icon="call"
                           onPress={() => Linking.openURL(`tel:${963744454}`)}
                         />
-                        <ActionButton
-                          icon="videocam"
-                          onPress={() => router.push('../caretaker/Sensors')}
-                        />
+                          onPress={() =>
+                            router.push('/navigation/caretaker/Sensors')
+                          }
                       </>
                     ) : null
                   }
