@@ -165,10 +165,10 @@ export default function Requests() {
         ) : (
           <View className="gap-6">
             {filteredRequests.map((request) => {
-              const iconProps = getIconProps(request.type);
-              const isNew =
-                Date.now() - new Date((request as any).createdAt).getTime() <
-                3_600_000;
+              const createdAt = (request as Pedido & { createdAt?: string }).createdAt;
+              const isNew = createdAt
+                ? Date.now() - new Date(createdAt).getTime() < 3_600_000
+                : false;
               return (
                 <Pressable
                   key={request.id}
