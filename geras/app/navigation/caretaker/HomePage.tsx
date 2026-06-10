@@ -159,6 +159,9 @@ export default function HomePage() {
   );
 
   const alertsCount = notifications.filter((n) => n.type === 'alert').length;
+  const sensorAlertsCount = recentReadings.filter(
+    (r) => r.type === 'alert',
+  ).length;
 
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-24">
@@ -178,6 +181,7 @@ export default function HomePage() {
           <Resume
             alertsCount={alertsCount}
             healthProblemsCount={healthProblemsCount}
+            sensorAlertsCount={sensorAlertsCount}
           />
 
           <View className="pt-6">
