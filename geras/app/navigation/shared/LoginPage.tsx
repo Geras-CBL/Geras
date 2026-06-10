@@ -5,16 +5,29 @@ import { ThemedText } from '@/components/ThemedText';
 import Button from '@/components/shared/Button';
 import { Stack, useRouter } from 'expo-router';
 import { Svg, G, Path, Defs, ClipPath } from 'react-native-svg';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { FontAwesome } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { signInWithGoogleToken } from '@/services/authService';
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { session, profile } = useAuth();
+
+  useEffect(() => {
+    // Diagnóstico no terminal de desenvolvimento
+    console.log(
+      'DEBUG: EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID =',
+      process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+    );
+    GoogleSignin.configure({
+      webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+    });
+  }, []);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -33,6 +46,37 @@ export default function LoginPage() {
       Alert.alert('Erro de Autenticação', error.message);
     } else {
       router.replace('/');
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      setLoading(true);
+      await GoogleSignin.hasPlayServices();
+
+      try {
+        await GoogleSignin.signOut();
+      } catch (e) {
+        // Ignora se não houver utilizador logado no Google
+      }
+
+      const userInfo = await GoogleSignin.signIn();
+      const idToken = userInfo.data?.idToken;
+
+      if (!idToken) {
+        throw new Error('Não foi possível obter o ID Token do Google.');
+      }
+
+      await signInWithGoogleToken(idToken);
+      router.replace('/');
+    } catch (error: any) {
+      console.error('Erro no Google Sign-In:', error);
+      Alert.alert(
+        'Erro de Autenticação',
+        error.message || 'Falha ao entrar com o Google.',
+      );
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -102,6 +146,17 @@ export default function LoginPage() {
                 variant="transparent"
                 className="mt-7"
                 onPress={handleLogin}
+                disabled={loading}
+              />
+            </View>
+
+            <View className="w-2/3">
+              <Button
+                title="Entrar com o Google"
+                variant="transparent"
+                className="mt-4"
+                icon={<FontAwesome name="google" size={20} color="#fff" />}
+                onPress={handleGoogleLogin}
                 disabled={loading}
               />
             </View>

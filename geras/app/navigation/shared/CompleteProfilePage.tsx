@@ -7,36 +7,56 @@ import {
   ScrollView,
 } from 'react-native';
 import { Slider } from '@miblanchard/react-native-slider';
-import { Checkbox } from '@futurejj/react-native-checkbox';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ThemedText } from '@/components/ThemedText';
 import Button from '@/components/shared/Button';
 import { Stack, useRouter } from 'expo-router';
-import { Svg, G, Path, Defs, ClipPath } from 'react-native-svg';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
+import { Svg, G, Path, Defs, ClipPath } from 'react-native-svg';
+import { Checkbox } from '@futurejj/react-native-checkbox';
 
-export default function SignInPage() {
+export default function CompleteProfilePage() {
   const router = useRouter();
+  const { refreshProfile, signOut } = useAuth();
+
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [gender, setGender] = useState('Masculino');
   const [city, setCity] = useState('');
   const [address, setAddress] = useState('');
   const [postalCode, setPostalCode] = useState('');
   const [actionRadius, setActionRadius] = useState(5);
-  const [termsAccepted, setTermsAccepted] = useState(false);
   const [role, setRole] = useState<'SENIOR' | 'CARETAKER' | 'VOLUNTEER'>(
     'SENIOR',
   );
   const [loading, setLoading] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
-  const handleRegister = async () => {
-    if (!name || !email || !password || !confirmPassword || !gender || !city) {
+  useEffect(() => {
+    // Tentar obter dados iniciais da conta do Google
+    async function loadGoogleData() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        if (user.user_metadata?.name) {
+          setName(user.user_metadata.name);
+        }
+      }
+    }
+    loadGoogleData();
+  }, []);
+
+  const handleSaveProfile = async () => {
+    if (!name || !gender || !city) {
       Alert.alert('Erro', 'Por favor preencha todos os campos obrigatórios.');
+      return;
+    }
+
+    if (role === 'SENIOR' && (!address || !postalCode)) {
+      Alert.alert('Erro', 'Por favor preencha a morada e o código postal.');
       return;
     }
 
@@ -45,79 +65,83 @@ export default function SignInPage() {
       return;
     }
 
-    if (password !== confirmPassword) {
-      Alert.alert('Erro', 'As palavras-passe não coincidem.');
-      return;
-    }
-
-    if (role === 'SENIOR' && (!address || !postalCode)) {
-      Alert.alert('Erro', 'Por favor preencha a morada e código postal.');
-      return;
-    }
-
     setLoading(true);
 
-    const userMetadata: any = {
-      name,
-      role,
-      gender,
-    };
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        Alert.alert(
+          'Erro',
+          'Sessão inválida. Por favor, inicie sessão novamente.',
+        );
+        setLoading(false);
+        return;
+      }
 
-    if (role === 'SENIOR') {
-      userMetadata.address = address;
-      userMetadata.postal_code = postalCode;
-    } else if (role === 'VOLUNTEER') {
-      userMetadata.action_radius = Number(actionRadius);
-    }
-
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: userMetadata,
-      },
-    });
-
-    if (data?.user) {
-      // O trigger da base de dados pode não estar a copiar estes campos novos,
-      // por isso fazemos um update explícito à tabela 'users'
       let genderEnum = gender.toUpperCase();
       if (genderEnum === 'MASCULINO') genderEnum = 'MALE';
       if (genderEnum === 'FEMININO') genderEnum = 'FEMALE';
 
-      const updateData: any = {
+      const profileData: any = {
+        auth_user_id: user.id,
+        email: user.email,
+        name: name,
+        role: role,
         gender: genderEnum,
         local: city,
       };
 
       if (role === 'SENIOR') {
-        updateData.address = address;
-        updateData.zip_code = postalCode;
+        profileData.address = address;
+        profileData.zip_code = postalCode;
       } else if (role === 'VOLUNTEER') {
-        updateData.action_radius = actionRadius;
+        profileData.action_radius = Number(actionRadius);
       }
 
-      const { error: updateError } = await supabase
+      // Verificar se o perfil já foi inserido automaticamente por algum trigger
+      const { data: existingProfile } = await supabase
         .from('users')
-        .update(updateData)
-        .eq('auth_user_id', data.user.id);
+        .select('id')
+        .eq('auth_user_id', user.id)
+        .maybeSingle();
 
-      if (updateError) {
-        console.error('Erro ao atualizar campos extras:', updateError);
+      let dbError;
+      if (existingProfile) {
+        const { error } = await supabase
+          .from('users')
+          .update(profileData)
+          .eq('auth_user_id', user.id);
+        dbError = error;
+      } else {
+        const { error } = await supabase.from('users').insert(profileData);
+        dbError = error;
       }
-    }
 
-    setLoading(false);
+      if (dbError) {
+        throw dbError;
+      }
 
-    if (error) {
-      Alert.alert('Erro de Registo', error.message);
-    } else {
+      // Recarrega o perfil global no AuthContext
+      await refreshProfile();
+
+      Alert.alert('Sucesso', 'Perfil configurado com sucesso!');
+      router.replace('/');
+    } catch (err: any) {
+      console.error('Erro ao guardar perfil:', err);
       Alert.alert(
-        'Sucesso',
-        'Conta criada com sucesso! Pode agora fazer login.',
+        'Erro',
+        err.message || 'Não foi possível configurar o perfil.',
       );
-      router.replace('/navigation/shared/LoginPage');
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleCancel = async () => {
+    await signOut();
+    router.replace('/navigation/shared/LoginPage');
   };
 
   return (
@@ -144,7 +168,6 @@ export default function SignInPage() {
           }}
           showsVerticalScrollIndicator={false}
         >
-          {/* Logo */}
           <View className="mb-6 items-center">
             <Svg width={80} height={111} viewBox="0 0 117 163" fill="none">
               <G clipPath="url(#clip0_447_3217)" fill="#FCFCFB">
@@ -159,46 +182,25 @@ export default function SignInPage() {
             </Svg>
           </View>
 
-          <ThemedText type="title" className="px-8 text-left text-neutralLight">
-            Crie a sua conta
-          </ThemedText>
+          <View className="mb-6  px-8">
+            <ThemedText type="title" className="text-left text-neutralLight">
+              Completar Perfil
+            </ThemedText>
+            <Text className="mt-2 text-left text-base text-neutralLight/80">
+              Precisamos de mais algumas informações para configurar a sua
+              conta.
+            </Text>
+          </View>
 
-          {/* Inputs */}
-          <View className="mb-6 mt-6 w-full items-center">
+          {/* Form */}
+          <View className="mb-6 mt-4 w-full items-center">
             <View className="w-full gap-y-4 px-8">
               <TextInput
                 className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
-                placeholder="Nome"
+                placeholder="Nome Completo"
                 placeholderTextColor="#fbfbfb"
                 value={name}
                 onChangeText={setName}
-              />
-
-              <TextInput
-                className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
-                placeholder="E-mail"
-                placeholderTextColor="#fbfbfb"
-                autoCapitalize="none"
-                value={email}
-                onChangeText={setEmail}
-              />
-
-              <TextInput
-                className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
-                placeholder="Palavra-Passe"
-                placeholderTextColor="#fbfbfb"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-              />
-
-              <TextInput
-                className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
-                placeholder="Confirmar Palavra-Passe"
-                placeholderTextColor="#fbfbfb"
-                secureTextEntry
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
               />
 
               <TextInput
@@ -228,27 +230,25 @@ export default function SignInPage() {
                 </>
               )}
 
-              <Text className="px-4 text-base font-bold text-neutralLight">
+              <Text className="mt-2 px-4 text-base font-bold text-neutralLight">
                 Género:
               </Text>
               <View className="mb-2 w-full flex-row justify-between">
                 <TouchableOpacity
-                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${
-                    gender === 'Masculino'
+                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${gender === 'Masculino'
                       ? 'bg-[#325439]'
                       : 'bg-neutralLight/40'
-                  }`}
+                    }`}
                   onPress={() => setGender('Masculino')}
                 >
                   <Text className="font-bold text-white">Masculino</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${
-                    gender === 'Feminino'
+                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${gender === 'Feminino'
                       ? 'bg-[#325439]'
                       : 'bg-neutralLight/40'
-                  }`}
+                    }`}
                   onPress={() => setGender('Feminino')}
                 >
                   <Text className="font-bold text-white">Feminino</Text>
@@ -258,7 +258,7 @@ export default function SignInPage() {
               {role === 'VOLUNTEER' && (
                 <View className="w-full">
                   <Text className="mb-2 px-4 text-base font-bold text-neutralLight">
-                    Distância de Ação: {actionRadius} km
+                    Raio de Ação: {actionRadius} km
                   </Text>
                   <View
                     style={{
@@ -268,8 +268,8 @@ export default function SignInPage() {
                     }}
                   >
                     <Slider
-                      minimumValue={0}
-                      maximumValue={20}
+                      minimumValue={1}
+                      maximumValue={30}
                       step={1}
                       value={actionRadius}
                       onValueChange={(val) =>
@@ -283,23 +283,30 @@ export default function SignInPage() {
                 </View>
               )}
 
-              <View className="mt-2 w-full flex-row justify-between">
+              {/* Role Selection */}
+              <Text className="mt-2 px-4 text-base font-bold text-neutralLight">
+                Eu sou um:
+              </Text>
+              <View className="w-full flex-row justify-between">
                 <TouchableOpacity
-                  className={`mx-1 flex-1 items-center rounded-full p-2 ${role === 'SENIOR' ? 'bg-[#325439]' : 'bg-neutralLight/40'}`}
+                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${role === 'SENIOR' ? 'bg-[#325439]' : 'bg-neutralLight/40'
+                    }`}
                   onPress={() => setRole('SENIOR')}
                 >
                   <Text className="font-bold text-white">Sénior</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  className={`mx-1 flex-1 items-center rounded-full p-2 ${role === 'CARETAKER' ? 'bg-[#325439]' : 'bg-neutralLight/40'}`}
+                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${role === 'CARETAKER' ? 'bg-[#325439]' : 'bg-neutralLight/40'
+                    }`}
                   onPress={() => setRole('CARETAKER')}
                 >
                   <Text className="font-bold text-white">Cuidador</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  className={`mx-1 flex-1 items-center rounded-full p-2 ${role === 'VOLUNTEER' ? 'bg-[#325439]' : 'bg-neutralLight/40'}`}
+                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${role === 'VOLUNTEER' ? 'bg-[#325439]' : 'bg-neutralLight/40'
+                    }`}
                   onPress={() => setRole('VOLUNTEER')}
                 >
                   <Text className="font-bold text-white">Voluntário</Text>
@@ -320,20 +327,23 @@ export default function SignInPage() {
               </View>
             </View>
 
-            <View className="mt-6 w-2/3">
+
+
+            {/* Actions */}
+            <View className="mt-8 w-2/3 gap-y-3">
               <Button
-                title={loading ? 'A registar...' : 'Registar'}
+                title={loading ? 'A guardar...' : 'Concluir Registo'}
                 variant="transparent"
-                onPress={handleRegister}
+                onPress={handleSaveProfile}
+                disabled={loading}
+              />
+              <Button
+                title="Cancelar"
+                variant="transparent"
+                onPress={handleCancel}
                 disabled={loading}
               />
             </View>
-
-            <TouchableOpacity className="mt-4" onPress={() => router.back()}>
-              <Text className="text-base text-white">
-                Já tem conta? Inicie sessão
-              </Text>
-            </TouchableOpacity>
           </View>
         </ScrollView>
       </SafeAreaView>

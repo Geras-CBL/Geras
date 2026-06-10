@@ -461,6 +461,11 @@ export default function RootLayout() {
                       ),
                     }}
                   />
+
+                  <Stack.Screen
+                    name="navigation/shared/CompleteProfilePage"
+                    options={{ headerShown: false }}
+                  />
                 </Stack>
               </BottomSheetModalProvider>
             </FontProvider>
