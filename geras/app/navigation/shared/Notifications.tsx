@@ -65,6 +65,8 @@ export default function Notifications() {
     React.useCallback(() => {
       fetchNotifications();
 
+      if (!selectedProfile?.id) return;
+
       // Subscrição realtime
       const channel = supabase
         .channel('notifications_page')
@@ -74,9 +76,7 @@ export default function Notifications() {
             event: '*',
             schema: 'public',
             table: 'notifications',
-            filter: selectedProfile?.id
-              ? `id_senior=eq.${selectedProfile.id}`
-              : undefined,
+            filter: `id_senior=eq.${selectedProfile.id}`,
           },
           () => fetchNotifications(),
         )
