@@ -45,11 +45,9 @@ export default function AddHealthMetric() {
       customName = null;
       mainValue = customValue;
       customValue = null;
-    } else if (
-      t.includes('batiment') ||
+      t.includes('batimento') ||
       t.includes('cora') ||
       t.includes('heart')
-    ) {
       typeToSave = 'HEART RATE';
       customName = null;
       mainValue = customValue;
