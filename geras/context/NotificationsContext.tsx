@@ -1,0 +1,230 @@
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useCallback,
+} from 'react';
+import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
+import { Platform } from 'react-native';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
+
+// Configuração de como as notificações aparecem enquanto a app está aberta (foreground)
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowBanner: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+    shouldShowList: true,
+  }),
+});
+
+interface NotificationsContextType {
+  expoPushToken: string | null;
+  sendLocalNotification: (title: string, body: string) => Promise<void>;
+  saveNotificationToDB: (params: {
+    type: string;
+    description: string;
+    id_senior?: number | null;
+    id_caretaker?: number | null;
+    id_volunteer?: number | null;
+  }) => Promise<void>;
+}
+
+const NotificationsContext = createContext<
+  NotificationsContextType | undefined
+>(undefined);
+
+export function NotificationsProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const { profile } = useAuth();
+  const [expoPushToken, setExpoPushToken] = React.useState<string | null>(null);
+  const notificationListener = useRef<Notifications.EventSubscription | null>(
+    null,
+  );
+  const responseListener = useRef<Notifications.EventSubscription | null>(null);
+
+  // Registar o dispositivo para push notifications
+  const registerForPushNotifications = useCallback(async () => {
+    if (!Device.isDevice) {
+      // Simuladores não suportam push tokens reais
+      return null;
+    }
+
+    // Pedir permissões
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+
+    if (finalStatus !== 'granted') {
+      console.log('NotificationsContext: Permissão de notificações negada.');
+      return null;
+    }
+
+    // Criar canal Android
+    if (Platform.OS === 'android') {
+      await Notifications.setNotificationChannelAsync('default', {
+        name: 'Geras Alertas',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#205a2d',
+      });
+    }
+
+    try {
+      const tokenData = await Notifications.getExpoPushTokenAsync();
+      return tokenData.data;
+    } catch (err) {
+      console.log(
+        'NotificationsContext: Não foi possível obter push token (normal em Expo Go):',
+        err,
+      );
+      return null;
+    }
+  }, []);
+
+  // Guardar o push token na tabela users para futura utilização com push remoto
+  const savePushTokenToDB = useCallback(
+    async (token: string) => {
+      if (!profile?.id) return;
+      await supabase
+        .from('users')
+        .update({ push_token: token })
+        .eq('id', profile.id);
+    },
+    [profile?.id],
+  );
+
+  // Disparar uma notificação local (aparece enquanto a app está aberta)
+  const sendLocalNotification = useCallback(
+    async (title: string, body: string) => {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title,
+          body,
+          sound: true,
+        },
+        trigger: null, // null = dispara imediatamente
+      });
+    },
+    [],
+  );
+
+  // Guardar notificação na tabela `notifications` do Supabase
+  const saveNotificationToDB = useCallback(
+    async (params: {
+      type: string;
+      description: string;
+      id_senior?: number | null;
+      id_caretaker?: number | null;
+      id_volunteer?: number | null;
+    }) => {
+      const { error } = await supabase.from('notifications').insert({
+        type: params.type,
+        description: params.description,
+        id_senior: params.id_senior ?? null,
+        id_caretaker: params.id_caretaker ?? null,
+        id_volunteer: params.id_volunteer ?? null,
+      });
+
+      if (error) {
+        console.error(
+          'NotificationsContext: Erro ao guardar notificação:',
+          error,
+        );
+      }
+    },
+    [],
+  );
+
+  useEffect(() => {
+    registerForPushNotifications().then((token) => {
+      if (token) {
+        setExpoPushToken(token);
+        savePushTokenToDB(token);
+      }
+    });
+
+    // Listener: notificação recebida enquanto a app está aberta
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        console.log(
+          'Notificação recebida em foreground:',
+          notification.request.content.title,
+        );
+      });
+
+    // Listener: utilizador clicou numa notificação
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(
+          'Utilizador clicou na notificação:',
+          response.notification.request.content.title,
+        );
+      });
+
+    // Listener global para a base de dados (dispara popup em qualquer página)
+    let channel: any = null;
+    if (profile?.id && profile?.role === 'CARETAKER') {
+      channel = supabase
+        .channel('global_notifications')
+        .on(
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'notifications' },
+          async (payload) => {
+            const newNotif = payload.new as any;
+            if (
+              newNotif.type === 'alert' &&
+              newNotif.id_caretaker === profile.id
+            ) {
+              await sendLocalNotification(
+                '🔔 Novo Pedido de Ajuda',
+                newNotif.description || 'O sénior precisa da sua ajuda.',
+              );
+            }
+          },
+        )
+        .subscribe();
+    }
+
+    return () => {
+      notificationListener.current?.remove();
+      responseListener.current?.remove();
+      if (channel) supabase.removeChannel(channel);
+    };
+  }, [
+    registerForPushNotifications,
+    savePushTokenToDB,
+    profile?.id,
+    profile?.role,
+    sendLocalNotification,
+  ]);
+
+  return (
+    <NotificationsContext.Provider
+      value={{ expoPushToken, sendLocalNotification, saveNotificationToDB }}
+    >
+      {children}
+    </NotificationsContext.Provider>
+  );
+}
+
+export function useNotifications() {
+  const context = useContext(NotificationsContext);
+  if (!context) {
+    throw new Error(
+      'useNotifications deve ser usado dentro de NotificationsProvider',
+    );
+  }
+  return context;
+}

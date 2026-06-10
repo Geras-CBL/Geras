@@ -50,6 +50,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   plugins: [
     'expo-router',
     [
+      'expo-notifications',
+      {
+        icon: './assets/icons/ios-light.png',
+        color: '#205a2d',
+        sounds: [],
+      },
+    ],
+    [
       'expo-speech-recognition',
       {
         microphonePermission:
