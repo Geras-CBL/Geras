@@ -24,6 +24,7 @@ import ProfilePicker from '@/components/caretaker/ProfilePicker';
 import ProfileBottomSheet from '@/components/caretaker/ProfileBottomSheet';
 import { useProfile } from '@/context/ProfileContext';
 import { supabase } from '@/lib/supabase';
+import { getMetricStatus } from '../senior/Health';
 
 interface GroceryItemState {
   id: string;
@@ -84,25 +85,7 @@ export default function SeniorManagement() {
             const value = item.custom_metric_value || item.value || 0;
             const unit = item.unit || config?.unit || '';
 
-            let status: 'Adequado' | 'Moderado' | 'Excessivo' = 'Adequado';
-
-            if (item.type === 'HEART RATE') {
-              if (value < 60 || value > 100)
-                status = value > 120 || value < 50 ? 'Excessivo' : 'Moderado';
-              else status = 'Adequado';
-            } else if (item.type === 'TEMPERATURE') {
-              if (value < 36.0 || value > 37.2)
-                status =
-                  value > 38.0 || value < 35.5 ? 'Excessivo' : 'Moderado';
-              else status = 'Adequado';
-            } else if (item.type === 'BLOOD PRESSURE') {
-              if (value < 90 || value > 120)
-                status = value > 140 || value < 85 ? 'Excessivo' : 'Moderado';
-              else status = 'Adequado';
-            } else {
-              if (value > 100) status = 'Excessivo';
-              else if (value > 70) status = 'Moderado';
-            }
+            let status = getMetricStatus(item.type, value);
 
             return { title, value, unit, status };
           }),

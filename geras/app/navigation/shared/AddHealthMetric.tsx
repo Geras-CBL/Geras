@@ -16,23 +16,16 @@ import SectionTitle from '@/components/shared/SectionTitle';
 import BottomActions from '@/components/senior/BottomActions';
 import { useAuth } from '@/context/AuthContext';
 
-type MetricStatus = 'Adequado' | 'Moderado' | 'Excessivo';
-
 export default function AddHealthMetric() {
   const router = useRouter();
   const { profile } = useAuth();
 
   const [title, setTitle] = useState('');
   const [value, setValue] = useState('');
-  const [unit, setUnit] = useState('');
-  const [status, setStatus] = useState<MetricStatus>('Adequado');
 
   const handleSave = async () => {
-    if (!title || !value || !unit) {
-      Alert.alert(
-        'Falta Informação',
-        'Por favor preencha o nome, valor e unidade.',
-      );
+    if (!title || !value) {
+      Alert.alert('Falta Informação', 'Por favor preencha o nome e o valor.');
       return;
     }
 
@@ -41,14 +34,41 @@ export default function AddHealthMetric() {
       return;
     }
 
+    let typeToSave = null;
+    let customName: string | null = title;
+    let mainValue: number | null = null;
+    let customValue: number | null = parseFloat(value);
+
+    const t = title.toLowerCase();
+    if (t.includes('press') || t.includes('arterial') || t.includes('tensão')) {
+      typeToSave = 'BLOOD PRESSURE';
+      customName = null;
+      mainValue = customValue;
+      customValue = null;
+    } else if (
+      t.includes('batiment') ||
+      t.includes('cora') ||
+      t.includes('heart')
+    ) {
+      typeToSave = 'HEART RATE';
+      customName = null;
+      mainValue = customValue;
+      customValue = null;
+    } else if (t.includes('temp')) {
+      typeToSave = 'TEMPERATURE';
+      customName = null;
+      mainValue = customValue;
+      customValue = null;
+    }
+
     try {
       const { error } = await supabase.from('monitoring').insert([
         {
           id_senior: profile.id,
-          custom_metric_name: title,
-          custom_metric_value: parseFloat(value),
-          unit: unit,
-          // Opcional: tentar mapear o título para um tipo enum se for um dos conhecidos
+          type: typeToSave as any,
+          value: mainValue,
+          custom_metric_name: customName,
+          custom_metric_value: customValue,
         },
       ]);
 
@@ -83,68 +103,19 @@ export default function AddHealthMetric() {
           />
         </View>
 
-        <View className="flex-row gap-4">
-          <View className="flex-1 gap-2">
-            <ThemedText type="body">Valor</ThemedText>
-            <TextInput
-              className="text-neutral-800 rounded-2xl bg-gray-100 p-5 text-lg"
-              placeholder="120"
-              value={value}
-              onChangeText={setValue}
-              keyboardType="numeric"
-              placeholderTextColor="#9ca3af"
-            />
-          </View>
-
-          <View className="flex-1 gap-2">
-            <ThemedText type="body">Unidade</ThemedText>
-            <TextInput
-              className="text-neutral-800 rounded-2xl bg-gray-100 p-5 text-lg"
-              placeholder="mg/dL"
-              value={unit}
-              onChangeText={setUnit}
-              placeholderTextColor="#9ca3af"
-              autoCapitalize="none"
-            />
-          </View>
+        <View className="gap-2">
+          <ThemedText type="body">Valor</ThemedText>
+          <TextInput
+            className="text-neutral-800 rounded-2xl bg-gray-100 p-5 text-lg"
+            placeholder="120"
+            value={value}
+            onChangeText={setValue}
+            keyboardType="numeric"
+            placeholderTextColor="#9ca3af"
+          />
         </View>
 
-        <View className="gap-16">
-          <View className="gap-3">
-            <ThemedText type="body">Classificação</ThemedText>
-            <View className="flex-row justify-between gap-2">
-              {(['Adequado', 'Moderado', 'Excessivo'] as MetricStatus[]).map(
-                (s) => {
-                  const isSelected = status === s;
-                  let activeColor = 'border-primary';
-                  if (s === 'Moderado') activeColor = 'border-secondary';
-                  if (s === 'Excessivo') activeColor = 'border-tertiary';
-
-                  return (
-                    <TouchableOpacity
-                      key={s}
-                      onPress={() => setStatus(s)}
-                      className={`flex-1 items-center justify-center rounded-xl border py-3 ${
-                        isSelected
-                          ? `border-4 ${activeColor}`
-                          : 'border-gray-200 bg-white'
-                      }`}
-                    >
-                      <ThemedText
-                        type="body"
-                        style={{
-                          color: isSelected ? 'black' : '#6b7280',
-                          fontSize: 14,
-                        }}
-                      >
-                        {s}
-                      </ThemedText>
-                    </TouchableOpacity>
-                  );
-                },
-              )}
-            </View>
-          </View>
+        <View className="mt-8 gap-16">
           <Button
             title="Guardar Registo"
             onPress={handleSave}

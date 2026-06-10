@@ -41,7 +41,36 @@ interface MedicineItem {
   name: string;
   dosage?: number;
   scheduled_time?: string;
+  start_date?: string;
+  end_date?: string;
 }
+
+// =========================
+// HELPERS
+// =========================
+
+export const getMetricStatus = (
+  type: string | null,
+  value: number,
+): 'Adequado' | 'Moderado' | 'Excessivo' => {
+  if (type === 'HEART RATE') {
+    if (value < 60 || value > 100)
+      return value > 120 || value < 50 ? 'Excessivo' : 'Moderado';
+    return 'Adequado';
+  } else if (type === 'TEMPERATURE') {
+    if (value < 36.0 || value > 37.2)
+      return value > 38.0 || value < 35.5 ? 'Excessivo' : 'Moderado';
+    return 'Adequado';
+  } else if (type === 'BLOOD PRESSURE') {
+    if (value < 90 || value > 120)
+      return value > 140 || value < 85 ? 'Excessivo' : 'Moderado';
+    return 'Adequado';
+  } else {
+    if (value > 100) return 'Excessivo';
+    if (value > 70) return 'Moderado';
+    return 'Adequado';
+  }
+};
 
 // =========================
 // COMPONENT
@@ -100,9 +129,7 @@ export default function Health() {
                 const value = item.custom_metric_value ?? item.value ?? 0;
                 const unit = item.unit || config?.unit || '';
 
-                let status: 'Adequado' | 'Moderado' | 'Excessivo' = 'Adequado';
-                if (value > 100) status = 'Excessivo';
-                else if (value > 70) status = 'Moderado';
+                let status = getMetricStatus(item.type, value);
 
                 return {
                   id: item.id.toString(),
@@ -127,6 +154,8 @@ export default function Health() {
                 name: item.name,
                 dosage: item.dosage,
                 scheduled_time: item.scheduled_time,
+                start_date: item.start_date,
+                end_date: item.end_date,
               })),
             );
           }
@@ -137,7 +166,30 @@ export default function Health() {
         }
       }
       fetchHealthData();
-    }, []),
+
+      const channel = supabase
+        .channel('health_realtime')
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'medicine' },
+          () => fetchHealthData(),
+        )
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'monitoring' },
+          () => fetchHealthData(),
+        )
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'notifications' },
+          () => fetchHealthData(),
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }, [profile?.id]),
   );
 
   return (
