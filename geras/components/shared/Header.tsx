@@ -56,11 +56,9 @@ const Header: React.FC<HeaderProps> = ({
             <TouchableOpacity
               onPress={finalOnLeftPress}
               className="items-center justify-center p-2"
-              testID="header-left-button"
-              accessible
-              accessibilityRole="button"
-              accessibilityLabel={leftIconLabel}
-            >
+              accessibilityLabel={
+                onNotificationsRoute ? 'Voltar' : leftIconLabel
+              }
               <MaterialIcons
                 name={finalLeftIconName}
                 size={34}
