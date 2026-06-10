@@ -82,7 +82,10 @@ export function NotificationsProvider({
     }
 
     try {
-      const tokenData = await Notifications.getExpoPushTokenAsync();
+      const projectId = '0cb812b9-b636-474f-a176-616ed4e7c804';
+      const tokenData = await Notifications.getExpoPushTokenAsync({
+        projectId,
+      });
       return tokenData.data;
     } catch (err) {
       console.log(
