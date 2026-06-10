@@ -126,9 +126,8 @@ export default function Notifications() {
                           icon="call"
                           onPress={() => Linking.openURL(`tel:${963744454}`)}
                         />
-                          onPress={() =>
-                            router.push('/navigation/caretaker/Sensors')
-                          }
+                        onPress=
+                        {() => router.push('/navigation/caretaker/Sensors')}
                       </>
                     ) : null
                   }

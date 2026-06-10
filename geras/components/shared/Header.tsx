@@ -59,6 +59,7 @@ const Header: React.FC<HeaderProps> = ({
               accessibilityLabel={
                 onNotificationsRoute ? 'Voltar' : leftIconLabel
               }
+            >
               <MaterialIcons
                 name={finalLeftIconName}
                 size={34}
