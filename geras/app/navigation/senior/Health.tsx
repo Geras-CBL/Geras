@@ -167,21 +167,24 @@ export default function Health() {
       }
       fetchHealthData();
 
+      if (!profile?.id) return;
+
+      const filter = `id_senior=eq.${profile.id}`;
       const channel = supabase
         .channel('health_realtime')
         .on(
           'postgres_changes',
-          { event: '*', schema: 'public', table: 'medicine' },
+          { event: '*', schema: 'public', table: 'medicine', filter },
           () => fetchHealthData(),
         )
         .on(
           'postgres_changes',
-          { event: '*', schema: 'public', table: 'monitoring' },
+          { event: '*', schema: 'public', table: 'monitoring', filter },
           () => fetchHealthData(),
         )
         .on(
           'postgres_changes',
-          { event: '*', schema: 'public', table: 'notifications' },
+          { event: '*', schema: 'public', table: 'notifications', filter },
           () => fetchHealthData(),
         )
         .subscribe();

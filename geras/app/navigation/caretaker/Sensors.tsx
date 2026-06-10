@@ -35,7 +35,10 @@ export default function Sensors() {
   const { profile } = useAuth();
 
   const fetchSensors = useCallback(async () => {
-    if (!selectedProfile?.id || !profile?.id) return;
+    if (!selectedProfile?.id || !profile?.id) {
+      setIsLoading(false);
+      return;
+    }
     setIsLoading(true);
 
     try {
@@ -115,7 +118,7 @@ export default function Sensors() {
       <ScrollView
         className="flex-1 px-6"
         showsVerticalScrollIndicator={false}
-        contentContainerClassName="gap-6 pb-10"
+        contentContainerClassName="gap-6 pb-40"
       >
         <ProfilePicker onPress={handleOpenSheet} profile={selectedProfile} />
 
@@ -146,8 +149,6 @@ export default function Sensors() {
           title="Adicionar"
           variant="default"
         />
-
-        <View className="h-40" />
       </ScrollView>
 
       <ProfileBottomSheet

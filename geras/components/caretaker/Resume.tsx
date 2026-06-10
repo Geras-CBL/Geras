@@ -5,12 +5,15 @@ import { ThemedText } from '@/components/ThemedText';
 interface ResumeProps {
   alertsCount: number;
   healthProblemsCount: number;
+  sensorAlertsCount: number;
 }
 
 const Resume: React.FC<ResumeProps> = ({
   alertsCount,
   healthProblemsCount,
+  sensorAlertsCount,
 }) => {
+  const totalAlertsCount = alertsCount + sensorAlertsCount;
   return (
     <View className="w-full flex-row items-center rounded-2xl bg-neutralLight px-4 py-2 shadow-lg">
       <View className="flex-1 flex-row">
@@ -21,9 +24,11 @@ const Resume: React.FC<ResumeProps> = ({
             <ThemedText type="bodyInfo">
               {' '}
               <ThemedText
-                className={alertsCount > 0 ? 'text-[#a20707]' : 'text-primary'}
+                className={
+                  totalAlertsCount > 0 ? 'text-[#a20707]' : 'text-primary'
+                }
               >
-                {alertsCount} {alertsCount === 1 ? 'aviso' : 'avisos'}
+                {totalAlertsCount} {totalAlertsCount === 1 ? 'aviso' : 'avisos'}
               </ThemedText>
               {` e ${healthProblemsCount} ${healthProblemsCount === 1 ? 'problema' : 'problemas'} saúde`}
             </ThemedText>

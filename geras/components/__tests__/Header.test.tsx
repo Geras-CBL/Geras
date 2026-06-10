@@ -3,7 +3,14 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import Header from '../shared/Header';
 
-// Nenhum jest.mock() inline necessário, os mocks serão carregados automaticamente
+jest.mock('expo-router', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+    back: jest.fn(),
+    replace: jest.fn(),
+  }),
+  useSegments: () => [],
+}));
 
 describe('Header component', () => {
   it('renderiza os ícones padrão', () => {

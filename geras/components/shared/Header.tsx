@@ -1,7 +1,7 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSegments } from 'expo-router';
+import { useSegments, useRouter } from 'expo-router';
 import { Colors } from '@/constants/theme';
 import { Svg, G, Path, Defs, ClipPath, Rect } from 'react-native-svg';
 
@@ -16,6 +16,7 @@ interface HeaderProps {
   onRightPress?: () => void;
   onLogoutPress?: () => void;
   isWhite?: boolean;
+  showLeftIcon?: boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -29,9 +30,18 @@ const Header: React.FC<HeaderProps> = ({
   onRightPress,
   onLogoutPress,
   isWhite = true,
+  showLeftIcon = true,
 }) => {
+  const router = useRouter();
   const segments = useSegments();
   const onNotificationsRoute = (segments as string[]).includes('Notifications');
+
+  const finalShowLeftIcon = onNotificationsRoute ? true : showLeftIcon;
+  const finalLeftIconName = onNotificationsRoute ? 'arrow-back' : leftIconName;
+  const finalOnLeftPress = onNotificationsRoute
+    ? () => router.back()
+    : onLeftPress;
+  const finalShowRightIcon = !onNotificationsRoute;
 
   return (
     <SafeAreaView edges={['top']} className="w-full">
@@ -42,20 +52,21 @@ const Header: React.FC<HeaderProps> = ({
       <View className="h-16 flex-row items-center px-5">
         {/* ESQUERDA */}
         <View className="flex-1 items-start">
-          <TouchableOpacity
-            onPress={onLeftPress}
-            className="items-center justify-center p-2"
-            testID="header-left-button"
-            accessible
-            accessibilityRole="button"
-            accessibilityLabel={leftIconLabel}
-          >
-            <MaterialIcons
-              name={leftIconName}
-              size={34}
-              color={isWhite ? 'black' : 'white'}
-            />
-          </TouchableOpacity>
+          {finalShowLeftIcon ? (
+            <TouchableOpacity
+              onPress={finalOnLeftPress}
+              className="items-center justify-center p-2"
+              accessibilityLabel={
+                onNotificationsRoute ? 'Voltar' : leftIconLabel
+              }
+            >
+              <MaterialIcons
+                name={finalLeftIconName}
+                size={34}
+                color={isWhite ? 'black' : 'white'}
+              />
+            </TouchableOpacity>
+          ) : null}
         </View>
 
         {/* CENTRO */}
@@ -89,26 +100,22 @@ const Header: React.FC<HeaderProps> = ({
         {/* DIREITA */}
         <View className="flex-1 flex-row items-center justify-end">
           {/* Notificações */}
-          <TouchableOpacity
-            onPress={onRightPress}
-            className="items-center justify-center p-2"
-            testID="header-right-button"
-            accessible
-            accessibilityRole="button"
-            accessibilityLabel={rightIconLabel}
-          >
-            <MaterialIcons
-              name={rightIconName}
-              size={34}
-              color={
-                onNotificationsRoute
-                  ? Colors.light.tint
-                  : isWhite
-                    ? 'black'
-                    : 'white'
-              }
-            />
-          </TouchableOpacity>
+          {finalShowRightIcon && (
+            <TouchableOpacity
+              onPress={onRightPress}
+              className="items-center justify-center p-2"
+              testID="header-right-button"
+              accessible
+              accessibilityRole="button"
+              accessibilityLabel={rightIconLabel}
+            >
+              <MaterialIcons
+                name={rightIconName}
+                size={34}
+                color={isWhite ? 'black' : 'white'}
+              />
+            </TouchableOpacity>
+          )}
 
           {/* Logout */}
           {onLogoutPress && (
