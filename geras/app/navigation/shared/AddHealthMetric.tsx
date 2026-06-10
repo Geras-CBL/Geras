@@ -39,6 +39,10 @@ export default function AddHealthMetric() {
     let mainValue: number | null = null;
     let customValue: number | null = parseFloat(value);
 
+    if (customValue === null || Number.isNaN(customValue)) {
+      Alert.alert('Falta Informação', 'Por favor introduza um valor numérico.');
+      return;
+    }
     const t = title.toLowerCase();
     if (t.includes('press') || t.includes('arterial') || t.includes('tensão')) {
       typeToSave = 'BLOOD PRESSURE';
