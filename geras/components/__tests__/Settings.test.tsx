@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import Settings from '../../app/navigation/senior/Settings';
+import Settings from '../../app/navigation/shared/Settings';
 import { FontProvider } from '@/components/FontContext';
 import { StyleSheet } from 'react-native';
 
