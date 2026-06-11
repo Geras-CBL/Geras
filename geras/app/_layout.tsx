@@ -89,9 +89,7 @@ export default function RootLayout() {
                           leftIconLabel="Ir para a página inicial"
                           rightIconLabel="Abrir definições"
                           onLeftPress={() => {}}
-                          onRightPress={() =>
-                            router.push('../shared/Settings')
-                          }
+                          onRightPress={() => router.push('../shared/Settings')}
                           onLogoutPress={handleLogout}
                         />
                       ),
@@ -111,9 +109,7 @@ export default function RootLayout() {
                           leftIconLabel="Ir para a página inicial"
                           rightIconLabel="Abrir definições"
                           onLeftPress={() => {}}
-                          onRightPress={() =>
-                            router.push('../shared/Settings')
-                          }
+                          onRightPress={() => router.push('../shared/Settings')}
                           isWhite={false}
                           onLogoutPress={handleLogout}
                         />
@@ -135,9 +131,7 @@ export default function RootLayout() {
                           onLeftPress={() =>
                             router.push('/navigation/senior/HomePage')
                           }
-                          onRightPress={() =>
-                            router.push('../shared/Settings')
-                          }
+                          onRightPress={() => router.push('../shared/Settings')}
                           onLogoutPress={handleLogout}
                         />
                       ),
@@ -179,9 +173,7 @@ export default function RootLayout() {
                           onLeftPress={() =>
                             router.push('/navigation/senior/HomePage')
                           }
-                          onRightPress={() =>
-                            router.push('../shared/Settings')
-                          }
+                          onRightPress={() => router.push('../shared/Settings')}
                           onLogoutPress={handleLogout}
                         />
                       ),
@@ -202,9 +194,7 @@ export default function RootLayout() {
                           onLeftPress={() =>
                             router.push('/navigation/senior/HomePage')
                           }
-                          onRightPress={() =>
-                            router.push('../shared/Settings')
-                          }
+                          onRightPress={() => router.push('../shared/Settings')}
                           onLogoutPress={handleLogout}
                         />
                       ),
@@ -225,9 +215,7 @@ export default function RootLayout() {
                           onLeftPress={() =>
                             router.push('/navigation/senior/HomePage')
                           }
-                          onRightPress={() =>
-                            router.push('../shared/Settings')
-                          }
+                          onRightPress={() => router.push('../shared/Settings')}
                           onLogoutPress={handleLogout}
                         />
                       ),
@@ -248,9 +236,7 @@ export default function RootLayout() {
                           onLeftPress={() =>
                             router.push('/navigation/senior/HomePage')
                           }
-                          onRightPress={() =>
-                            router.push('../shared/Settings')
-                          }
+                          onRightPress={() => router.push('../shared/Settings')}
                           onLogoutPress={handleLogout}
                         />
                       ),
@@ -271,9 +257,7 @@ export default function RootLayout() {
                           onLeftPress={() =>
                             router.push('/navigation/senior/HomePage')
                           }
-                          onRightPress={() =>
-                            router.push('../shared/Settings')
-                          }
+                          onRightPress={() => router.push('../shared/Settings')}
                           onLogoutPress={handleLogout}
                         />
                       ),
@@ -294,9 +278,7 @@ export default function RootLayout() {
                           onLeftPress={() =>
                             router.push('/navigation/senior/HomePage')
                           }
-                          onRightPress={() =>
-                            router.push('../shared/Settings')
-                          }
+                          onRightPress={() => router.push('../shared/Settings')}
                           onLogoutPress={handleLogout}
                         />
                       ),
@@ -317,9 +299,7 @@ export default function RootLayout() {
                           onLeftPress={() =>
                             router.push('/navigation/senior/HomePage')
                           }
-                          onRightPress={() =>
-                            router.push('../shared/Settings')
-                          }
+                          onRightPress={() => router.push('../shared/Settings')}
                           onLogoutPress={handleLogout}
                         />
                       ),
@@ -340,9 +320,7 @@ export default function RootLayout() {
                           onLeftPress={() =>
                             router.push('/navigation/senior/HomePage')
                           }
-                          onRightPress={() =>
-                            router.push('../shared/Settings')
-                          }
+                          onRightPress={() => router.push('../shared/Settings')}
                           onLogoutPress={handleLogout}
                         />
                       ),
@@ -453,9 +431,7 @@ export default function RootLayout() {
                           onLeftPress={() =>
                             router.push('/navigation/senior/HomePage')
                           }
-                          onRightPress={() =>
-                            router.push('../shared/Settings')
-                          }
+                          onRightPress={() => router.push('../shared/Settings')}
                           onLogoutPress={handleLogout}
                         />
                       ),
