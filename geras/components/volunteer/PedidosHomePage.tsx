@@ -45,7 +45,8 @@ export default function PedidosHomePage({
     try {
       const { data, error } = await supabase
         .from('requests')
-        .select('*, senior:users!id_senior(name, profile_picture, gender)');
+        .select('*, senior:users!id_senior(name, profile_picture, gender)')
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       console.log('Volunteer Requests Data:', data);

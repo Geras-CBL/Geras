@@ -13,7 +13,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
@@ -160,8 +162,13 @@ export default function RequestDetails() {
   const hasPhoto = typeof seniorPhoto === 'string' && seniorPhoto.length > 0;
 
   const reqState = requestData?.state;
-  const pillText = reqState === 'COMPLETED' ? 'Completa' : 'Pendente';
-  const pillVariant = reqState === 'COMPLETED' ? 'success' : 'secondary';
+  const pillText =
+    reqState === 'PENDING'
+      ? 'Pendente'
+      : reqState === 'ACCEPTED'
+        ? 'Em progresso'
+        : 'Completa';
+  const pillVariant = reqState === 'PENDING' ? 'secondary' : 'success';
 
   const description =
     requestData?.description ||
@@ -185,7 +192,7 @@ export default function RequestDetails() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
       >
-        <View className="w-full px-6 pb-6">
+        <View className="w-full px-6 pb-6 pt-4">
           <Image
             source={image}
             resizeMode="cover"

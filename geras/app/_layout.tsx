@@ -1,6 +1,6 @@
 import { Rubik_400Regular, Rubik_700Bold } from '@expo-google-fonts/rubik';
 import { useFonts } from 'expo-font';
-import { Stack, useRouter } from 'expo-router';
+import { Stack, useRouter, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
@@ -359,21 +359,25 @@ export default function RootLayout() {
                       headerShown: true,
                       headerTransparent: true,
                       contentStyle: { backgroundColor: 'transparent' },
-                      header: () => (
-                        <Header
-                          leftIconName="arrow-back"
-                          rightIconName="notifications"
-                          leftIconLabel="Voltar"
-                          rightIconLabel="Notificações"
-                          onLeftPress={() => {
-                            router.back();
-                          }}
-                          onRightPress={() =>
-                            router.push('../shared/Notifications')
-                          }
-                          onLogoutPress={handleLogout}
-                        />
-                      ),
+                      header: () => {
+                        const pathname = usePathname();
+                        return (
+                          <Header
+                            showLeftIcon={pathname.includes('RequestDetails')}
+                            leftIconName="arrow-back"
+                            rightIconName="notifications"
+                            leftIconLabel="Voltar"
+                            rightIconLabel="Notificações"
+                            onLeftPress={() => {
+                              router.back();
+                            }}
+                            onRightPress={() =>
+                              router.push('../shared/Notifications')
+                            }
+                            onLogoutPress={handleLogout}
+                          />
+                        );
+                      },
                     }}
                   />
                   {/* caretaker */}
@@ -383,17 +387,23 @@ export default function RootLayout() {
                       headerShown: true,
                       headerTransparent: true,
                       contentStyle: { backgroundColor: 'transparent' },
-                      header: () => (
-                        <Header
-                          showLeftIcon={false}
-                          rightIconName="notifications"
-                          rightIconLabel="Notificações"
-                          onRightPress={() =>
-                            router.push('/navigation/caretaker/Notifications')
-                          }
-                          onLogoutPress={handleLogout}
-                        />
-                      ),
+                      header: () => {
+                        const pathname = usePathname();
+                        return (
+                          <Header
+                            showLeftIcon={pathname.includes('RequestDetails')}
+                            leftIconName="arrow-back"
+                            leftIconLabel="Voltar"
+                            onLeftPress={() => router.back()}
+                            rightIconName="notifications"
+                            rightIconLabel="Notificações"
+                            onRightPress={() =>
+                              router.push('/navigation/caretaker/Notifications')
+                            }
+                            onLogoutPress={handleLogout}
+                          />
+                        );
+                      },
                     }}
                   />
                   {/* caretaker Notifications */}

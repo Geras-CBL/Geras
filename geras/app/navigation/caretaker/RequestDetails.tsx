@@ -4,7 +4,8 @@ import Container from '@/components/shared/Container';
 import EvaluationTask from '@/components/shared/EvaluationTask';
 import { InfoPill } from '@/components/shared/InfoPill';
 import SectionTitle from '@/components/shared/SectionTitle';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { MaterialIcons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import {
   Image,
@@ -13,6 +14,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -48,6 +50,7 @@ const requestConfig: Record<
 };
 
 export default function RequestDetails() {
+  const router = useRouter();
   const { type, requestId } = useLocalSearchParams<{
     type?: string;
     requestId?: string;
@@ -108,7 +111,7 @@ export default function RequestDetails() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
       >
-        <View className="w-full px-6 pb-6">
+        <View className="w-full px-6 pb-6 pt-4">
           <Image
             source={image}
             resizeMode="cover"

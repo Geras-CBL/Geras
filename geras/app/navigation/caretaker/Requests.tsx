@@ -114,7 +114,12 @@ export default function Requests() {
       Alert.alert('Sucesso', 'Reencaminhado para a rede de voluntários', [
         {
           text: 'OK',
-          onPress: () => setRequests((prev) => prev.map((r) => r.id === id ? { ...r, isPublic: true } as any : r)),
+          onPress: () =>
+            setRequests((prev) =>
+              prev.map((r) =>
+                r.id === id ? ({ ...r, isPublic: true } as any) : r,
+              ),
+            ),
         },
       ]);
     } catch (err) {
@@ -175,7 +180,11 @@ export default function Requests() {
                 <Pressable
                   key={request.id}
                   className={`rounded-2xl p-5 shadow-md ${
-                    isPublic ? 'border border-yellow-200 bg-yellow-50' : isNew ? 'border border-green-200 bg-green-50' : 'bg-white'
+                    isPublic
+                      ? 'border border-yellow-200 bg-yellow-50'
+                      : isNew
+                        ? 'border border-green-200 bg-green-50'
+                        : 'bg-white'
                   }`}
                   onPress={() =>
                     router.push({

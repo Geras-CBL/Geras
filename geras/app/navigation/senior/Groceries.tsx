@@ -30,8 +30,11 @@ export default function Groceries() {
 
   const [items, setItems] = useState<GroceryItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isDestinationModalVisible, setDestinationModalVisible] = useState(false);
-  const [selectedDestination, setSelectedDestination] = useState<'caretaker' | 'community'>('caretaker');
+  const [isDestinationModalVisible, setDestinationModalVisible] =
+    useState(false);
+  const [selectedDestination, setSelectedDestination] = useState<
+    'caretaker' | 'community'
+  >('caretaker');
 
   const openDestinationModal = () => {
     setDestinationModalVisible(true);
@@ -54,7 +57,8 @@ export default function Groceries() {
         .from('requests')
         .insert({
           id_senior: profile?.id,
-          id_caretaker: selectedDestination === 'community' ? null : caretakerId,
+          id_caretaker:
+            selectedDestination === 'community' ? null : caretakerId,
           category: 'Compras',
           description: '',
           state: 'PENDING',
@@ -212,17 +216,33 @@ export default function Groceries() {
             <View className="mb-6 items-center">
               <View className="h-1.5 w-12 rounded-full bg-gray-300" />
             </View>
-            <ThemedText type="subtitle" className="mb-6 text-center text-neutral">
+            <ThemedText
+              type="subtitle"
+              className="mb-6 text-center text-neutral"
+            >
               Quem prefere que resolva o pedido?
             </ThemedText>
-            
+
             <TouchableOpacity
               className={`mb-4 flex-row items-center rounded-2xl border-2 p-4 ${selectedDestination === 'caretaker' ? 'border-primary bg-primary/10' : 'border-gray-200 bg-white'}`}
               onPress={() => setSelectedDestination('caretaker')}
             >
-              <MaterialIcons name="people" size={28} color={selectedDestination === 'caretaker' ? '#2F5C3E' : '#9CA3AF'} />
+              <MaterialIcons
+                name="people"
+                size={28}
+                color={
+                  selectedDestination === 'caretaker' ? '#2F5C3E' : '#9CA3AF'
+                }
+              />
               <View className="ml-4 flex-1">
-                <ThemedText type="bodyBold" className={selectedDestination === 'caretaker' ? 'text-primary' : 'text-neutral'}>
+                <ThemedText
+                  type="bodyBold"
+                  className={
+                    selectedDestination === 'caretaker'
+                      ? 'text-primary'
+                      : 'text-neutral'
+                  }
+                >
                   O meu Cuidador
                 </ThemedText>
                 <ThemedText className="text-sm text-gray-500">
@@ -238,13 +258,27 @@ export default function Groceries() {
               className={`mb-8 flex-row items-center rounded-2xl border-2 p-4 ${selectedDestination === 'community' ? 'border-primary bg-primary/10' : 'border-gray-200 bg-white'}`}
               onPress={() => setSelectedDestination('community')}
             >
-              <MaterialIcons name="public" size={28} color={selectedDestination === 'community' ? '#2F5C3E' : '#9CA3AF'} />
+              <MaterialIcons
+                name="public"
+                size={28}
+                color={
+                  selectedDestination === 'community' ? '#2F5C3E' : '#9CA3AF'
+                }
+              />
               <View className="ml-4 flex-1">
-                <ThemedText type="bodyBold" className={selectedDestination === 'community' ? 'text-primary' : 'text-neutral'}>
+                <ThemedText
+                  type="bodyBold"
+                  className={
+                    selectedDestination === 'community'
+                      ? 'text-primary'
+                      : 'text-neutral'
+                  }
+                >
                   Comunidade (Voluntários)
                 </ThemedText>
                 <ThemedText className="text-sm text-gray-500">
-                  O pedido fica visível para voluntários disponíveis na sua área.
+                  O pedido fica visível para voluntários disponíveis na sua
+                  área.
                 </ThemedText>
               </View>
               {selectedDestination === 'community' && (
