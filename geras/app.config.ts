@@ -29,11 +29,23 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       foregroundImage: './assets/icons/adaptive-icon.png',
       monochromeImage: './assets/icons/adaptive-icon.png',
     },
+    intentFilters: [
+      {
+        action: 'androidx.health.ACTION_SHOW_PRIVACY_POLICY',
+        category: ['android.intent-filter.category.DEFAULT'],
+      },
+    ],
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: true,
     permissions: [
       'android.permission.RECORD_AUDIO',
       'android.permission.MODIFY_AUDIO_SETTINGS',
+      'android.permission.health.READ_OXYGEN_SATURATION',
+      'android.permission.health.READ_HEART_RATE',
+      'android.permission.health.READ_BLOOD_GLUCOSE',
+      'android.permission.health.READ_BLOOD_PRESSURE',
+      'android.permission.health.READ_BODY_TEMPERATURE',
+      'android.permission.health.READ_WEIGHT',
     ],
     package: 'com.geras.app',
     config: {
@@ -64,12 +76,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         android: {
           useAndroidX: true,
           enableJetifier: true,
+          minSdkVersion: 26,
         },
         ios: {
           useFrameworks: 'static',
         },
       },
     ],
+    ['@react-native-google-signin/google-signin'],
     [
       'expo-splash-screen',
       {
@@ -81,6 +95,20 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
           image: './assets/icons/splash-icon-light.png',
           backgroundColor: '#000000',
         },
+      },
+    ],
+    [
+      'react-native-health-connect',
+      {
+        permissions: [
+          'ReadHeartRate',
+          'ReadBloodPressure',
+          'ReadOxygenSaturation',
+
+          'ReadBloodGlucose',
+          'ReadBodyTemperature',
+          'ReadWeight',
+        ],
       },
     ],
     'expo-font',

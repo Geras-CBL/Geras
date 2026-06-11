@@ -18,22 +18,9 @@ export default function Index() {
     return <Redirect href="/navigation/shared/LoginPage" />;
   }
 
-  // Se houver sessão mas o perfil não for encontrado ou falhar o carregamento, mostrar erro com opção de sair
-  if (!profile) {
-    return (
-      <View className="flex-1 items-center justify-center bg-[#325439]">
-        <Text className="mb-4 px-8 text-center text-lg text-white">
-          Não foi possível carregar o perfil. Por favor, tente novamente ou use
-          o botão para terminar sessão.
-        </Text>
-        <TouchableOpacity
-          onPress={signOut}
-          className="rounded-full bg-white px-6 py-3"
-        >
-          <Text className="font-semibold text-[#325439]">Terminar Sessão</Text>
-        </TouchableOpacity>
-      </View>
-    );
+  // Se houver sessão mas o perfil não for encontrado ou não tiver role, redirecionar para completar o perfil
+  if (!profile || !profile.role) {
+    return <Redirect href={'/navigation/shared/CompleteProfilePage' as any} />;
   }
 
   // Redirecionamento consoante a Role do utilizador

@@ -1,11 +1,9 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import Settings from '../../app/navigation/senior/Settings';
+import Settings from '../../app/navigation/shared/Settings';
 import { FontProvider } from '@/components/FontContext';
 import { StyleSheet } from 'react-native';
 
-// 1. Mocks Essenciais
-// O Jest não tem ecrã, por isso temos de "fingir" as bibliotecas visuais e de navegação
 jest.mock('@expo/vector-icons', () => ({
   MaterialIcons: 'MaterialIcons',
 }));
@@ -34,6 +32,25 @@ jest.mock('expo-speech-recognition', () => ({
 jest.mock('react-native-safe-area-context', () => ({
   SafeAreaView: ({ children }: any) => children,
   useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
+}));
+
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
+);
+
+jest.mock('react-native-health-connect', () => ({
+  initialize: jest.fn().mockResolvedValue(true),
+  getSdkStatus: jest.fn().mockResolvedValue(1),
+  getGrantedPermissions: jest.fn().mockResolvedValue([]),
+  requestPermission: jest.fn().mockResolvedValue([]),
+}));
+
+jest.mock('@/context/AuthContext', () => ({
+  useAuth: () => ({
+    profile: { role: 'SENIOR' },
+    refreshProfile: jest.fn(),
+    signOut: jest.fn(),
+  }),
 }));
 
 describe('Ecrã Settings - Teste Funcional', () => {

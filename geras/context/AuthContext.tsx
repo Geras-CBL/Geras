@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Session } from '@supabase/supabase-js';
+import { setAuthToken } from '@/services/api';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 // Baseado no user_role da DB
 export type UserRole = 'SENIOR' | 'CARETAKER' | 'VOLUNTEER';
@@ -38,8 +40,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       if (session) {
+        setAuthToken(session.access_token);
         fetchProfile(session.user.id);
       } else {
+        setAuthToken('');
         setIsLoading(false);
       }
     });
@@ -50,9 +54,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (session) {
+        setAuthToken(session.access_token);
         setIsLoading(true);
         fetchProfile(session.user.id);
       } else {
+        setAuthToken('');
         setProfile(null);
         setIsLoading(false);
       }
@@ -90,6 +96,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    try {
+      await GoogleSignin.signOut();
+    } catch (e) {
+      console.error('Erro ao limpar sessão do Google:', e);
+    }
   };
 
   return (
