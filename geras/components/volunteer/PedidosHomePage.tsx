@@ -45,10 +45,7 @@ export default function PedidosHomePage({
     try {
       const { data, error } = await supabase
         .from('requests')
-        .select('*, senior:users!id_senior(name, profile_picture, gender)')
-        .or(
-          `state.eq.PENDING,and(state.eq.ACCEPTED,id_volunteer.eq.${profile.id})`,
-        );
+        .select('*, senior:users!id_senior(name, profile_picture, gender)');
 
       if (error) throw error;
       console.log('Volunteer Requests Data:', data);

@@ -66,6 +66,7 @@ export default function Requests() {
                 : req.category?.toLowerCase() === 'limpeza'
                   ? 'cleaning'
                   : 'other') as RequestType,
+            isPublic: req.is_public,
           })),
         );
       }
@@ -105,7 +106,7 @@ export default function Requests() {
     try {
       const { error } = await supabase
         .from('requests')
-        .update({ id_caretaker: null })
+        .update({ is_public: true })
         .eq('id', id);
 
       if (error) throw error;
@@ -113,7 +114,7 @@ export default function Requests() {
       Alert.alert('Sucesso', 'Reencaminhado para a rede de voluntários', [
         {
           text: 'OK',
-          onPress: () => setRequests((prev) => prev.filter((r) => r.id !== id)),
+          onPress: () => setRequests((prev) => prev.map((r) => r.id === id ? { ...r, isPublic: true } as any : r)),
         },
       ]);
     } catch (err) {
@@ -169,11 +170,12 @@ export default function Requests() {
               const isNew =
                 Date.now() - new Date((request as any).createdAt).getTime() <
                 3_600_000;
+              const isPublic = (request as any).isPublic;
               return (
                 <Pressable
                   key={request.id}
                   className={`rounded-2xl p-5 shadow-md ${
-                    isNew ? 'border border-green-200 bg-green-50' : 'bg-white'
+                    isPublic ? 'border border-yellow-200 bg-yellow-50' : isNew ? 'border border-green-200 bg-green-50' : 'bg-white'
                   }`}
                   onPress={() =>
                     router.push({
@@ -199,7 +201,16 @@ export default function Requests() {
                         {request.subtitle}
                       </ThemedText>
                     </View>
-                    {isNew && (
+                    {isPublic ? (
+                      <View className="rounded-full bg-yellow-500 px-2 py-1">
+                        <ThemedText
+                          type="bodySmall"
+                          className="text-xs font-bold text-white"
+                        >
+                          Na Comunidade
+                        </ThemedText>
+                      </View>
+                    ) : isNew ? (
                       <View className="rounded-full bg-green-500 px-2 py-1">
                         <ThemedText
                           type="bodySmall"
@@ -208,15 +219,17 @@ export default function Requests() {
                           Novo
                         </ThemedText>
                       </View>
-                    )}
+                    ) : null}
                   </View>
                   <View className="flex-row gap-3">
-                    <Button
-                      title="Reencaminhar"
-                      variant="outlined"
-                      className="flex-1"
-                      onPress={() => handleForward(request.id)}
-                    />
+                    {!isPublic && (
+                      <Button
+                        title="Reencaminhar"
+                        variant="outlined"
+                        className="flex-1"
+                        onPress={() => handleForward(request.id)}
+                      />
+                    )}
                     <Button
                       title="Aceitar Pedido"
                       variant="default"
