@@ -1,13 +1,23 @@
 import { useFontScale } from '@/components/FontContext';
-import BottomActions from '@/components/senior/BottomActions';
+import { useState, useEffect } from 'react';
+import { Linking, Alert } from 'react-native';
 import SectionTitle from '@/components/shared/SectionTitle';
 import { ThemedText } from '@/components/ThemedText';
 import { MaterialIcons } from '@expo/vector-icons';
-import { ScrollView, TouchableOpacity, View } from 'react-native';
+import { ScrollView, Switch, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from '@/context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  initialize,
+  getSdkStatus,
+  getGrantedPermissions,
+  requestPermission,
+} from 'react-native-health-connect';
 
 export default function Settings() {
   const { scale, setScale } = useFontScale();
+  const { profile } = useAuth();
 
   const fontOptions = [
     { value: 1.0, label: 'Normal' },
@@ -15,15 +25,60 @@ export default function Settings() {
     { value: 1.5, label: 'Extra' },
   ];
 
+  //Lógica para ativação ou desativação da sincronização com API Health Connect - Role Sénior e Cuidador
+
+  const role = profile?.role; // 'SENIOR' | 'CARETAKER' | 'VOLUNTEER'
+
+  const [isSyncEnabled, setIsSyncEnabled] = useState<boolean>(false);
+  const [sdkStatus, setSdkStatus] = useState<
+    'AVAILABLE' | 'NOT_INSTALLED' | 'UNSUPPORTED'
+  >();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    async function checkHealthConnect() {
+      if (role !== 'SENIOR') return;
+      setIsLoading(true);
+      try {
+        // Bypass temporário para testes: assume que o SDK está disponível
+        setSdkStatus('AVAILABLE');
+
+        const storedSync = await AsyncStorage.getItem('@health_sync_enabled');
+        const isStored = storedSync === null || storedSync === 'true';
+
+        setIsSyncEnabled(isStored);
+      } catch (error) {
+        console.error('Erro ao verificar Health Connect (Bypass):', error);
+        setSdkStatus('UNSUPPORTED');
+        setIsSyncEnabled(false);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    checkHealthConnect();
+  }, [role]);
+
+  const handleToggleSync = async () => {
+    if (isLoading) return;
+
+    if (isSyncEnabled) {
+      setIsSyncEnabled(false);
+      await AsyncStorage.setItem('@health_sync_enabled', 'false');
+    } else {
+      setIsSyncEnabled(true);
+      await AsyncStorage.setItem('@health_sync_enabled', 'true');
+    }
+  };
+
   return (
     <SafeAreaView edges={['top']} className="flex-1 gap-8 bg-white px-6 pt-24">
-      <SectionTitle title="Acessibilidade" />
-
       <ScrollView
         className="flex-1"
         contentContainerClassName="gap-8 pb-32"
         showsVerticalScrollIndicator={false}
       >
+        <SectionTitle title="Acessibilidade" />
         <View className="gap-2">
           <ThemedText
             type="subtitle"
@@ -109,9 +164,65 @@ export default function Settings() {
             </ThemedText>
           </View>
         </View>
-      </ScrollView>
 
-      <BottomActions />
+        {role === 'SENIOR' && (
+          <View className="gap-4">
+            <SectionTitle title="Conectividade" />
+            <View className="gap-2" style={{ marginTop: 16 }}>
+              <ThemedText type="subtitle" className="text-neutral-800">
+                Ativação da Conexão - Saúde
+              </ThemedText>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={handleToggleSync}
+                className="flex-row items-center justify-between py-4"
+                accessible={true}
+                accessibilityRole="switch"
+                accessibilityState={{ checked: isSyncEnabled }}
+                accessibilityLabel="Conexão com dados de saúde"
+              >
+                <ThemedText type="bodyBold" className="text-lg">
+                  Conexão
+                </ThemedText>
+                <Switch
+                  style={{ transform: [{ scale: 1.4 }] }}
+                  trackColor={{
+                    false: '#767577',
+                    true: '#0c550925',
+                  }}
+                  thumbColor={isSyncEnabled ? '#134e19ff' : '#f4f3f4'}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={handleToggleSync}
+                  value={isSyncEnabled}
+                />
+              </TouchableOpacity>
+              <ThemedText type="body" className="text-gray-500">
+                Ajuste as definições de conectividade para permitir a
+                sincronização de dados de saúde com a aplicação.
+              </ThemedText>
+              <View className="mt-8 rounded-3xl border border-gray-200 bg-gray-100 p-6">
+                <View className="mb-4 flex-row items-center gap-3">
+                  <View className="h-10 w-10 items-center justify-center rounded-full bg-secondary">
+                    <MaterialIcons
+                      name="health-and-safety"
+                      size={24}
+                      color="white"
+                    />
+                  </View>
+                  <ThemedText type="bodyBold">Aviso - Permissões</ThemedText>
+                </View>
+
+                <ThemedText type="body" className="mt-4 text-gray-600">
+                  Ao ativar a conexão, a aplicação poderá necessitar de
+                  permissão para aceder a dados de saúde como frequência
+                  cardíaca e outras métricas. Estes dados serão utilizados
+                  apenas para fins de monitorização e bem-estar.
+                </ThemedText>
+              </View>
+            </View>
+          </View>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }

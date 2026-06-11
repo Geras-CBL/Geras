@@ -40,9 +40,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     permissions: [
       'android.permission.RECORD_AUDIO',
       'android.permission.MODIFY_AUDIO_SETTINGS',
-      'android.permission.health.READ_STEPS',
       'android.permission.health.READ_OXYGEN_SATURATION',
-      'android.permission.health.READ_OXYGEN_SATURATION_AT_REST',
       'android.permission.health.READ_HEART_RATE',
       'android.permission.health.READ_BLOOD_GLUCOSE',
       'android.permission.health.READ_BLOOD_PRESSURE',
@@ -103,11 +101,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'react-native-health-connect',
       {
         permissions: [
-          'ReadSteps',
           'ReadHeartRate',
           'ReadBloodPressure',
           'ReadOxygenSaturation',
-          'ReadOxygenSaturationAtRest',
+
           'ReadBloodGlucose',
           'ReadBodyTemperature',
           'ReadWeight',
