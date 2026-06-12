@@ -39,7 +39,7 @@ export default function Requests() {
         .from('requests')
         .select('*')
         .eq('id_senior', selectedProfile.id)
-        .eq('state', 'PENDING')
+        .in('state', ['PENDING', 'ACCEPTED'])
         .eq('id_caretaker', profile.id)
         .order('created_at', { ascending: false });
 
@@ -59,6 +59,7 @@ export default function Requests() {
               hour12: false,
             }),
             createdAt: req.created_at,
+            state: req.state,
             type: (req.category?.toLowerCase() === 'compras'
               ? 'food'
               : req.category?.toLowerCase() === 'medicamentos'
@@ -142,13 +143,38 @@ export default function Requests() {
       Alert.alert('Sucesso', 'Pedido aceite', [
         {
           text: 'OK',
-          onPress: () => setRequests((prev) => prev.filter((r) => r.id !== id)),
+          onPress: () => fetchRequests(),
         },
       ]);
     } catch (err) {
       console.error('Error accepting request:', err);
       Alert.alert('Erro', 'Não foi possível aceitar o pedido.');
     }
+  };
+
+  const handleComplete = (id: string) => {
+    Alert.alert('Concluir Tarefa', 'Tem a certeza que concluiu esta tarefa?', [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Concluir',
+        style: 'default',
+        onPress: async () => {
+          try {
+            const { error } = await supabase
+              .from('requests')
+              .update({ state: 'COMPLETED' })
+              .eq('id', id);
+
+            if (error) throw error;
+            Alert.alert('Sucesso', 'Tarefa marcada como concluída!');
+            fetchRequests();
+          } catch (err) {
+            console.error('Error completing request:', err);
+            Alert.alert('Erro', 'Não foi possível concluir a tarefa.');
+          }
+        },
+      },
+    ]);
   };
 
   return (
@@ -176,15 +202,18 @@ export default function Requests() {
                 Date.now() - new Date((request as any).createdAt).getTime() <
                 3_600_000;
               const isPublic = (request as any).isPublic;
+              const isAccepted = (request as any).state === 'ACCEPTED';
               return (
                 <Pressable
                   key={request.id}
                   className={`rounded-2xl p-5 shadow-md ${
                     isPublic
                       ? 'border border-yellow-200 bg-yellow-50'
-                      : isNew
-                        ? 'border border-green-200 bg-green-50'
-                        : 'bg-white'
+                      : isAccepted
+                        ? 'border border-blue-200 bg-blue-50'
+                        : isNew
+                          ? 'border border-green-200 bg-green-50'
+                          : 'bg-white'
                   }`}
                   onPress={() =>
                     router.push({
@@ -219,6 +248,15 @@ export default function Requests() {
                           Na Comunidade
                         </ThemedText>
                       </View>
+                    ) : isAccepted ? (
+                      <View className="rounded-full bg-blue-500 px-2 py-1">
+                        <ThemedText
+                          type="bodySmall"
+                          className="text-xs font-bold text-white"
+                        >
+                          A Decorrer
+                        </ThemedText>
+                      </View>
                     ) : isNew ? (
                       <View className="rounded-full bg-green-500 px-2 py-1">
                         <ThemedText
@@ -231,20 +269,32 @@ export default function Requests() {
                     ) : null}
                   </View>
                   <View className="flex-row gap-3">
-                    {!isPublic && (
+                    {(request as any).state === 'PENDING' && (
+                      <>
+                        {!isPublic && (
+                          <Button
+                            title="Reencaminhar"
+                            variant="outlined"
+                            className="flex-1"
+                            onPress={() => handleForward(request.id)}
+                          />
+                        )}
+                        <Button
+                          title="Aceitar Pedido"
+                          variant="default"
+                          className="flex-1"
+                          onPress={() => handleAccept(request.id)}
+                        />
+                      </>
+                    )}
+                    {(request as any).state === 'ACCEPTED' && (
                       <Button
-                        title="Reencaminhar"
-                        variant="outlined"
-                        className="flex-1"
-                        onPress={() => handleForward(request.id)}
+                        title="Concluir Tarefa"
+                        variant="default"
+                        className="flex-1 bg-primary"
+                        onPress={() => handleComplete(request.id)}
                       />
                     )}
-                    <Button
-                      title="Aceitar Pedido"
-                      variant="default"
-                      className="flex-1"
-                      onPress={() => handleAccept(request.id)}
-                    />
                   </View>
                 </Pressable>
               );

@@ -40,7 +40,10 @@ export default function Groceries() {
   const openDestinationModal = () => {
     const selectedNames = items.filter((i) => i.checked).map((i) => i.name);
     if (selectedNames.length === 0) {
-      Alert.alert('Erro', 'Por favor, selecione pelo menos um item para o seu pedido.');
+      Alert.alert(
+        'Erro',
+        'Por favor, selecione pelo menos um item para o seu pedido.',
+      );
       return;
     }
     setDestinationModalVisible(true);

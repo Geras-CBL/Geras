@@ -46,6 +46,7 @@ export default function PedidosHomePage({
       const { data, error } = await supabase
         .from('requests')
         .select('*, senior:users!id_senior(name, profile_picture, gender)')
+        .in('state', ['PENDING', 'ACCEPTED'])
         .order('created_at', { ascending: false });
 
       if (error) throw error;

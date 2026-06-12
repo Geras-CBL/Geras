@@ -4,7 +4,7 @@ import CommentBox from '@/components/shared/CommentBox';
 import EvaluationTask from '@/components/shared/EvaluationTask';
 import { InfoPill } from '@/components/shared/InfoPill';
 import SectionTitle from '@/components/shared/SectionTitle';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useFocusEffect, useRouter } from 'expo-router';
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Image,
@@ -14,12 +14,12 @@ import {
   Platform,
   ActivityIndicator,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
-import { router } from 'expo-router';
 
 type EvaluationTaskVariant =
   | 'sentiment_dissatisfied'
@@ -57,6 +57,7 @@ export default function RequestDetails() {
     type?: string;
     requestId?: string;
   }>();
+  const router = useRouter();
   const { profile } = useAuth();
   const requestType = type && requestConfig[type] ? type : 'other';
   const { title, image, alt } = requestConfig[requestType];
@@ -137,9 +138,37 @@ export default function RequestDetails() {
     }
   };
 
-  useEffect(() => {
-    fetchRequestDetails();
-  }, [fetchRequestDetails]);
+  const handleCompleteRequest = () => {
+    Alert.alert('Concluir Tarefa', 'Tem a certeza que concluiu esta tarefa?', [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Concluir',
+        style: 'default',
+        onPress: async () => {
+          try {
+            if (!requestId) return;
+            const { error } = await supabase
+              .from('requests')
+              .update({ state: 'COMPLETED' })
+              .eq('id', requestId);
+
+            if (error) throw error;
+            Alert.alert('Sucesso', 'Tarefa marcada como concluída!');
+            router.back();
+          } catch (err) {
+            console.error('Error completing request:', err);
+            Alert.alert('Erro', 'Não foi possível concluir a tarefa.');
+          }
+        },
+      },
+    ]);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchRequestDetails();
+    }, [fetchRequestDetails]),
+  );
 
   const seniorName = requestData?.senior?.name || 'Sénior';
   const nameParts = seniorName.split(' ').filter(Boolean);
@@ -167,7 +196,7 @@ export default function RequestDetails() {
       ? 'Pendente'
       : reqState === 'ACCEPTED'
         ? 'Em progresso'
-        : 'Completa';
+        : 'Concluído';
   const pillVariant = reqState === 'PENDING' ? 'secondary' : 'success';
 
   const description =
@@ -297,6 +326,16 @@ export default function RequestDetails() {
             )}
           </View>
         </ScrollView>
+        {requestData?.state === 'ACCEPTED' && (
+          <View className="absolute bottom-0 w-full border-t border-gray-100 bg-white px-6 pb-8 pt-4 shadow-xl">
+            <Button
+              title="Concluir Tarefa"
+              variant="default"
+              className="bg-primary"
+              onPress={handleCompleteRequest}
+            />
+          </View>
+        )}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
