@@ -198,6 +198,58 @@ export function NotificationsProvider({
           },
         )
         .subscribe();
+    } else if (profile?.id && profile?.role === 'VOLUNTEER') {
+      // Voluntários: escutar notificações de pedidos públicos em tempo real
+      channel = supabase
+        .channel('volunteer_notifications')
+        .on(
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'notifications' },
+          async (payload) => {
+            const newNotif = payload.new as any;
+            // Reagir a pedidos broadcast (sem id_volunteer específico)
+            // OU a notificações dirigidas especificamente a este voluntário
+            const isForMe =
+              newNotif.id_volunteer === profile.id ||
+              (newNotif.type === 'request' && !newNotif.id_volunteer);
+            if (isForMe) {
+              await sendLocalNotification(
+                '🤝 Novo Pedido de Ajuda',
+                newNotif.description || 'Há um pedido de ajuda na tua área!',
+              );
+            }
+          },
+        )
+        .subscribe();
+    } else if (profile?.id && profile?.role === 'SENIOR') {
+      // Seniores: escutar notificações de medicação, pedidos aceites, etc.
+      channel = supabase
+        .channel('senior_notifications')
+        .on(
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'notifications' },
+          async (payload) => {
+            const newNotif = payload.new as any;
+            // O sénior só quer ver popups das notificações diretamente para ele
+            if (
+              newNotif.id_senior === profile.id &&
+              !newNotif.id_caretaker &&
+              !newNotif.id_volunteer
+            ) {
+              let title = '🔔 Geras';
+              if (newNotif.type === 'medication')
+                title = '💊 Hora da Medicação';
+              if (newNotif.type === 'accepted_request')
+                title = '✅ O seu pedido foi aceite!';
+
+              await sendLocalNotification(
+                title,
+                newNotif.description || 'Tens uma nova notificação.',
+              );
+            }
+          },
+        )
+        .subscribe();
     }
 
     return () => {

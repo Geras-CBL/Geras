@@ -60,6 +60,14 @@ const NOTIFICATION_CONFIG: Record<
     ttlHours: 24,
     dismissable: true,
   },
+  accepted_request: {
+    variant: 'info',
+    icon: 'check-circle',
+    title: 'Pedido Aceite',
+    priority: 1,
+    ttlHours: 48,
+    dismissable: true,
+  },
   medication: {
     variant: 'medication',
     icon: 'medication',
@@ -119,6 +127,8 @@ export default function Home() {
             .from('notifications')
             .select('*')
             .eq('id_senior', profile.id)
+            .is('id_caretaker', null)
+            .is('id_volunteer', null)
             .is('dismissed_at', null)
             .or(`expires_at.is.null,expires_at.gt.${now}`)
             .order('created_at', { ascending: false });

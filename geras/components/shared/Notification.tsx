@@ -35,19 +35,19 @@ const THEMES: Record<CardVariant, Theme> = {
     iconBg: 'bg-red-800',
     dismissColor: '#b91c1c',
   },
-  // 🟠 Pedido — secondary (#efab59)
+  //  Pedido — secondary (#efab59)
   request: {
     container: 'bg-secondary/20',
     border: 'border-secondary',
     iconBg: 'bg-secondary',
     dismissColor: '#efab59',
   },
-  // 🟠 Saúde — secondary (#efab59)
+  // 🟠 Saúde — tertiary (#DB6536)
   health: {
-    container: 'bg-secondary/20',
-    border: 'border-secondary',
-    iconBg: 'bg-secondary',
-    dismissColor: '#efab59',
+    container: 'bg-tertiary/20',
+    border: 'border-tertiary',
+    iconBg: 'bg-tertiary',
+    dismissColor: '#DB6536',
   },
   // 🟠 Medicação — tertiary (#DB6536)
   medication: {
@@ -110,7 +110,6 @@ interface NotificationCardProps {
   route?: string;
   alt?: string;
   accessibilityLabel?: string;
-  /** Se definido, mostra o botão ✕ (dismiss). Alertas NÃO recebem este prop. */
   onDismiss?: () => void;
 }
 
