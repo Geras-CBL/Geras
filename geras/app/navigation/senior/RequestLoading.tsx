@@ -124,9 +124,10 @@ import { useAuth } from '@/context/AuthContext';
 import { useNotifications } from '@/context/NotificationsContext';
 
 export default function RequestLoading() {
-  const { type, description } = useLocalSearchParams<{
+  const { type, description, isPublic } = useLocalSearchParams<{
     type?: string;
     description?: string;
+    isPublic?: string;
   }>();
   const { profile } = useAuth();
   const { sendLocalNotification, saveNotificationToDB } = useNotifications();
@@ -167,6 +168,7 @@ export default function RequestLoading() {
             category: categoryLabel,
             description: description || '',
             state: 'PENDING',
+            is_public: isPublic === 'true',
           })
           .select()
           .single();
@@ -193,7 +195,7 @@ export default function RequestLoading() {
     }
 
     createRequest();
-  }, [profile?.id, type, description]);
+  }, [profile?.id, type, description, isPublic]);
 
   useEffect(() => {
     const duration = currentStepIndex === 2 ? 2000 : 3000;

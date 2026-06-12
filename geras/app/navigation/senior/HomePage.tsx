@@ -6,7 +6,7 @@ import {
 } from '@/components/shared/Notification';
 import SectionTitle from '@/components/shared/SectionTitle';
 import { ThemedText } from '@/components/ThemedText';
-import { Linking, View, ActivityIndicator } from 'react-native';
+import { Linking, View, ActivityIndicator, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState, useCallback } from 'react';
 import { useFocusEffect } from 'expo-router';
@@ -74,69 +74,75 @@ export default function Home() {
         edges={['top']}
         className="flex-1 items-center gap-12 p-4 px-6 pt-24"
       >
-        <SectionTitle title={'Notificações'}>
-          {loading ? (
-            <ActivityIndicator size="large" color="#2F5C3E" />
-          ) : notifications.length > 0 ? (
-            notifications.map((notification) => {
-              const typeKey = (notification.type || 'info').toLowerCase();
-              const config =
-                NOTIFICATION_CONFIG[typeKey] || NOTIFICATION_CONFIG.info;
+        <ScrollView
+          className="-m-4 flex-1 p-4"
+          showsVerticalScrollIndicator={false}
+        >
+          <View className="-m-4 mb-8 flex-row flex-wrap">
+            <View className="aspect-square w-1/2 p-4">
+              <BigButton
+                iconName={'health-and-safety'}
+                label={'Saúde'}
+                route={'../../navigation/senior/Health'}
+              />
+            </View>
 
-              return (
-                <NotificationCard
-                  key={notification.id}
-                  variant={config.variant}
-                  title={config.title}
-                  iconName={config.icon}
-                  description={notification.description}
-                />
-              );
-            })
-          ) : (
-            <ThemedText
-              type="body"
-              className="text-neutralDark py-10 text-center"
-            >
-              Não há notificações novas
-            </ThemedText>
-          )}
-        </SectionTitle>
-        <View className="-m-4 flex-row flex-wrap">
-          <View className="aspect-square w-1/2 p-4">
-            <BigButton
-              iconName={'health-and-safety'}
-              label={'Saúde'}
-              route={'../../navigation/senior/Health'}
-            />
+            <View className="aspect-square w-1/2 p-4">
+              <BigButton
+                iconName={'people'}
+                label={'Pedir ajuda'}
+                route={'../../navigation/senior/RequestHelp'}
+              />
+            </View>
+
+            <View className="aspect-square w-1/2 p-4">
+              <BigButton
+                iconName={'shopping-cart'}
+                label={'Mercearias'}
+                route={'../../navigation/senior/Groceries'}
+              />
+            </View>
+
+            <View className="aspect-square w-1/2 p-4">
+              <BigButton
+                iconName={'phone'}
+                label={caretakerName ? `Ligar a ${caretakerName}` : 'Ligar'}
+                onPress={() => {
+                  Linking.openURL(`tel:${963744454}`);
+                }}
+              />
+            </View>
           </View>
 
-          <View className="aspect-square w-1/2 p-4">
-            <BigButton
-              iconName={'people'}
-              label={'Pedir ajuda'}
-              route={'../../navigation/senior/RequestHelp'}
-            />
-          </View>
+          <SectionTitle title={'Notificações'}>
+            {loading ? (
+              <ActivityIndicator size="large" color="#2F5C3E" />
+            ) : notifications.length > 0 ? (
+              notifications.map((notification) => {
+                const typeKey = (notification.type || 'info').toLowerCase();
+                const config =
+                  NOTIFICATION_CONFIG[typeKey] || NOTIFICATION_CONFIG.info;
 
-          <View className="aspect-square w-1/2 p-4">
-            <BigButton
-              iconName={'shopping-cart'}
-              label={'Mercearias'}
-              route={'../../navigation/senior/Groceries'}
-            />
-          </View>
-
-          <View className="aspect-square w-1/2 p-4">
-            <BigButton
-              iconName={'phone'}
-              label={caretakerName ? `Ligar a ${caretakerName}` : 'Ligar'}
-              onPress={() => {
-                Linking.openURL(`tel:${963744454}`);
-              }}
-            />
-          </View>
-        </View>
+                return (
+                  <NotificationCard
+                    key={notification.id}
+                    variant={config.variant}
+                    title={config.title}
+                    iconName={config.icon}
+                    description={notification.description}
+                  />
+                );
+              })
+            ) : (
+              <ThemedText
+                type="body"
+                className="text-neutralDark py-10 text-center"
+              >
+                Não há notificações novas
+              </ThemedText>
+            )}
+          </SectionTitle>
+        </ScrollView>
       </SafeAreaView>
       <View
         className="absolute bottom-4 left-0 right-0 z-50 items-center"

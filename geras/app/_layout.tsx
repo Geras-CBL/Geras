@@ -1,6 +1,6 @@
 import { Rubik_400Regular, Rubik_700Bold } from '@expo-google-fonts/rubik';
 import { useFonts } from 'expo-font';
-import { Stack, useRouter } from 'expo-router';
+import { Stack, useRouter, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
@@ -27,6 +27,7 @@ export default function RootLayout() {
     'Rubik-Bold': Rubik_700Bold,
     MonoTrustDisplay: require('../assets/fonts/MomoTrustDisplay-Regular.ttf'),
   });
+  const pathname = usePathname();
 
   useEffect(() => {
     if (loaded) {
