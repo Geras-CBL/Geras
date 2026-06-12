@@ -26,6 +26,7 @@ export default function RootLayout() {
     'Rubik-Bold': Rubik_700Bold,
     MonoTrustDisplay: require('../assets/fonts/MomoTrustDisplay-Regular.ttf'),
   });
+  const pathname = usePathname();
 
   useEffect(() => {
     if (loaded) {
@@ -360,7 +361,6 @@ export default function RootLayout() {
                       headerTransparent: true,
                       contentStyle: { backgroundColor: 'transparent' },
                       header: () => {
-                        const pathname = usePathname();
                         return (
                           <Header
                             showLeftIcon={pathname.includes('RequestDetails')}
@@ -388,7 +388,6 @@ export default function RootLayout() {
                       headerTransparent: true,
                       contentStyle: { backgroundColor: 'transparent' },
                       header: () => {
-                        const pathname = usePathname();
                         return (
                           <Header
                             showLeftIcon={pathname.includes('RequestDetails')}
