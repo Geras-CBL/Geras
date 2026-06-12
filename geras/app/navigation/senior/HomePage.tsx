@@ -12,6 +12,7 @@ import { useState, useCallback } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
+import { syncHealthData } from '@/services/healthService';
 
 const NOTIFICATION_CONFIG: Record<
   string,
@@ -58,6 +59,11 @@ export default function Home() {
               : (assoc.caretaker as any).name;
             if (name) setCaretakerName(name.split(' ')[0]);
           }
+
+          // Executar a sincronização de saúde em background de forma assíncrona
+          syncHealthData(profile.id).catch((err) =>
+            console.error('Erro ao sincronizar saúde na HomePage:', err),
+          );
         } catch (err) {
           console.error('Error fetching homepage data:', err);
         } finally {

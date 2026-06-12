@@ -4,28 +4,64 @@ import {
   View,
   TextInput,
   ScrollView,
-  TouchableOpacity,
   Alert,
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useRouter, Stack } from 'expo-router';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
+import Header from '@/components/shared/Header';
 import Button from '@/components/shared/Button';
 import SectionTitle from '@/components/shared/SectionTitle';
 import BottomActions from '@/components/senior/BottomActions';
 import { useAuth } from '@/context/AuthContext';
 
+const AVAILABLE_METRICS = [
+  {
+    type: 'HEART RATE',
+    label: 'Batimento Cardíaco',
+    icon: 'heart-pulse',
+    unit: 'bpm',
+  },
+  {
+    type: 'BLOOD PRESSURE',
+    label: 'Pressão Arterial',
+    icon: 'pulse',
+    unit: 'mmHg',
+  },
+  {
+    type: 'TEMPERATURE',
+    label: 'Temperatura',
+    icon: 'thermometer',
+    unit: '°C',
+  },
+  { type: 'BLOOD GLUCOSE', label: 'Glicémia', icon: 'water', unit: 'mg/dL' },
+  {
+    type: 'BLOOD OXYGEN',
+    label: 'Saturação de Oxigénio',
+    icon: 'lungs',
+    unit: '%',
+  },
+  { type: 'WEIGHT', label: 'Peso', icon: 'scale-bathroom', unit: 'kg' },
+] as const;
+
 export default function AddHealthMetric() {
   const router = useRouter();
   const { profile } = useAuth();
 
-  const [title, setTitle] = useState('');
-  const [value, setValue] = useState('');
+  const role = profile?.role;
+
+  const [selectedType, setSelectedType] =
+    useState<(typeof AVAILABLE_METRICS)[number]['type']>('HEART RATE');
+  const [valuePrimary, setValuePrimary] = useState('');
+  const [valueSecondary, setValueSecondary] = useState('');
+
+  const activeMetric = AVAILABLE_METRICS.find((m) => m.type === selectedType)!;
 
   const handleSave = async () => {
-    if (!title || !value) {
-      Alert.alert('Falta Informação', 'Por favor preencha o nome e o valor.');
+    if (!valuePrimary) {
+      Alert.alert('Falta Informação', 'Por favor preencha o valor da medição.');
       return;
     }
 
@@ -34,41 +70,43 @@ export default function AddHealthMetric() {
       return;
     }
 
-    let typeToSave = null;
-    let customName: string | null = title;
-    let mainValue: number | null = null;
-    let customValue: number | null = parseFloat(value);
-
-    if (customValue === null || Number.isNaN(customValue)) {
-      Alert.alert('Falta Informação', 'Por favor introduza um valor numérico.');
+    const valPrimary = parseFloat(valuePrimary);
+    if (Number.isNaN(valPrimary)) {
+      Alert.alert(
+        'Falta Informação',
+        'Por favor introduza um valor numérico válido.',
+      );
       return;
     }
-    const t = title.toLowerCase();
-    if (t.includes('press') || t.includes('arterial') || t.includes('tensão')) {
-      typeToSave = 'BLOOD PRESSURE';
-      customName = null;
-      mainValue = customValue;
-      customValue = null;
-      t.includes('batimento') || t.includes('cora') || t.includes('heart');
-      typeToSave = 'HEART RATE';
-      customName = null;
-      mainValue = customValue;
-      customValue = null;
-    } else if (t.includes('temp')) {
-      typeToSave = 'TEMPERATURE';
-      customName = null;
-      mainValue = customValue;
-      customValue = null;
+
+    let valSecondary: number | null = null;
+    if (selectedType === 'BLOOD PRESSURE') {
+      if (!valueSecondary) {
+        Alert.alert(
+          'Falta Informação',
+          'Por favor preencha o valor da pressão diastólica (mínima).',
+        );
+        return;
+      }
+      valSecondary = parseFloat(valueSecondary);
+      if (Number.isNaN(valSecondary)) {
+        Alert.alert(
+          'Falta Informação',
+          'Por favor introduza um valor diastólico válido.',
+        );
+        return;
+      }
     }
 
     try {
       const { error } = await supabase.from('monitoring').insert([
         {
           id_senior: profile.id,
-          type: typeToSave as any,
-          value: mainValue,
-          custom_metric_name: customName,
-          custom_metric_value: customValue,
+          metric_type: selectedType,
+          value_primary: valPrimary,
+          value_secondary: valSecondary,
+          measured_at: new Date().toISOString(),
+          source: 'manual',
         },
       ]);
 
@@ -85,37 +123,165 @@ export default function AddHealthMetric() {
   };
 
   return (
-    <SafeAreaView edges={['top']} className="flex-1 gap-8 bg-white px-6 pt-24">
+    <SafeAreaView edges={['top']} className="flex-1 bg-white px-6 pt-24">
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          headerTransparent: true,
+          header: () => {
+            if (role === 'SENIOR') {
+              return (
+                <Header
+                  leftIconName="home"
+                  rightIconName="settings"
+                  leftIconLabel="Ir para a página inicial"
+                  rightIconLabel="Abrir definições"
+                  onLeftPress={() => router.push('/navigation/senior/HomePage')}
+                  onRightPress={() =>
+                    router.push('/navigation/shared/Settings')
+                  }
+                />
+              );
+            }
+            // CARETAKER ou outro perfil (ex: VOLUNTEER)
+            return (
+              <Header
+                leftIconName="arrow-back"
+                rightIconName="notifications"
+                leftIconLabel="Voltar"
+                rightIconLabel="Notificações"
+                onLeftPress={() => router.back()}
+                onRightPress={() =>
+                  router.push('/navigation/caretaker/Notifications')
+                }
+              />
+            );
+          },
+        }}
+      />
+
       <SectionTitle title="Nova Leitura" />
+
       <ScrollView
         className="flex-1"
         contentContainerClassName="gap-6 pb-32"
         showsVerticalScrollIndicator={false}
       >
-        <View className="gap-2">
-          <ThemedText type="body">Nome da Métrica</ThemedText>
-          <TextInput
-            className="text-neutral-800 rounded-2xl bg-gray-100 p-5 text-lg"
-            placeholder="Ex: Glicémia"
-            value={title}
-            onChangeText={setTitle}
-            placeholderTextColor="#9ca3af"
-          />
+        <ThemedText
+          type="body"
+          style={{ fontSize: 18, color: '#4b5563', marginBottom: -4 }}
+        >
+          Selecione a métrica a registar:
+        </ThemedText>
+
+        {/* Grelha de Métricas */}
+        <View className="flex-row flex-wrap items-start justify-between gap-y-4">
+          {AVAILABLE_METRICS.map((metric) => {
+            const isSelected = selectedType === metric.type;
+            return (
+              <TouchableOpacity
+                key={metric.type}
+                activeOpacity={0.8}
+                onPress={() => {
+                  setSelectedType(metric.type);
+                  setValuePrimary('');
+                  setValueSecondary('');
+                }}
+                className={`aspect-[1.1] w-[48%] flex-col items-center justify-center rounded-3xl border p-4 shadow-sm ${
+                  isSelected
+                    ? 'border-emerald-600 bg-emerald-50'
+                    : 'border-gray-200 bg-gray-50'
+                }`}
+              >
+                <MaterialCommunityIcons
+                  name={metric.icon as any}
+                  size={32}
+                  color={isSelected ? '#059669' : '#4b5563'}
+                />
+                <ThemedText
+                  type="bodyBold"
+                  style={{
+                    fontSize: 14,
+                    textAlign: 'center',
+                    marginTop: 8,
+                    color: isSelected ? '#065f46' : '#1f2937',
+                  }}
+                >
+                  {metric.label}
+                </ThemedText>
+                <ThemedText
+                  type="body"
+                  style={{
+                    fontSize: 12,
+                    color: isSelected ? '#047857' : '#9ca3af',
+                  }}
+                >
+                  ({metric.unit})
+                </ThemedText>
+              </TouchableOpacity>
+            );
+          })}
         </View>
 
-        <View className="gap-2">
-          <ThemedText type="body">Valor</ThemedText>
-          <TextInput
-            className="text-neutral-800 rounded-2xl bg-gray-100 p-5 text-lg"
-            placeholder="120"
-            value={value}
-            onChangeText={setValue}
-            keyboardType="numeric"
-            placeholderTextColor="#9ca3af"
-          />
+        {/* Campos de Input Dinâmicos */}
+        <View className="mt-4 gap-4">
+          {selectedType === 'BLOOD PRESSURE' ? (
+            <View className="flex-row gap-4">
+              <View className="flex-1 gap-2">
+                <ThemedText type="bodyBold">Sistólica (Máxima)</ThemedText>
+                <View className="flex-row items-center rounded-2xl bg-gray-100 p-5">
+                  <TextInput
+                    className="flex-1 p-0 text-lg text-neutral"
+                    placeholder="120"
+                    value={valuePrimary}
+                    onChangeText={setValuePrimary}
+                    keyboardType="numeric"
+                    placeholderTextColor="#9ca3af"
+                  />
+                  <ThemedText style={{ color: '#9ca3af' }}>
+                    {activeMetric.unit}
+                  </ThemedText>
+                </View>
+              </View>
+
+              <View className="flex-1 gap-2">
+                <ThemedText type="bodyBold">Diastólica (Mínima)</ThemedText>
+                <View className="flex-row items-center rounded-2xl bg-gray-100 p-5">
+                  <TextInput
+                    className="flex-1 p-0 text-lg text-neutral"
+                    placeholder="80"
+                    value={valueSecondary}
+                    onChangeText={setValueSecondary}
+                    keyboardType="numeric"
+                    placeholderTextColor="#9ca3af"
+                  />
+                  <ThemedText style={{ color: '#9ca3af' }}>
+                    {activeMetric.unit}
+                  </ThemedText>
+                </View>
+              </View>
+            </View>
+          ) : (
+            <View className="gap-2">
+              <ThemedText type="bodyBold">Valor de Medição</ThemedText>
+              <View className="flex-row items-center rounded-2xl bg-gray-100 p-5">
+                <TextInput
+                  className="flex-1 p-0 text-lg text-neutral"
+                  placeholder="Introduza o valor"
+                  value={valuePrimary}
+                  onChangeText={setValuePrimary}
+                  keyboardType="numeric"
+                  placeholderTextColor="#9ca3af"
+                />
+                <ThemedText style={{ color: '#6b7280', fontWeight: 'bold' }}>
+                  {activeMetric.unit}
+                </ThemedText>
+              </View>
+            </View>
+          )}
         </View>
 
-        <View className="mt-8 gap-16">
+        <View className="mb-10 mt-4">
           <Button
             title="Guardar Registo"
             onPress={handleSave}
@@ -123,7 +289,8 @@ export default function AddHealthMetric() {
           />
         </View>
       </ScrollView>
-      <BottomActions />
+
+      {role === 'SENIOR' && <BottomActions />}
     </SafeAreaView>
   );
 }

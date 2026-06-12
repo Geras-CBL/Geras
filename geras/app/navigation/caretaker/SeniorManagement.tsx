@@ -24,7 +24,7 @@ import ProfilePicker from '@/components/caretaker/ProfilePicker';
 import ProfileBottomSheet from '@/components/caretaker/ProfileBottomSheet';
 import { useProfile } from '@/context/ProfileContext';
 import { supabase } from '@/lib/supabase';
-import { getMetricStatus } from '../senior/Health';
+import { getMetricStatus, METRIC_LABELS } from '../senior/Health';
 
 interface GroceryItemState {
   id: string;
@@ -35,7 +35,7 @@ interface GroceryItemState {
 interface MonitoringItem {
   title: string;
   status: 'Adequado' | 'Moderado' | 'Excessivo';
-  value: number;
+  value: number | string;
   unit: string;
 }
 
@@ -57,12 +57,6 @@ export default function SeniorManagement() {
     useState<MedicationAlert | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const MONITORING_CONFIG: Record<string, { label: string; unit: string }> = {
-    'HEART RATE': { label: 'Batimento Cardíaco', unit: 'bpm' },
-    'BLOOD PRESSURE': { label: 'Pressão Arterial', unit: 'mmHg' },
-    TEMPERATURE: { label: 'Temperatura', unit: 'ºC' },
-  };
-
   const fetchSeniorData = useCallback(async () => {
     if (!selectedProfile?.id) return;
     setLoading(true);
@@ -70,26 +64,39 @@ export default function SeniorManagement() {
     try {
       const { data: monitoringData } = await supabase
         .from('monitoring')
-        .select('*')
-        .eq('id_senior', selectedProfile.id);
+        .select('*, metric_definitions(*)')
+        .eq('id_senior', selectedProfile.id)
+        .order('measured_at', { ascending: false });
 
       if (monitoringData) {
-        setMonitoring(
-          monitoringData.map((item) => {
-            const config = item.type ? MONITORING_CONFIG[item.type] : null;
-            const title =
-              item.custom_metric_name ||
-              config?.label ||
-              item.type ||
-              'Métrica';
-            const value = item.custom_metric_value || item.value || 0;
-            const unit = item.unit || config?.unit || '';
+        // Agrupar por tipo para reter apenas o mais recente
+        const latestMetrics: Record<string, (typeof monitoringData)[0]> = {};
+        for (const item of monitoringData) {
+          if (item.metric_type && !latestMetrics[item.metric_type]) {
+            latestMetrics[item.metric_type] = item;
+          }
+        }
 
-            let status = getMetricStatus(item.type, value);
+        const mapped = Object.values(latestMetrics).map((item) => {
+          const def = (item as any).metric_definitions;
+          const title =
+            METRIC_LABELS[item.metric_type] || item.metric_type || 'Métrica';
+          const unit = def?.unit || '';
 
-            return { title, value, unit, status };
-          }),
-        );
+          let value: number | string = item.value_primary;
+          if (
+            item.metric_type === 'BLOOD PRESSURE' &&
+            item.value_secondary !== null
+          ) {
+            value = `${Math.round(item.value_primary)}/${Math.round(item.value_secondary)}`;
+          }
+
+          let status = getMetricStatus(item.metric_type, item.value_primary);
+
+          return { title, value, unit, status };
+        });
+
+        setMonitoring(mapped);
       }
 
       const { data: groceriesData } = await supabase
@@ -225,7 +232,7 @@ export default function SeniorManagement() {
             {/* MONITORIZAÇÃO */}
             <View>
               <SectionTitle title="Monitorização">
-                <View className="flex-row flex-wrap justify-between gap-y-4">
+                <View className="flex-row flex-wrap justify-between gap-x-4 gap-y-4">
                   {monitoring.map((item, index) => (
                     <View key={index} className="aspect-square w-[48%]">
                       <MedicationCard
@@ -237,7 +244,9 @@ export default function SeniorManagement() {
                     </View>
                   ))}
                   <View className="aspect-square w-[48%]">
-                    <AddMedicationCard onPress={() => {}} />
+                    <AddMedicationCard
+                      onPress={() => router.push('../shared/AddHealthMetric')}
+                    />
                   </View>
                 </View>
               </SectionTitle>

@@ -162,30 +162,60 @@ export type Database = {
           },
         ];
       };
-      monitoring: {
+      metric_definitions: {
         Row: {
-          custom_metric_name: string | null;
-          custom_metric_value: number | null;
-          id: number;
-          id_senior: number | null;
-          type: Database['public']['Enums']['type_monitoring'] | null;
-          value: number | null;
+          metric_type: Database['public']['Enums']['metric_type'];
+          unit: string;
+          has_secondary: boolean;
+          secondary_label: string | null;
+          primary_label: string | null;
         };
         Insert: {
-          custom_metric_name?: string | null;
-          custom_metric_value?: number | null;
-          id?: number;
-          id_senior?: number | null;
-          type?: Database['public']['Enums']['type_monitoring'] | null;
-          value?: number | null;
+          metric_type: Database['public']['Enums']['metric_type'];
+          unit: string;
+          has_secondary?: boolean;
+          secondary_label?: string | null;
+          primary_label?: string | null;
         };
         Update: {
-          custom_metric_name?: string | null;
-          custom_metric_value?: number | null;
+          metric_type?: Database['public']['Enums']['metric_type'];
+          unit?: string;
+          has_secondary?: boolean;
+          secondary_label?: string | null;
+          primary_label?: string | null;
+        };
+        Relationships: [];
+      };
+      monitoring: {
+        Row: {
+          created_at: string;
+          id: number;
+          id_senior: number;
+          measured_at: string;
+          metric_type: Database['public']['Enums']['metric_type'];
+          source: string | null;
+          value_primary: number;
+          value_secondary: number | null;
+        };
+        Insert: {
+          created_at?: string;
           id?: number;
-          id_senior?: number | null;
-          type?: Database['public']['Enums']['type_monitoring'] | null;
-          value?: number | null;
+          id_senior: number;
+          measured_at: string;
+          metric_type: Database['public']['Enums']['metric_type'];
+          source?: string | null;
+          value_primary: number;
+          value_secondary?: number | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: number;
+          id_senior?: number;
+          measured_at?: string;
+          metric_type?: Database['public']['Enums']['metric_type'];
+          source?: string | null;
+          value_primary?: number;
+          value_secondary?: number | null;
         };
         Relationships: [
           {
@@ -194,6 +224,13 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'users';
             referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'monitoring_metric_type_fkey';
+            columns: ['metric_type'];
+            isOneToOne: false;
+            referencedRelation: 'metric_definitions';
+            referencedColumns: ['metric_type'];
           },
         ];
       };
@@ -546,6 +583,13 @@ export type Database = {
     Enums: {
       eval_rate: 'SATISFIED' | 'NEUTRAL' | 'DISSATISFIED';
       med_status: 'LATE' | 'ALREADY TAKEN' | 'TO TAKE';
+      metric_type:
+        | 'HEART RATE'
+        | 'BLOOD OXYGEN'
+        | 'BLOOD PRESSURE'
+        | 'WEIGHT'
+        | 'TEMPERATURE'
+        | 'BLOOD GLUCOSE';
       req_state: 'PENDING' | 'ACCEPTED' | 'COMPLETED' | 'CANCELLED';
       type_monitoring: 'BLOOD PRESSURE' | 'HEART RATE' | 'TEMPERATURE';
       user_gender: 'FEMALE' | 'MALE' | 'NON-BINARY' | 'PREFER NOT TO SAY';
@@ -686,6 +730,14 @@ export const Constants = {
     Enums: {
       eval_rate: ['SATISFIED', 'NEUTRAL', 'DISSATISFIED'],
       med_status: ['LATE', 'ALREADY TAKEN', 'TO TAKE'],
+      metric_type: [
+        'HEART RATE',
+        'BLOOD OXYGEN',
+        'BLOOD PRESSURE',
+        'WEIGHT',
+        'TEMPERATURE',
+        'BLOOD GLUCOSE',
+      ],
       req_state: ['PENDING', 'ACCEPTED', 'COMPLETED', 'CANCELLED'],
       type_monitoring: ['BLOOD PRESSURE', 'HEART RATE', 'TEMPERATURE'],
       user_gender: ['FEMALE', 'MALE', 'NON-BINARY', 'PREFER NOT TO SAY'],

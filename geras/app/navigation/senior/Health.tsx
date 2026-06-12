@@ -31,7 +31,7 @@ interface NotificationItem {
 interface MonitoringItem {
   id: string;
   title: string;
-  value: number;
+  value: number | string;
   unit: string;
   status: 'Adequado' | 'Moderado' | 'Excessivo';
 }
@@ -49,6 +49,15 @@ interface MedicineItem {
 // HELPERS
 // =========================
 
+export const METRIC_LABELS: Record<string, string> = {
+  'HEART RATE': 'Batimento Cardíaco',
+  'BLOOD PRESSURE': 'Pressão Arterial',
+  TEMPERATURE: 'Temperatura',
+  'BLOOD GLUCOSE': 'Glicémia',
+  'BLOOD OXYGEN': 'Saturação de Oxigénio',
+  WEIGHT: 'Peso',
+};
+
 export const getMetricStatus = (
   type: string | null,
   value: number,
@@ -65,9 +74,14 @@ export const getMetricStatus = (
     if (value < 90 || value > 120)
       return value > 140 || value < 85 ? 'Excessivo' : 'Moderado';
     return 'Adequado';
+  } else if (type === 'BLOOD OXYGEN') {
+    if (value < 95) return value < 90 ? 'Excessivo' : 'Moderado';
+    return 'Adequado';
+  } else if (type === 'BLOOD GLUCOSE') {
+    if (value < 70 || value > 140)
+      return value < 60 || value > 180 ? 'Excessivo' : 'Moderado';
+    return 'Adequado';
   } else {
-    if (value > 100) return 'Excessivo';
-    if (value > 70) return 'Moderado';
     return 'Adequado';
   }
 };
@@ -89,12 +103,6 @@ export default function Health() {
   // FETCH DATA
   // =========================
 
-  const MONITORING_CONFIG: Record<string, { label: string; unit: string }> = {
-    'HEART RATE': { label: 'Batimento Cardíaco', unit: 'bpm' },
-    'BLOOD PRESSURE': { label: 'Pressão Arterial', unit: 'mmHg' },
-    TEMPERATURE: { label: 'Temperatura', unit: 'ºC' },
-  };
-
   useFocusEffect(
     useCallback(() => {
       async function fetchHealthData() {
@@ -115,31 +123,53 @@ export default function Health() {
           }
 
           const { data: monitoringData, error: monitoringError } =
-            await supabase.from('monitoring').select('*');
+            await supabase
+              .from('monitoring')
+              .select('*, metric_definitions(*)')
+              .eq('id_senior', profile.id)
+              .order('measured_at', { ascending: false });
 
           if (!monitoringError && monitoringData) {
-            setMonitoring(
-              monitoringData.map((item) => {
-                const config = item.type ? MONITORING_CONFIG[item.type] : null;
-                const title =
-                  item.custom_metric_name ||
-                  config?.label ||
-                  item.type ||
-                  'Métrica';
-                const value = item.custom_metric_value ?? item.value ?? 0;
-                const unit = item.unit || config?.unit || '';
+            // Agrupar por metric_type para mostrar apenas a leitura mais recente de cada tipo
+            const latestMetrics: Record<string, (typeof monitoringData)[0]> =
+              {};
+            for (const item of monitoringData) {
+              if (item.metric_type && !latestMetrics[item.metric_type]) {
+                latestMetrics[item.metric_type] = item;
+              }
+            }
 
-                let status = getMetricStatus(item.type, value);
+            const mapped = Object.values(latestMetrics).map((item) => {
+              const def = (item as any).metric_definitions;
+              const title =
+                METRIC_LABELS[item.metric_type] ||
+                item.metric_type ||
+                'Métrica';
+              const unit = def?.unit || '';
 
-                return {
-                  id: item.id.toString(),
-                  title,
-                  value,
-                  unit,
-                  status,
-                };
-              }),
-            );
+              let value: number | string = item.value_primary;
+              if (
+                item.metric_type === 'BLOOD PRESSURE' &&
+                item.value_secondary !== null
+              ) {
+                value = `${Math.round(item.value_primary)}/${Math.round(item.value_secondary)}`;
+              }
+
+              let status = getMetricStatus(
+                item.metric_type,
+                item.value_primary,
+              );
+
+              return {
+                id: item.id.toString(),
+                title,
+                value,
+                unit,
+                status,
+              };
+            });
+
+            setMonitoring(mapped);
           }
 
           const { data: medicineData, error: medicineError } = await supabase

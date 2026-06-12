@@ -5,7 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 interface MedicationCardProps {
   title: string;
   status: 'Adequado' | 'Moderado' | 'Excessivo';
-  value: number;
+  value: number | string;
   unit: string;
   onPress?: () => void;
 }

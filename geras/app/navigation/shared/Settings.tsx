@@ -66,8 +66,34 @@ export default function Settings() {
       setIsSyncEnabled(false);
       await AsyncStorage.setItem('@health_sync_enabled', 'false');
     } else {
-      setIsSyncEnabled(true);
-      await AsyncStorage.setItem('@health_sync_enabled', 'true');
+      setIsLoading(true);
+      try {
+        const isSdkInitialized = await initialize();
+        if (isSdkInitialized) {
+          const permissionsToRequest = [
+            { accessType: 'read' as const, recordType: 'HeartRate' },
+            { accessType: 'read' as const, recordType: 'BloodPressure' },
+            { accessType: 'read' as const, recordType: 'BodyTemperature' },
+            { accessType: 'read' as const, recordType: 'BloodGlucose' },
+            { accessType: 'read' as const, recordType: 'OxygenSaturation' },
+            { accessType: 'read' as const, recordType: 'Weight' },
+          ];
+          const granted = await requestPermission(permissionsToRequest as any);
+          console.log(
+            'Permissões do Health Connect atualizadas nas definições:',
+            granted,
+          );
+        }
+        setIsSyncEnabled(true);
+        await AsyncStorage.setItem('@health_sync_enabled', 'true');
+      } catch (err) {
+        console.error('Erro ao pedir permissões nas definições:', err);
+        // Mesmo com falha na inicialização nativa (por exemplo, em emulador de testes), ativa no estado local
+        setIsSyncEnabled(true);
+        await AsyncStorage.setItem('@health_sync_enabled', 'true');
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
