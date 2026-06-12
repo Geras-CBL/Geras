@@ -6,6 +6,7 @@ import SectionTitle from '@/components/shared/SectionTitle';
 import { supabase } from '@/lib/supabase';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Checkbox } from '@futurejj/react-native-checkbox';
+import { Alert } from 'react-native';
 import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import { useState, useCallback } from 'react';
 import {
@@ -148,9 +149,8 @@ export default function Requests() {
                 accessibilityRole="checkbox"
                 accessibilityState={{ checked: item.checked }}
                 accessibilityLabel={item.name}
-                accessibilityHint={`Toca duas vezes para ${
-                  item.checked ? 'remover da' : 'adicionar à'
-                } lista de pedidos`}
+                accessibilityHint={`Toca duas vezes para ${item.checked ? 'remover da' : 'adicionar à'
+                  } lista de pedidos`}
               >
                 <TouchableOpacity
                   className="mb-3 flex-row items-center rounded-2xl border border-gray-100 bg-white p-2 shadow-lg"
@@ -208,6 +208,21 @@ export default function Requests() {
   );
 
   const openDestinationModal = () => {
+    let finalDescription = description;
+    if (requestType === 'pharmacy') {
+      const selectedNames = items.filter((i) => i.checked).map((i) => i.name);
+      finalDescription = selectedNames.join(', ');
+    }
+
+    if (!finalDescription.trim()) {
+      if (requestType === 'pharmacy') {
+        Alert.alert('Erro', 'Por favor, selecione pelo menos um medicamento para o seu pedido.');
+      } else {
+        Alert.alert('Erro', 'Por favor, insira uma descrição para o seu pedido.');
+      }
+      return;
+    }
+
     setDestinationModalVisible(true);
   };
 

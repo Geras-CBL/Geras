@@ -3,6 +3,7 @@ import Button from '@/components/shared/Button';
 import { NotificationCard } from '@/components/shared/Notification';
 import SectionTitle from '@/components/shared/SectionTitle';
 import { ThemedText } from '@/components/ThemedText';
+import { Alert } from 'react-native';
 interface GroceryItem {
   id: string;
   name: string;
@@ -37,6 +38,11 @@ export default function Groceries() {
   >('caretaker');
 
   const openDestinationModal = () => {
+    const selectedNames = items.filter((i) => i.checked).map((i) => i.name);
+    if (selectedNames.length === 0) {
+      Alert.alert('Erro', 'Por favor, selecione pelo menos um item para o seu pedido.');
+      return;
+    }
     setDestinationModalVisible(true);
   };
 
@@ -53,6 +59,9 @@ export default function Groceries() {
           ? associations[0].id_caretaker
           : null;
 
+      const selectedNames = items.filter((i) => i.checked).map((i) => i.name);
+      const finalDescription = `Comprar: ${selectedNames.join(', ')}`;
+
       const { data, error } = await supabase
         .from('requests')
         .insert({
@@ -60,7 +69,7 @@ export default function Groceries() {
           id_caretaker:
             selectedDestination === 'community' ? null : caretakerId,
           category: 'Compras',
-          description: '',
+          description: finalDescription,
           state: 'PENDING',
           is_public: selectedDestination === 'community',
         })
