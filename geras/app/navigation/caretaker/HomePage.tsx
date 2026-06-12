@@ -15,6 +15,7 @@ import { useProfile } from '@/context/ProfileContext';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { ThemedText } from '@/components/ThemedText';
+import { useNotifications } from '@/context/NotificationsContext';
 
 const NOTIFICATION_CONFIG: Record<
   string,
@@ -39,6 +40,7 @@ export default function HomePage() {
     isLoading: isProfilesLoading,
   } = useProfile();
   const { profile } = useAuth();
+  const { sendLocalNotification, saveNotificationToDB } = useNotifications();
   const [notifications, setNotifications] = React.useState<any[]>([]);
   const [healthProblemsCount, setHealthProblemsCount] = React.useState(0);
   const [loadingData, setLoadingData] = React.useState(true);
@@ -148,14 +150,60 @@ export default function HomePage() {
         .on(
           'postgres_changes',
           { event: 'INSERT', schema: 'public', table: 'sensor_readings' },
-          () => fetchData(),
+          async (payload) => {
+            // Refrescar dados na UI
+            fetchData();
+
+            // Extrair info da leitura para a notificação
+            const reading = payload.new as any;
+            const readingValue = reading?.value || 'Alerta do sensor';
+            const notifTitle =
+              reading?.type === 'motion'
+                ? '\ud83d\udea8 Movimento Detetado'
+                : '\ud83d\udce1 Alerta do Sensor';
+
+            // 1. Notificação local (banner)
+            await sendLocalNotification(notifTitle, readingValue);
+
+            // 2. Guardar na tabela notifications do Supabase
+            if (selectedProfile?.id) {
+              await saveNotificationToDB({
+                type: reading?.type === 'motion' ? 'alert' : 'info',
+                description: readingValue,
+                id_senior: Number(selectedProfile.id),
+                id_caretaker: profile?.id ?? null,
+              });
+            }
+          },
+        )
+        .on(
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'notifications' },
+          async (payload) => {
+            const newNotif = payload.new as any;
+
+            // Apenas atualizar a UI se for para este cuidador ou sénior
+            if (
+              (newNotif.id_senior === selectedProfile?.id ||
+                newNotif.id_caretaker === profile?.id) &&
+              newNotif.type === 'alert'
+            ) {
+              fetchData(); // Refresh UI
+            }
+          },
         )
         .subscribe();
 
       return () => {
         supabase.removeChannel(channel);
       };
-    }, [fetchData]),
+    }, [
+      fetchData,
+      sendLocalNotification,
+      saveNotificationToDB,
+      selectedProfile?.id,
+      profile?.id,
+    ]),
   );
 
   const alertsCount = notifications.filter((n) => n.type === 'alert').length;
