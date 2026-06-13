@@ -375,7 +375,7 @@ export default function RootLayout() {
                               router.back();
                             }}
                             onRightPress={() =>
-                              router.push('../shared/Notifications')
+                              router.push('/navigation/volunteer/Notifications')
                             }
                             onLogoutPress={handleLogout}
                           />

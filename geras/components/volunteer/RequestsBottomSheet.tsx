@@ -118,18 +118,17 @@ const RequestDetailsBottomSheet = forwardRef<
         <View className="w-full gap-2">
           <ThemedText className="text-base text-[#1d1d1b]">
             <ThemedText type="bodyBold">Distância: </ThemedText>
-            {request.distance || '2.3 Km'}
+            {request.distance || 'N/A'}
           </ThemedText>
 
           <ThemedText className="text-base text-[#1d1d1b]">
-            <ThemedText type="bodyBold">Tempo: </ThemedText>
-            {request.time || '30min'}
+            <ThemedText type="bodyBold">Data do Pedido: </ThemedText>
+            {request.date ? `${request.date} às ${request.time}` : 'N/A'}
           </ThemedText>
 
           <ThemedText className="text-base text-[#1d1d1b]">
             <ThemedText type="bodyBold">Localização: </ThemedText>
-            {request.location ||
-              'Rua João Pereira Almeida 76, Safira, Portugal'}
+            {request.location || 'Endereço não especificado'}
           </ThemedText>
 
           <ThemedText className="text-base text-[#1d1d1b]">

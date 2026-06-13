@@ -79,6 +79,8 @@ export default function PedidosHomePage({
             hour12: false,
           }),
           imageUrl: req.senior?.profile_picture || '',
+          distance: req.distance ? `${req.distance} Km` : 'N/A',
+          location: req.location_address || 'Endereço não disponível',
           latitude: req.latitude || 40.6405,
           longitude: req.longitude || -8.6538,
         }));
