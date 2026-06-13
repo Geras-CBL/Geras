@@ -6,6 +6,7 @@ import SectionTitle from '@/components/shared/SectionTitle';
 import { supabase } from '@/lib/supabase';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Checkbox } from '@futurejj/react-native-checkbox';
+import { Alert } from 'react-native';
 import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import { useState, useCallback } from 'react';
 import {
@@ -14,6 +15,7 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@/context/AuthContext';
@@ -37,6 +39,11 @@ export default function Requests() {
   const [items, setItems] = useState<RequestItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isDestinationModalVisible, setDestinationModalVisible] =
+    useState(false);
+  const [selectedDestination, setSelectedDestination] = useState<
+    'caretaker' | 'community'
+  >('caretaker');
 
   useFocusEffect(
     useCallback(() => {
@@ -201,29 +208,94 @@ export default function Requests() {
     </View>
   );
 
-  const renderActions = () => {
-    const handleMakeRequest = () => {
-      let finalDescription = description;
-      if (requestType === 'pharmacy') {
-        const selectedNames = items.filter((i) => i.checked).map((i) => i.name);
-        finalDescription = selectedNames.join(', ');
-      }
+  const openDestinationModal = () => {
+    let finalDescription = description;
+    if (requestType === 'pharmacy') {
+      const selectedNames = items.filter((i) => i.checked).map((i) => i.name);
+      finalDescription = selectedNames.join(', ');
+    }
 
-      router.push({
-        pathname: './RequestLoading',
+    if (!finalDescription.trim()) {
+      if (requestType === 'pharmacy') {
+        Alert.alert(
+          'Erro',
+          'Por favor, selecione pelo menos um medicamento para o seu pedido.',
+        );
+      } else {
+        Alert.alert(
+          'Erro',
+          'Por favor, insira uma descrição para o seu pedido.',
+        );
+      }
+      return;
+    }
+
+    setDestinationModalVisible(true);
+  };
+
+  const handleMakeRequest = async () => {
+    setDestinationModalVisible(false);
+    let finalDescription = description;
+    if (requestType === 'pharmacy') {
+      const selectedNames = items.filter((i) => i.checked).map((i) => i.name);
+      finalDescription = selectedNames.join(', ');
+    }
+
+    try {
+      const { data: associations, error: assocError } = await supabase
+        .from('senior_caretaker')
+        .select('id_caretaker')
+        .eq('id_senior', profile?.id);
+
+      const caretakerId =
+        associations && associations.length > 0
+          ? associations[0].id_caretaker
+          : null;
+
+      const categoryLabel =
+        requestType === 'food'
+          ? 'Compras'
+          : requestType === 'pharmacy'
+            ? 'Medicamentos'
+            : requestType === 'cleaning'
+              ? 'Limpeza'
+              : 'Outros';
+
+      const { data, error } = await supabase
+        .from('requests')
+        .insert({
+          id_senior: profile?.id,
+          id_caretaker:
+            selectedDestination === 'community' ? null : caretakerId,
+          category: categoryLabel,
+          description: finalDescription || '',
+          state: 'PENDING',
+          is_public: selectedDestination === 'community',
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      router.replace({
+        pathname: './RequestDetails',
         params: {
           type: requestType,
-          description: finalDescription,
+          requestId: data.id.toString(),
         },
       });
-    };
+    } catch (err) {
+      console.error('Error creating request:', err);
+    }
+  };
 
+  const renderActions = () => {
     if (requestType === 'pharmacy') {
       return (
         <Button
           title="Fazer Pedido"
           className="w-2/3"
-          onPress={handleMakeRequest}
+          onPress={openDestinationModal}
         />
       );
     }
@@ -242,7 +314,7 @@ export default function Requests() {
         <Button
           title="Fazer pedido"
           className="w-full"
-          onPress={handleMakeRequest}
+          onPress={openDestinationModal}
         />
       </View>
     );
@@ -274,6 +346,104 @@ export default function Requests() {
           ? renderPharmacyContent()
           : renderGenericContent()}
       </FloatingIconCard>
+
+      <Modal
+        visible={isDestinationModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setDestinationModalVisible(false)}
+      >
+        <View className="flex-1 justify-end bg-black/50">
+          <View className="rounded-t-3xl bg-white p-6 pb-12 shadow-xl">
+            <View className="mb-6 items-center">
+              <View className="h-1.5 w-12 rounded-full bg-gray-300" />
+            </View>
+            <ThemedText
+              type="subtitle"
+              className="mb-6 text-center text-neutral"
+            >
+              Quem prefere que resolva o pedido?
+            </ThemedText>
+
+            <TouchableOpacity
+              className={`mb-4 flex-row items-center rounded-2xl border-2 p-4 ${selectedDestination === 'caretaker' ? 'border-primary bg-primary/10' : 'border-gray-200 bg-white'}`}
+              onPress={() => setSelectedDestination('caretaker')}
+            >
+              <MaterialIcons
+                name="people"
+                size={28}
+                color={
+                  selectedDestination === 'caretaker' ? '#2F5C3E' : '#9CA3AF'
+                }
+              />
+              <View className="ml-4 flex-1">
+                <ThemedText
+                  type="bodyBold"
+                  className={
+                    selectedDestination === 'caretaker'
+                      ? 'text-primary'
+                      : 'text-neutral'
+                  }
+                >
+                  O meu Cuidador
+                </ThemedText>
+                <ThemedText className="text-sm text-gray-500">
+                  O pedido é enviado diretamente para o seu cuidador associado.
+                </ThemedText>
+              </View>
+              {selectedDestination === 'caretaker' && (
+                <MaterialIcons name="check-circle" size={24} color="#2F5C3E" />
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              className={`mb-8 flex-row items-center rounded-2xl border-2 p-4 ${selectedDestination === 'community' ? 'border-primary bg-primary/10' : 'border-gray-200 bg-white'}`}
+              onPress={() => setSelectedDestination('community')}
+            >
+              <MaterialIcons
+                name="public"
+                size={28}
+                color={
+                  selectedDestination === 'community' ? '#2F5C3E' : '#9CA3AF'
+                }
+              />
+              <View className="ml-4 flex-1">
+                <ThemedText
+                  type="bodyBold"
+                  className={
+                    selectedDestination === 'community'
+                      ? 'text-primary'
+                      : 'text-neutral'
+                  }
+                >
+                  Comunidade (Voluntários)
+                </ThemedText>
+                <ThemedText className="text-sm text-gray-500">
+                  O pedido fica visível para voluntários disponíveis na sua
+                  área.
+                </ThemedText>
+              </View>
+              {selectedDestination === 'community' && (
+                <MaterialIcons name="check-circle" size={24} color="#2F5C3E" />
+              )}
+            </TouchableOpacity>
+
+            <View className="flex-row justify-between gap-4">
+              <Button
+                title="Cancelar"
+                variant="outlined"
+                className="flex-1"
+                onPress={() => setDestinationModalVisible(false)}
+              />
+              <Button
+                title="Confirmar"
+                className="flex-1"
+                onPress={handleMakeRequest}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       <BottomActions />
     </SafeAreaView>

@@ -17,6 +17,7 @@ import { useAuth } from '@/context/AuthContext';
 import { ScrollView, View, ActivityIndicator } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ThemedText } from '@/components/ThemedText';
 
 // =========================
 // TYPES
@@ -102,7 +103,13 @@ export default function Health() {
 
         try {
           const { data: notificationsData, error: notificationsError } =
-            await supabase.from('notifications').select('*');
+            await supabase
+              .from('notifications')
+              .select('*')
+              .eq('id_senior', profile.id)
+              .is('dismissed_at', null)
+              .in('type', ['health', 'medication', 'motion', 'alert'])
+              .order('created_at', { ascending: false });
 
           if (!notificationsError && notificationsData) {
             setNotifications(
@@ -195,6 +202,19 @@ export default function Health() {
     }, [profile?.id]),
   );
 
+  const handleDismiss = useCallback(async (notificationId: string) => {
+    setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
+
+    const { error } = await supabase
+      .from('notifications')
+      .update({ dismissed_at: new Date().toISOString() })
+      .eq('id', notificationId);
+
+    if (error) {
+      console.error('Erro ao dispensar notificação:', error.message);
+    }
+  }, []);
+
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-24">
       <ScrollView
@@ -203,19 +223,47 @@ export default function Health() {
         showsVerticalScrollIndicator={false}
       >
         {/* NOTIFICATIONS */}
-        <SectionTitle title={'Notificações'}>
+        <SectionTitle title={'Eventos Recentes'}>
           {loading ? (
             <ActivityIndicator size="large" color="#2F5C3E" />
+          ) : notifications.length === 0 ? (
+            <View className="items-center py-4">
+              <ThemedText type="bodyInfo" className="text-neutral">
+                Não tens eventos de saúde recentes.
+              </ThemedText>
+            </View>
           ) : (
-            notifications.map((notification) => (
-              <NotificationCard
-                key={notification.id}
-                variant="medication"
-                title="Aviso"
-                iconName="medication"
-                description={notification.description}
-              />
-            ))
+            notifications.map((notification) => {
+              let title = 'Aviso';
+              let icon = 'info';
+              if (notification.type === 'medication') {
+                title = 'Medicação';
+                icon = 'medication';
+              }
+              if (notification.type === 'health') {
+                title = 'Saúde';
+                icon = 'health-and-safety';
+              }
+              if (notification.type === 'motion') {
+                title = 'Movimento';
+                icon = 'directions-walk';
+              }
+              if (notification.type === 'alert') {
+                title = 'Alerta';
+                icon = 'report';
+              }
+
+              return (
+                <NotificationCard
+                  key={notification.id}
+                  variant={(notification.type as any) || 'medication'}
+                  title={title}
+                  iconName={icon as any}
+                  description={notification.description}
+                  onDismiss={() => handleDismiss(notification.id)}
+                />
+              );
+            })
           )}
         </SectionTitle>
 

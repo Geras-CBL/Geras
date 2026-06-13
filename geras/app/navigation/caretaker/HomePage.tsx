@@ -15,20 +15,93 @@ import { useProfile } from '@/context/ProfileContext';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { ThemedText } from '@/components/ThemedText';
+import { useNotifications } from '@/context/NotificationsContext';
 
 const NOTIFICATION_CONFIG: Record<
   string,
   {
-    variant: 'alert' | 'medication' | 'info' | 'pantry' | 'reminder';
+    variant:
+      | 'alert'
+      | 'request'
+      | 'health'
+      | 'medication'
+      | 'motion'
+      | 'info'
+      | 'pantry';
     icon: any;
     title: string;
+    priority: number;
+    /** TTL em horas. undefined = sem expiração automática */
+    ttlHours?: number;
+    /** Se false, o cuidador não pode fechar esta notificação */
+    dismissable: boolean;
   }
 > = {
-  medication: { variant: 'medication', icon: 'medication', title: 'Medicação' },
-  alert: { variant: 'alert', icon: 'report', title: 'Urgente' },
-  pantry: { variant: 'pantry', icon: 'shopping-basket', title: 'Despensa' },
-  info: { variant: 'info', icon: 'info', title: 'Informação' },
+  alert: {
+    variant: 'alert',
+    icon: 'report',
+    title: 'Urgente',
+    priority: 0,
+    ttlHours: undefined,
+    dismissable: true, // o cuidador pode fechar alertas
+  },
+  request: {
+    variant: 'request',
+    icon: 'people',
+    title: 'Pedido',
+    priority: 1,
+    ttlHours: 48,
+    dismissable: true,
+  },
+  health: {
+    variant: 'health',
+    icon: 'health-and-safety',
+    title: 'Saúde',
+    priority: 1,
+    ttlHours: 24,
+    dismissable: true,
+  },
+  medication: {
+    variant: 'medication',
+    icon: 'medication',
+    title: 'Medicação',
+    priority: 2,
+    ttlHours: 12,
+    dismissable: true,
+  },
+  motion: {
+    variant: 'motion',
+    icon: 'directions-walk',
+    title: 'Movimento',
+    priority: 2,
+    ttlHours: 6,
+    dismissable: true,
+  },
+  info: {
+    variant: 'info',
+    icon: 'info',
+    title: 'Informação',
+    priority: 2,
+    ttlHours: 24,
+    dismissable: true,
+  },
+  pantry: {
+    variant: 'pantry',
+    icon: 'shopping-basket',
+    title: 'Despensa',
+    priority: 2,
+    ttlHours: undefined,
+    dismissable: true,
+  },
 };
+
+/** Filtra notificações já expiradas ou dispensadas (client-side safety net) */
+function isActive(notification: any): boolean {
+  if (notification.dismissed_at) return false;
+  if (notification.expires_at && new Date(notification.expires_at) < new Date())
+    return false;
+  return true;
+}
 
 export default function HomePage() {
   const sheetRef = React.useRef<any>(null);
@@ -39,6 +112,7 @@ export default function HomePage() {
     isLoading: isProfilesLoading,
   } = useProfile();
   const { profile } = useAuth();
+  const { sendLocalNotification, saveNotificationToDB } = useNotifications();
   const [notifications, setNotifications] = React.useState<any[]>([]);
   const [healthProblemsCount, setHealthProblemsCount] = React.useState(0);
   const [loadingData, setLoadingData] = React.useState(true);
@@ -62,14 +136,25 @@ export default function HomePage() {
       const seniorId = selectedProfile!.id;
       const caretakerId = profile?.id;
 
-      // 1. Notificações
+      // 1. Notificações (só as activas e não dispensadas)
+      const now = new Date().toISOString();
       const { data: notifs, error: notifError } = await supabase
         .from('notifications')
         .select('*')
-        .eq('id_senior', seniorId);
+        .eq('id_senior', seniorId)
+        .is('dismissed_at', null)
+        .or(`expires_at.is.null,expires_at.gt.${now}`)
+        .order('created_at', { ascending: false });
 
       if (!notifError && notifs) {
-        setNotifications(notifs);
+        const sorted = [...notifs].sort((a, b) => {
+          const typeA = (a.type || 'info').toLowerCase();
+          const typeB = (b.type || 'info').toLowerCase();
+          const prioA = NOTIFICATION_CONFIG[typeA]?.priority ?? 99;
+          const prioB = NOTIFICATION_CONFIG[typeB]?.priority ?? 99;
+          return prioA - prioB;
+        });
+        setNotifications(sorted);
       }
 
       // 2. Monitorização (para contar problemas de saúde)
@@ -138,6 +223,19 @@ export default function HomePage() {
     }
   }, [selectedProfile?.id, profile?.id]);
 
+  const handleDismiss = React.useCallback(async (notificationId: number) => {
+    setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
+
+    const { error } = await supabase
+      .from('notifications')
+      .update({ dismissed_at: new Date().toISOString() })
+      .eq('id', notificationId);
+
+    if (error) {
+      console.error('Erro ao dispensar notificação (RLS?):', error.message);
+    }
+  }, []);
+
   useFocusEffect(
     React.useCallback(() => {
       fetchData();
@@ -148,14 +246,60 @@ export default function HomePage() {
         .on(
           'postgres_changes',
           { event: 'INSERT', schema: 'public', table: 'sensor_readings' },
-          () => fetchData(),
+          async (payload) => {
+            // Refrescar dados na UI
+            fetchData();
+
+            // Extrair info da leitura para a notificação
+            const reading = payload.new as any;
+            const readingValue = reading?.value || 'Alerta do sensor';
+            const notifTitle =
+              reading?.type === 'motion'
+                ? '\ud83d\udea8 Movimento Detetado'
+                : '\ud83d\udce1 Alerta do Sensor';
+
+            // 1. Notificação local (banner)
+            await sendLocalNotification(notifTitle, readingValue);
+
+            // 2. Guardar na tabela notifications do Supabase
+            if (selectedProfile?.id) {
+              await saveNotificationToDB({
+                type: reading?.type === 'motion' ? 'alert' : 'info',
+                description: readingValue,
+                id_senior: Number(selectedProfile.id),
+                id_caretaker: profile?.id ?? null,
+              });
+            }
+          },
+        )
+        .on(
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'notifications' },
+          async (payload) => {
+            const newNotif = payload.new as any;
+
+            // Apenas atualizar a UI se for para este cuidador ou sénior
+            if (
+              (newNotif.id_senior === selectedProfile?.id ||
+                newNotif.id_caretaker === profile?.id) &&
+              newNotif.type === 'alert'
+            ) {
+              fetchData(); // Refresh UI
+            }
+          },
         )
         .subscribe();
 
       return () => {
         supabase.removeChannel(channel);
       };
-    }, [fetchData]),
+    }, [
+      fetchData,
+      sendLocalNotification,
+      saveNotificationToDB,
+      selectedProfile?.id,
+      profile?.id,
+    ]),
   );
 
   const alertsCount = notifications.filter((n) => n.type === 'alert').length;
@@ -193,7 +337,7 @@ export default function HomePage() {
                   className="py-4"
                 />
               ) : notifications.length > 0 ? (
-                notifications.map((notification) => {
+                notifications.filter(isActive).map((notification) => {
                   const typeKey = (notification.type || 'info').toLowerCase();
                   const config =
                     NOTIFICATION_CONFIG[typeKey] || NOTIFICATION_CONFIG.info;
@@ -205,6 +349,11 @@ export default function HomePage() {
                       title={config.title}
                       iconName={config.icon}
                       description={notification.description}
+                      onDismiss={
+                        config.dismissable
+                          ? () => handleDismiss(notification.id)
+                          : undefined
+                      }
                       rightContent={
                         notification.type === 'alert' ? (
                           <>

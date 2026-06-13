@@ -46,9 +46,8 @@ export default function PedidosHomePage({
       const { data, error } = await supabase
         .from('requests')
         .select('*, senior:users!id_senior(name, profile_picture, gender)')
-        .or(
-          `state.eq.PENDING,and(state.eq.ACCEPTED,id_volunteer.eq.${profile.id})`,
-        );
+        .in('state', ['PENDING', 'ACCEPTED'])
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       console.log('Volunteer Requests Data:', data);
@@ -80,6 +79,8 @@ export default function PedidosHomePage({
             hour12: false,
           }),
           imageUrl: req.senior?.profile_picture || '',
+          distance: req.distance ? `${req.distance} Km` : 'N/A',
+          location: req.location_address || 'Endereço não disponível',
           latitude: req.latitude || 40.6405,
           longitude: req.longitude || -8.6538,
         }));

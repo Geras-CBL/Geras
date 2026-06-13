@@ -9,39 +9,79 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { ThemedText } from '../ThemedText';
 import { Route, useRouter } from 'expo-router';
 
-type CardVariant = 'alert' | 'medication' | 'info' | 'pantry' | 'reminder';
+type CardVariant =
+  | 'alert'
+  | 'request'
+  | 'health'
+  | 'medication'
+  | 'motion'
+  | 'info'
+  | 'pantry'
+  | 'reminder';
 
 interface Theme {
   container: string;
   border: string;
   iconBg: string;
+  /** hex used for the dismiss (✕) icon */
+  dismissColor: string;
 }
 
 const THEMES: Record<CardVariant, Theme> = {
+  // 🔴 Urgente — vermelho, não pode ser fechado pelo sénior
   alert: {
     container: 'bg-red-100',
     border: 'border-red-700',
     iconBg: 'bg-red-800',
+    dismissColor: '#b91c1c',
   },
+  //  Pedido — secondary (#efab59)
+  request: {
+    container: 'bg-secondary/20',
+    border: 'border-secondary',
+    iconBg: 'bg-secondary',
+    dismissColor: '#efab59',
+  },
+  // 🟠 Saúde — tertiary (#DB6536)
+  health: {
+    container: 'bg-tertiary/20',
+    border: 'border-tertiary',
+    iconBg: 'bg-tertiary',
+    dismissColor: '#DB6536',
+  },
+  // 🟠 Medicação — tertiary (#DB6536)
   medication: {
-    container: 'bg-orange-100',
-    border: 'border-orange-300',
-    iconBg: 'bg-orange-500',
+    container: 'bg-tertiary/20',
+    border: 'border-tertiary',
+    iconBg: 'bg-tertiary',
+    dismissColor: '#DB6536',
   },
-  info: {
-    container: 'bg-green-600/40',
-    border: 'border-primary',
-    iconBg: 'bg-green-800',
-  },
-  pantry: {
-    container: 'bg-[#D8E6DE]',
+  // 🟢 Movimento — primary (#205a2d)
+  motion: {
+    container: 'bg-primary/15',
     border: 'border-primary',
     iconBg: 'bg-primary',
+    dismissColor: '#205a2d',
+  },
+  // 🟢 Informação — primary (#205a2d)
+  info: {
+    container: 'bg-primary/15',
+    border: 'border-primary',
+    iconBg: 'bg-primary',
+    dismissColor: '#205a2d',
+  },
+  // 🟢 Despensa — primary (#205a2d)
+  pantry: {
+    container: 'bg-primary/15',
+    border: 'border-primary',
+    iconBg: 'bg-primary',
+    dismissColor: '#205a2d',
   },
   reminder: {
     container: 'bg-white shadow-sm shadow-gray-300',
     border: 'border-transparent',
     iconBg: '',
+    dismissColor: '#1d1d1b',
   },
 };
 
@@ -70,6 +110,7 @@ interface NotificationCardProps {
   route?: string;
   alt?: string;
   accessibilityLabel?: string;
+  onDismiss?: () => void;
 }
 
 export const NotificationCard = ({
@@ -83,6 +124,7 @@ export const NotificationCard = ({
   route,
   alt = 'Imagem da notificação',
   accessibilityLabel,
+  onDismiss,
 }: NotificationCardProps) => {
   const theme = THEMES[variant];
   const router = useRouter();
@@ -196,9 +238,21 @@ export const NotificationCard = ({
         </View>
       </View>
 
-      {rightContent && (
-        <View className="flex-row items-center gap-2">{rightContent}</View>
-      )}
+      <View className="flex-row items-center gap-2">
+        {rightContent}
+        {onDismiss && (
+          <Pressable
+            onPress={onDismiss}
+            hitSlop={12}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel="Fechar notificação"
+            className="h-10 w-10 items-center justify-center rounded-xl"
+          >
+            <MaterialIcons name="close" size={22} color={theme.dismissColor} />
+          </Pressable>
+        )}
+      </View>
     </TouchableOpacity>
   );
 };
@@ -258,12 +312,45 @@ export const NotificationCard = ({
 />; */
 }
 
+// Pedido
+{
+  /* <NotificationCard
+  variant="request"
+  title="Pedido"
+  iconName="people"
+  description="Novo pedido de ajuda"
+  onDismiss={() => console.log('dismissed')}
+/>; */
+}
+
+// Saúde
+{
+  /* <NotificationCard
+  variant="health"
+  title="Saúde"
+  iconName="health-and-safety"
+  description="Tensão arterial elevada"
+  onDismiss={() => console.log('dismissed')}
+/>; */
+}
+
+// Movimento
+{
+  /* <NotificationCard
+  variant="motion"
+  title="Movimento"
+  iconName="directions-walk"
+  description="Atividade detetada na sala"
+  onDismiss={() => console.log('dismissed')}
+/>; */
+}
+
 // Despensa
 {
   /* <NotificationCard
   variant="pantry"
   title="Despensa"
-  iconName="pantry"
+  iconName="shopping-basket"
   description="Alimentos disponíveis"
   route="/senior/groceries"
 />; */
