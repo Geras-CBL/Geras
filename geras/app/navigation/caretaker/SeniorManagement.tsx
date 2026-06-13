@@ -25,6 +25,7 @@ import ProfileBottomSheet from '@/components/caretaker/ProfileBottomSheet';
 import { useProfile } from '@/context/ProfileContext';
 import { supabase } from '@/lib/supabase';
 import { getMetricStatus } from '../senior/Health';
+import { MedicationSchedule } from '@/components/senior/MedicineDrawer';
 
 interface GroceryItemState {
   id: string;
@@ -55,6 +56,7 @@ export default function SeniorManagement() {
   const [monitoring, setMonitoring] = useState<MonitoringItem[]>([]);
   const [medicationAlert, setMedicationAlert] =
     useState<MedicationAlert | null>(null);
+  const [medicines, setMedicines] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const MONITORING_CONFIG: Record<string, { label: string; unit: string }> = {
@@ -111,19 +113,52 @@ export default function SeniorManagement() {
         .from('notifications')
         .select('*')
         .eq('id_senior', selectedProfile.id)
-        .eq('type', 'medication')
+        .in('type', ['medication', 'MEDICATION'])
+        .is('dismissed_at', null)
+        .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle();
 
       if (notificationData) {
+        // Ensure the date string is treated as UTC if it doesn't already have a timezone indicator
+        let dateStr = notificationData.created_at;
+        if (!dateStr.endsWith('Z') && !dateStr.includes('+')) {
+          dateStr += 'Z';
+        }
+
+        const timeString = new Date(dateStr).toLocaleTimeString('pt-PT', {
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZone: 'Europe/Lisbon',
+        });
         setMedicationAlert({
           id: notificationData.id.toString(),
-          name: notificationData.description, // Simplified
-          time: '14:00', // Mock time as it's not in notification table directly
+          name: notificationData.description,
+          time: timeString,
           description: notificationData.description,
         });
       } else {
         setMedicationAlert(null);
+      }
+
+      const { data: medicineData } = await supabase
+        .from('medicine')
+        .select('*')
+        .eq('id_senior', selectedProfile.id);
+
+      if (medicineData) {
+        setMedicines(
+          medicineData.map((item) => ({
+            id: item.id.toString(),
+            name: item.name,
+            dosage: item.dosage,
+            scheduled_time: item.scheduled_time,
+            start_date: item.start_date,
+            end_date: item.end_date,
+          })),
+        );
+      } else {
+        setMedicines([]);
       }
     } catch (err) {
       console.error('Error fetching senior data:', err);
@@ -175,52 +210,71 @@ export default function SeniorManagement() {
         ) : (
           <>
             {/* MEDICAÇÃO */}
-            {medicationAlert && (
-              <View>
-                <SectionTitle title="Medicação">
-                  <NotificationCard
-                    variant="reminder"
-                    title={medicationAlert.name}
-                    rightContent={<ClockPill time={medicationAlert.time} />}
-                    bottomContent={
-                      <>
-                        <Button
-                          title="Ignorar"
-                          variant="outlined"
-                          className="flex-1"
-                          onPress={handleIgnore}
-                        />
-                        <Button
-                          title="Avisar"
-                          variant="warning"
-                          icon={
-                            <MaterialIcons
-                              name="warning-amber"
-                              size={20}
-                              color="#db6536"
-                            />
-                          }
-                          className="flex-1"
-                          onPress={handleWarn}
-                        />
-                        <Button
-                          title="Ligar"
-                          className="flex-1"
-                          icon={
-                            <MaterialIcons
-                              name="call"
-                              size={20}
-                              color="white"
-                            />
-                          }
-                          onPress={handleCall}
-                        />
-                      </>
+            <View>
+              <SectionTitle title="Medicação">
+                {medicationAlert && (
+                  <View className="stretch mb-6 w-full items-stretch">
+                    <NotificationCard
+                      variant="reminder"
+                      title={medicationAlert.name}
+                      rightContent={<ClockPill time={medicationAlert.time} />}
+                      bottomContent={
+                        <View className="mt-3 w-full flex-row gap-2">
+                          <Button
+                            title="Ignorar"
+                            variant="outlined"
+                            className="flex-1"
+                            onPress={handleIgnore}
+                          />
+                          <Button
+                            title="Avisar"
+                            variant="warning"
+                            icon={
+                              <MaterialIcons
+                                name="warning-amber"
+                                size={20}
+                                color="#db6536"
+                              />
+                            }
+                            className="flex-1"
+                            onPress={handleWarn}
+                          />
+                          <Button
+                            title="Ligar"
+                            className="flex-1"
+                            icon={
+                              <MaterialIcons
+                                name="call"
+                                size={20}
+                                color="white"
+                              />
+                            }
+                            onPress={handleCall}
+                          />
+                        </View>
+                      }
+                    />
+                  </View>
+                )}
+
+                <View className="w-full items-center">
+                  <Button
+                    title="Adicionar Medicação"
+                    variant="outlined"
+                    className="w-full max-w-sm"
+                    icon={
+                      <MaterialIcons name="add" size={20} color="#205a2d" />
                     }
+                    onPress={() => {
+                      router.push({
+                        pathname: '../shared/AddMedication',
+                        params: { id_senior: selectedProfile?.id },
+                      });
+                    }}
                   />
-                </SectionTitle>
-              </View>
-            )}
+                </View>
+              </SectionTitle>
+            </View>
 
             {/* MONITORIZAÇÃO */}
             <View>
