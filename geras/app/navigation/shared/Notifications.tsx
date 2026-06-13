@@ -64,6 +64,7 @@ export default function Notifications() {
         .from('notifications')
         .select('*')
         .eq('id_senior', selectedProfile.id)
+        .is('dismissed_at', null)
         .order('created_at', { ascending: false });
 
       if (profile.role === 'SENIOR') {
@@ -82,7 +83,20 @@ export default function Notifications() {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedProfile?.id]);
+  }, [selectedProfile?.id, profile?.role, profile?.id]);
+
+  const handleDismiss = React.useCallback(async (notificationId: number) => {
+    setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
+
+    const { error } = await supabase
+      .from('notifications')
+      .update({ dismissed_at: new Date().toISOString() })
+      .eq('id', notificationId);
+
+    if (error) {
+      console.error('Erro ao dispensar notificação:', error.message);
+    }
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -142,6 +156,7 @@ export default function Notifications() {
                   title={config.label}
                   iconName={config.icon}
                   description={notif.description}
+                  onDismiss={() => handleDismiss(notif.id)}
                   rightContent={
                     isAlert ? (
                       <>
