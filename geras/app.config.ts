@@ -78,6 +78,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         },
       },
     ],
+    ['@react-native-google-signin/google-signin'],
     [
       'expo-splash-screen',
       {
