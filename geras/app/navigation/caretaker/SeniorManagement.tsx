@@ -40,13 +40,6 @@ interface MonitoringItem {
   unit: string;
 }
 
-interface MedicationAlert {
-  id: string;
-  name: string;
-  time: string;
-  description: string;
-}
-
 export default function SeniorManagement() {
   const router = useRouter();
   const sheetRef = useRef<any>(null);
@@ -54,8 +47,6 @@ export default function SeniorManagement() {
 
   const [items, setItems] = useState<GroceryItemState[]>([]);
   const [monitoring, setMonitoring] = useState<MonitoringItem[]>([]);
-  const [medicationAlert, setMedicationAlert] =
-    useState<MedicationAlert | null>(null);
   const [medicines, setMedicines] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -109,38 +100,6 @@ export default function SeniorManagement() {
         );
       }
 
-      const { data: notificationData } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('id_senior', selectedProfile.id)
-        .in('type', ['medication', 'MEDICATION'])
-        .is('dismissed_at', null)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      if (notificationData) {
-        // Ensure the date string is treated as UTC if it doesn't already have a timezone indicator
-        let dateStr = notificationData.created_at;
-        if (!dateStr.endsWith('Z') && !dateStr.includes('+')) {
-          dateStr += 'Z';
-        }
-
-        const timeString = new Date(dateStr).toLocaleTimeString('pt-PT', {
-          hour: '2-digit',
-          minute: '2-digit',
-          timeZone: 'Europe/Lisbon',
-        });
-        setMedicationAlert({
-          id: notificationData.id.toString(),
-          name: notificationData.description,
-          time: timeString,
-          description: notificationData.description,
-        });
-      } else {
-        setMedicationAlert(null);
-      }
-
       const { data: medicineData } = await supabase
         .from('medicine')
         .select('*')
@@ -185,15 +144,6 @@ export default function SeniorManagement() {
     sheetRef.current?.present();
   };
 
-  const handleIgnore = () => {
-    Alert.alert('Notificação ignorada');
-    setMedicationAlert(null);
-  };
-
-  const handleWarn = () =>
-    Alert.alert(`${selectedProfile?.name || 'Sénior'} avisado`);
-  const handleCall = () => Linking.openURL(`tel:${963744454}`);
-
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-24">
       <ScrollView
@@ -212,56 +162,15 @@ export default function SeniorManagement() {
             {/* MEDICAÇÃO */}
             <View>
               <SectionTitle title="Medicação">
-                {medicationAlert && (
-                  <View className="stretch mb-6 w-full items-stretch">
-                    <NotificationCard
-                      variant="reminder"
-                      title={medicationAlert.name}
-                      rightContent={<ClockPill time={medicationAlert.time} />}
-                      bottomContent={
-                        <View className="mt-3 w-full flex-row gap-2">
-                          <Button
-                            title="Ignorar"
-                            variant="outlined"
-                            className="flex-1"
-                            onPress={handleIgnore}
-                          />
-                          <Button
-                            title="Avisar"
-                            variant="warning"
-                            icon={
-                              <MaterialIcons
-                                name="warning-amber"
-                                size={20}
-                                color="#db6536"
-                              />
-                            }
-                            className="flex-1"
-                            onPress={handleWarn}
-                          />
-                          <Button
-                            title="Ligar"
-                            className="flex-1"
-                            icon={
-                              <MaterialIcons
-                                name="call"
-                                size={20}
-                                color="white"
-                              />
-                            }
-                            onPress={handleCall}
-                          />
-                        </View>
-                      }
-                    />
-                  </View>
-                )}
+                <View className="mb-6 w-full">
+                  <MedicationSchedule medicines={medicines} />
+                </View>
 
                 <View className="w-full items-center">
                   <Button
                     title="Adicionar Medicação"
                     variant="outlined"
-                    className="w-full max-w-sm"
+                    className="w-full"
                     icon={
                       <MaterialIcons name="add" size={20} color="#205a2d" />
                     }
