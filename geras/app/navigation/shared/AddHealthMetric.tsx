@@ -20,7 +20,6 @@ import { useAuth } from '@/context/AuthContext';
 import { getMetricStatus } from '../senior/Health';
 import { useProfile } from '@/context/ProfileContext';
 
-
 const AVAILABLE_METRICS = [
   {
     type: 'HEART RATE',
@@ -70,12 +69,18 @@ export default function AddHealthMetric() {
       return;
     }
 
-    const targetSeniorId = profile?.role === 'SENIOR'
-      ? profile.id
-      : (selectedProfile?.id ? parseInt(selectedProfile.id) : null);
+    const targetSeniorId =
+      profile?.role === 'SENIOR'
+        ? profile.id
+        : selectedProfile?.id
+          ? parseInt(selectedProfile.id)
+          : null;
 
     if (!targetSeniorId) {
-      Alert.alert('Erro', 'Não foi possível identificar o sénior para registar a métrica.');
+      Alert.alert(
+        'Erro',
+        'Não foi possível identificar o sénior para registar a métrica.',
+      );
       return;
     }
 
@@ -140,13 +145,15 @@ export default function AddHealthMetric() {
           idCaretaker = relation?.id_caretaker || null;
         }
         // Formatar o valor exibido na notificação
-        const formattedVal = selectedType === 'BLOOD PRESSURE' && valSecondary
-          ? `${Math.round(valPrimary)}/${Math.round(valSecondary)}`
-          : valPrimary;
+        const formattedVal =
+          selectedType === 'BLOOD PRESSURE' && valSecondary
+            ? `${Math.round(valPrimary)}/${Math.round(valSecondary)}`
+            : valPrimary;
         // Definir mensagem em português
-        const description = status === 'Excessivo'
-          ? `Urgente: A medição de ${activeMetric.label} registou um valor excessivo de ${formattedVal} ${activeMetric.unit}.`
-          : `Aviso: A medição de ${activeMetric.label} registou um valor moderado de ${formattedVal} ${activeMetric.unit}.`;
+        const description =
+          status === 'Excessivo'
+            ? `Urgente: A medição de ${activeMetric.label} registou um valor excessivo de ${formattedVal} ${activeMetric.unit}.`
+            : `Aviso: A medição de ${activeMetric.label} registou um valor moderado de ${formattedVal} ${activeMetric.unit}.`;
         const notifType = status === 'Excessivo' ? 'alert' : 'info';
         // Gravar na tabela 'notifications'
         await supabase.from('notifications').insert([
@@ -231,10 +238,11 @@ export default function AddHealthMetric() {
                   setValuePrimary('');
                   setValueSecondary('');
                 }}
-                className={`aspect-[1.1] w-[48%] flex-col items-center justify-center rounded-3xl border p-4 shadow-sm ${isSelected
+                className={`aspect-[1.1] w-[48%] flex-col items-center justify-center rounded-3xl border p-4 shadow-sm ${
+                  isSelected
                     ? 'border-emerald-600 bg-emerald-50'
                     : 'border-gray-200 bg-gray-50'
-                  }`}
+                }`}
               >
                 <MaterialCommunityIcons
                   name={metric.icon as any}

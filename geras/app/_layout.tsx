@@ -20,7 +20,6 @@ const queryClient = new QueryClient();
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-
   const [loaded] = useFonts({
     Rubik: Rubik_400Regular,
     'Rubik-Bold': Rubik_700Bold,
@@ -88,7 +87,7 @@ export default function RootLayout() {
                           rightIconName="settings"
                           leftIconLabel="Ir para a página inicial"
                           rightIconLabel="Abrir definições"
-                          onLeftPress={() => { }}
+                          onLeftPress={() => {}}
                           onRightPress={() =>
                             router.push('/navigation/shared/Settings')
                           }
@@ -110,7 +109,7 @@ export default function RootLayout() {
                           rightIconName="settings"
                           leftIconLabel="Ir para a página inicial"
                           rightIconLabel="Abrir definições"
-                          onLeftPress={() => { }}
+                          onLeftPress={() => {}}
                           onRightPress={() =>
                             router.push('/navigation/shared/Settings')
                           }
@@ -158,7 +157,7 @@ export default function RootLayout() {
                           onLeftPress={() =>
                             router.push('/navigation/senior/HomePage')
                           }
-                          onRightPress={() => { }}
+                          onRightPress={() => {}}
                           onLogoutPress={handleLogout}
                         />
                       ),

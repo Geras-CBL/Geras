@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { ThemedText } from '../ThemedText';
 import { MaterialIcons } from '@expo/vector-icons';
 
-
 interface MedicationCardProps {
   id: number;
   metricType: string;
@@ -17,7 +16,11 @@ interface MedicationCardProps {
     value_secondary?: number | null;
     measured_at: string | null;
   };
-  onEdit?: (id: number, valuePrimary: number, valueSecondary?: number | null) => Promise<void>;
+  onEdit?: (
+    id: number,
+    valuePrimary: number,
+    valueSecondary?: number | null,
+  ) => Promise<void>;
   onDelete?: (id: number) => Promise<void>;
   onPress?: () => void;
 }
@@ -85,7 +88,10 @@ const MedicationCard = ({
     if (metricType === 'BLOOD PRESSURE') {
       secondaryVal = parseFloat(String(editValueSecondary));
       if (isNaN(secondaryVal)) {
-        Alert.alert('Valor Inválido', 'Por favor introduza um valor diastólico (mínimo) válido.');
+        Alert.alert(
+          'Valor Inválido',
+          'Por favor introduza um valor diastólico (mínimo) válido.',
+        );
         return;
       }
     }
@@ -98,11 +104,13 @@ const MedicationCard = ({
         }
       } catch (error: any) {
         console.error('Erro ao guardar a medição:', error);
-        Alert.alert('Erro', error?.message || 'Não foi possível guardar as alterações.');
+        Alert.alert(
+          'Erro',
+          error?.message || 'Não foi possível guardar as alterações.',
+        );
       }
     }, 300);
   };
-
 
   const handleDeletePress = () => {
     Alert.alert(
@@ -142,7 +150,11 @@ const MedicationCard = ({
         activeOpacity={0.7}
         onPress={() => setIsExpanded(true)}
       >
-        <ThemedText type="subtitle" style={{ fontSize: 18 }} className="text-neutral">
+        <ThemedText
+          type="subtitle"
+          style={{ fontSize: 18 }}
+          className="text-neutral"
+        >
           {title}
         </ThemedText>
         <View className="flex-row gap-4">
@@ -165,7 +177,7 @@ const MedicationCard = ({
       >
         {/* Fundo Escuro do Modal (Backdrop) */}
         <TouchableOpacity
-          className="flex-1 justify-center items-center p-6"
+          className="flex-1 items-center justify-center p-6"
           style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
           activeOpacity={1}
           onPress={() => {
@@ -176,7 +188,7 @@ const MedicationCard = ({
           {/* Caixa Centrada do Card Expandido */}
           <TouchableOpacity
             activeOpacity={1} // Impede que cliques dentro do card fechem o modal
-            className="w-full max-w-[340px] bg-white rounded-3xl p-6 gap-4"
+            className="w-full max-w-[340px] gap-4 rounded-3xl bg-white p-6"
             style={{
               shadowColor: '#000',
               shadowOffset: { width: 0, height: 10 },
@@ -186,11 +198,15 @@ const MedicationCard = ({
             }}
           >
             {/* Título e Valor no Modal */}
-            <ThemedText type="subtitle" style={{ fontSize: 20 }} className="text-neutral">
+            <ThemedText
+              type="subtitle"
+              style={{ fontSize: 20 }}
+              className="text-neutral"
+            >
               {title}
             </ThemedText>
 
-            <View className="flex-row gap-4 items-center">
+            <View className="flex-row items-center gap-4">
               <View className={`rounded-full bg-${color} p-4`} />
               <ThemedText type="bodyBold" style={{ fontSize: 24 }}>
                 {value} {unit}
@@ -202,11 +218,16 @@ const MedicationCard = ({
             {isEditing ? (
               <View key="edit-mode" className="w-full gap-3">
                 {metricType === 'BLOOD PRESSURE' ? (
-                  <View className="flex-row gap-2 w-full">
+                  <View className="w-full flex-row gap-2">
                     <View className="flex-1 gap-1">
-                      <ThemedText style={{ fontSize: 12 }} className="text-gray-500">Sistólica</ThemedText>
+                      <ThemedText
+                        style={{ fontSize: 12 }}
+                        className="text-gray-500"
+                      >
+                        Sistólica
+                      </ThemedText>
                       <TextInput
-                        className="bg-gray-100 p-2 rounded-xl text-neutral text-base border border-gray-200"
+                        className="rounded-xl border border-gray-200 bg-gray-100 p-2 text-base text-neutral"
                         value={String(editValuePrimary)}
                         onChangeText={setEditValuePrimary}
                         keyboardType="numeric"
@@ -214,9 +235,14 @@ const MedicationCard = ({
                       />
                     </View>
                     <View className="flex-1 gap-1">
-                      <ThemedText style={{ fontSize: 12 }} className="text-gray-500">Diastólica</ThemedText>
+                      <ThemedText
+                        style={{ fontSize: 12 }}
+                        className="text-gray-500"
+                      >
+                        Diastólica
+                      </ThemedText>
                       <TextInput
-                        className="bg-gray-100 p-2 rounded-xl text-neutral text-base border border-gray-200"
+                        className="rounded-xl border border-gray-200 bg-gray-100 p-2 text-base text-neutral"
                         value={String(editValueSecondary)}
                         onChangeText={setEditValueSecondary}
                         keyboardType="numeric"
@@ -225,10 +251,15 @@ const MedicationCard = ({
                     </View>
                   </View>
                 ) : (
-                  <View className="gap-1 w-full">
-                    <ThemedText style={{ fontSize: 12 }} className="text-gray-500">Novo Valor ({unit})</ThemedText>
+                  <View className="w-full gap-1">
+                    <ThemedText
+                      style={{ fontSize: 12 }}
+                      className="text-gray-500"
+                    >
+                      Novo Valor ({unit})
+                    </ThemedText>
                     <TextInput
-                      className="bg-gray-100 p-2 rounded-xl text-neutral text-base border border-gray-200 w-full"
+                      className="w-full rounded-xl border border-gray-200 bg-gray-100 p-2 text-base text-neutral"
                       value={String(editValuePrimary)}
                       onChangeText={setEditValuePrimary}
                       keyboardType="numeric"
@@ -237,36 +268,71 @@ const MedicationCard = ({
                   </View>
                 )}
                 {/* Botões do modo Edição */}
-                <View className="flex-row gap-4 justify-between mt-2">
-                  <Button key="cancel-btn" title="Cancelar" variant="outlined" className="flex-1" onPress={handleCancel} />
-                  <Button key="save-btn" title="Guardar" variant="default" className="flex-1" onPress={handleSave} />
+                <View className="mt-2 flex-row justify-between gap-4">
+                  <Button
+                    key="cancel-btn"
+                    title="Cancelar"
+                    variant="outlined"
+                    className="flex-1"
+                    onPress={handleCancel}
+                  />
+                  <Button
+                    key="save-btn"
+                    title="Guardar"
+                    variant="default"
+                    className="flex-1"
+                    onPress={handleSave}
+                  />
                 </View>
               </View>
             ) : (
               <View key="view-mode" className="w-full gap-3">
                 {showHistory ? (
-                  <View key="history-container" className="bg-gray-50 p-3 rounded-xl">
-                    <ThemedText type="bodyBold" style={{ fontSize: 14 }}>Medição Anterior:</ThemedText>
+                  <View
+                    key="history-container"
+                    className="rounded-xl bg-gray-50 p-3"
+                  >
+                    <ThemedText type="bodyBold" style={{ fontSize: 14 }}>
+                      Medição Anterior:
+                    </ThemedText>
                     <ThemedText type="body">
                       {previousRecord?.value_primary}
-                      {metricType === 'BLOOD PRESSURE' && previousRecord?.value_secondary ? `/${previousRecord.value_secondary}` : ''} {unit}
+                      {metricType === 'BLOOD PRESSURE' &&
+                      previousRecord?.value_secondary
+                        ? `/${previousRecord.value_secondary}`
+                        : ''}{' '}
+                      {unit}
                     </ThemedText>
                   </View>
                 ) : null}
                 {/* Botões do modo Visualização */}
-                <View key="view-buttons-container" className="flex-row gap-4 justify-between mt-2">
-                  <Button key="delete-btn" title="Eliminar" variant="destructive" className="flex-1" onPress={handleDeletePress} />
-                  <Button key="edit-btn" title="Editar" variant="outlined" className="flex-1" onPress={() => setIsEditing(true)} />
+                <View
+                  key="view-buttons-container"
+                  className="mt-2 flex-row justify-between gap-4"
+                >
+                  <Button
+                    key="delete-btn"
+                    title="Eliminar"
+                    variant="destructive"
+                    className="flex-1"
+                    onPress={handleDeletePress}
+                  />
+                  <Button
+                    key="edit-btn"
+                    title="Editar"
+                    variant="outlined"
+                    className="flex-1"
+                    onPress={() => setIsEditing(true)}
+                  />
                 </View>
               </View>
             )}
-
           </TouchableOpacity>
         </TouchableOpacity>
       </Modal>
     </>
   );
-}
+};
 
 export default MedicationCard;
 

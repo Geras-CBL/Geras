@@ -66,7 +66,7 @@ export default function SeniorManagement() {
 
   const fetchSeniorData = useCallback(async () => {
     if (!selectedProfile?.id) return;
-    setLoading(true)
+    setLoading(true);
 
     try {
       const { data: monitoringData } = await supabase
@@ -110,7 +110,8 @@ export default function SeniorManagement() {
         if (monitoringData) {
           // Agrupar por tipo para reter apenas o mais recente e o anterior
           const latestMetrics: Record<string, (typeof monitoringData)[0]> = {};
-          const previousMetrics: Record<string, (typeof monitoringData)[0]> = {};
+          const previousMetrics: Record<string, (typeof monitoringData)[0]> =
+            {};
           for (const item of monitoringData) {
             if (item.metric_type) {
               if (!latestMetrics[item.metric_type]) {
@@ -142,11 +143,13 @@ export default function SeniorManagement() {
             );
 
             const prev = previousMetrics[item.metric_type];
-            const previousRecord = prev ? {
-              value_primary: prev.value_primary,
-              value_secondary: prev.value_secondary,
-              measured_at: prev.measured_at,
-            } : undefined;
+            const previousRecord = prev
+              ? {
+                  value_primary: prev.value_primary,
+                  value_secondary: prev.value_secondary,
+                  measured_at: prev.measured_at,
+                }
+              : undefined;
 
             return {
               id: item.id,
@@ -155,7 +158,7 @@ export default function SeniorManagement() {
               value,
               unit,
               status,
-              previousRecord
+              previousRecord,
             };
           });
 
@@ -230,8 +233,11 @@ export default function SeniorManagement() {
     Alert.alert(`${selectedProfile?.name || 'Sénior'} avisado`);
   const handleCall = () => Linking.openURL(`tel:${963744454}`);
 
-
-  const handleEditMetric = async (id: number, valuePrimary: number, valueSecondary?: number | null) => {
+  const handleEditMetric = async (
+    id: number,
+    valuePrimary: number,
+    valueSecondary?: number | null,
+  ) => {
     const { error } = await supabase
       .from('monitoring')
       .update({
@@ -244,22 +250,18 @@ export default function SeniorManagement() {
       console.error('Erro ao editar métrica:', error);
       throw error;
     }
-     fetchSeniorData();
+    fetchSeniorData();
   };
 
   const handleDeleteMetric = async (id: number) => {
-    const { error } = await supabase
-      .from('monitoring')
-      .delete()
-      .eq('id', id);
+    const { error } = await supabase.from('monitoring').delete().eq('id', id);
 
     if (error) {
       console.error('Erro ao eliminar métrica:', error);
       throw error;
     }
-     fetchSeniorData();
+    fetchSeniorData();
   };
-
 
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-24">

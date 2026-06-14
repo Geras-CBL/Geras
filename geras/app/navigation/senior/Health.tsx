@@ -39,7 +39,7 @@ interface MonitoringItem {
     value_primary: number;
     value_secondary?: number | null;
     measured_at: string | null;
-  }
+  };
 }
 
 interface MedicineItem {
@@ -145,12 +145,11 @@ export default function Health() {
         );
       }
 
-      const { data: monitoringData, error: monitoringError } =
-        await supabase
-          .from('monitoring')
-          .select('*, metric_definitions(*)')
-          .eq('id_senior', profile.id)
-          .order('measured_at', { ascending: false });
+      const { data: monitoringData, error: monitoringError } = await supabase
+        .from('monitoring')
+        .select('*, metric_definitions(*)')
+        .eq('id_senior', profile.id)
+        .order('measured_at', { ascending: false });
 
       if (!monitoringError && monitoringData) {
         const latestMetrics: Record<string, (typeof monitoringData)[0]> = {};
@@ -168,7 +167,8 @@ export default function Health() {
 
         const mapped = Object.values(latestMetrics).map((item) => {
           const def = (item as any).metric_definitions;
-          const title = METRIC_LABELS[item.metric_type] || item.metric_type || 'Métrica';
+          const title =
+            METRIC_LABELS[item.metric_type] || item.metric_type || 'Métrica';
           const unit = def?.unit || '';
 
           let value: number | string = item.value_primary;
@@ -184,11 +184,13 @@ export default function Health() {
             item.value_secondary,
           );
           const prev = previousMetrics[item.metric_type];
-          const previousRecord = prev ? {
-            value_primary: prev.value_primary,
-            value_secondary: prev.value_secondary,
-            measured_at: prev.measured_at,
-          } : undefined;
+          const previousRecord = prev
+            ? {
+                value_primary: prev.value_primary,
+                value_secondary: prev.value_secondary,
+                measured_at: prev.measured_at,
+              }
+            : undefined;
           return {
             id: item.id,
             metricType: item.metric_type,
@@ -259,8 +261,11 @@ export default function Health() {
     }, [profile?.id, fetchHealthData]),
   );
 
-
-  const handleEditMetric = async (id: number, valuePrimary: number, valueSecondary?: number | null) => {
+  const handleEditMetric = async (
+    id: number,
+    valuePrimary: number,
+    valueSecondary?: number | null,
+  ) => {
     const { error } = await supabase
       .from('monitoring')
       .update({
@@ -277,10 +282,7 @@ export default function Health() {
   };
 
   const handleDeleteMetric = async (id: number) => {
-    const { error } = await supabase
-      .from('monitoring')
-      .delete()
-      .eq('id', id);
+    const { error } = await supabase.from('monitoring').delete().eq('id', id);
 
     if (error) {
       console.error('Erro ao eliminar métrica:', error);
@@ -288,8 +290,6 @@ export default function Health() {
     }
     fetchHealthData();
   };
-
-
 
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-24">
