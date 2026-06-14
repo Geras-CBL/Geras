@@ -25,6 +25,7 @@ import ProfileBottomSheet from '@/components/caretaker/ProfileBottomSheet';
 import { useProfile } from '@/context/ProfileContext';
 import { supabase } from '@/lib/supabase';
 import { getMetricStatus } from '../senior/Health';
+import { MedicationSchedule } from '@/components/senior/MedicineDrawer';
 
 interface GroceryItemState {
   id: string;
@@ -39,13 +40,6 @@ interface MonitoringItem {
   unit: string;
 }
 
-interface MedicationAlert {
-  id: string;
-  name: string;
-  time: string;
-  description: string;
-}
-
 export default function SeniorManagement() {
   const router = useRouter();
   const sheetRef = useRef<any>(null);
@@ -53,8 +47,7 @@ export default function SeniorManagement() {
 
   const [items, setItems] = useState<GroceryItemState[]>([]);
   const [monitoring, setMonitoring] = useState<MonitoringItem[]>([]);
-  const [medicationAlert, setMedicationAlert] =
-    useState<MedicationAlert | null>(null);
+  const [medicines, setMedicines] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const MONITORING_CONFIG: Record<string, { label: string; unit: string }> = {
@@ -107,23 +100,24 @@ export default function SeniorManagement() {
         );
       }
 
-      const { data: notificationData } = await supabase
-        .from('notifications')
+      const { data: medicineData } = await supabase
+        .from('medicine')
         .select('*')
-        .eq('id_senior', selectedProfile.id)
-        .eq('type', 'medication')
-        .limit(1)
-        .maybeSingle();
+        .eq('id_senior', selectedProfile.id);
 
-      if (notificationData) {
-        setMedicationAlert({
-          id: notificationData.id.toString(),
-          name: notificationData.description, // Simplified
-          time: '14:00', // Mock time as it's not in notification table directly
-          description: notificationData.description,
-        });
+      if (medicineData) {
+        setMedicines(
+          medicineData.map((item) => ({
+            id: item.id.toString(),
+            name: item.name,
+            dosage: item.dosage,
+            scheduled_time: item.scheduled_time,
+            start_date: item.start_date,
+            end_date: item.end_date,
+          })),
+        );
       } else {
-        setMedicationAlert(null);
+        setMedicines([]);
       }
     } catch (err) {
       console.error('Error fetching senior data:', err);
@@ -150,15 +144,6 @@ export default function SeniorManagement() {
     sheetRef.current?.present();
   };
 
-  const handleIgnore = () => {
-    Alert.alert('Notificação ignorada');
-    setMedicationAlert(null);
-  };
-
-  const handleWarn = () =>
-    Alert.alert(`${selectedProfile?.name || 'Sénior'} avisado`);
-  const handleCall = () => Linking.openURL(`tel:${963744454}`);
-
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-24">
       <ScrollView
@@ -175,52 +160,30 @@ export default function SeniorManagement() {
         ) : (
           <>
             {/* MEDICAÇÃO */}
-            {medicationAlert && (
-              <View>
-                <SectionTitle title="Medicação">
-                  <NotificationCard
-                    variant="reminder"
-                    title={medicationAlert.name}
-                    rightContent={<ClockPill time={medicationAlert.time} />}
-                    bottomContent={
-                      <>
-                        <Button
-                          title="Ignorar"
-                          variant="outlined"
-                          className="flex-1"
-                          onPress={handleIgnore}
-                        />
-                        <Button
-                          title="Avisar"
-                          variant="warning"
-                          icon={
-                            <MaterialIcons
-                              name="warning-amber"
-                              size={20}
-                              color="#db6536"
-                            />
-                          }
-                          className="flex-1"
-                          onPress={handleWarn}
-                        />
-                        <Button
-                          title="Ligar"
-                          className="flex-1"
-                          icon={
-                            <MaterialIcons
-                              name="call"
-                              size={20}
-                              color="white"
-                            />
-                          }
-                          onPress={handleCall}
-                        />
-                      </>
+            <View>
+              <SectionTitle title="Medicação">
+                <View className="mb-6 w-full">
+                  <MedicationSchedule medicines={medicines} />
+                </View>
+
+                <View className="w-full items-center">
+                  <Button
+                    title="Adicionar Medicação"
+                    variant="outlined"
+                    className="w-full"
+                    icon={
+                      <MaterialIcons name="add" size={20} color="#205a2d" />
                     }
+                    onPress={() => {
+                      router.push({
+                        pathname: '../shared/AddMedication',
+                        params: { id_senior: selectedProfile?.id },
+                      });
+                    }}
                   />
-                </SectionTitle>
-              </View>
-            )}
+                </View>
+              </SectionTitle>
+            </View>
 
             {/* MONITORIZAÇÃO */}
             <View>

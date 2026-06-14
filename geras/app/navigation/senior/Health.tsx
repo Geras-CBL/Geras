@@ -296,14 +296,33 @@ export default function Health() {
         </SectionTitle>
 
         {/* MEDICINE SCHEDULE */}
-        <MedicationSchedule medicines={medicines} />
-        <Button
-          title="Fazer pedido farmácia"
-          icon={<MaterialCommunityIcons name="pill" size={24} color="#ffff" />}
-          onPress={() => {
-            router.push('./PharmacyShopping');
-          }}
-        />
+        <SectionTitle title={'Horário da Medicação'}>
+          <MedicationSchedule medicines={medicines} />
+          <View className="mt-4 w-full gap-4">
+            <Button
+              title="Adicionar Medicação"
+              variant="outlined"
+              icon={
+                <MaterialCommunityIcons name="plus" size={24} color="#205a2d" />
+              }
+              onPress={() => {
+                router.push({
+                  pathname: '../shared/AddMedication',
+                  params: { id_senior: profile?.id },
+                });
+              }}
+            />
+            <Button
+              title="Fazer pedido farmácia"
+              icon={
+                <MaterialCommunityIcons name="pill" size={24} color="#ffff" />
+              }
+              onPress={() => {
+                router.push('./PharmacyShopping');
+              }}
+            />
+          </View>
+        </SectionTitle>
       </ScrollView>
       <BottomActions />
     </SafeAreaView>

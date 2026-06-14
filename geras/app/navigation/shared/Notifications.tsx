@@ -69,8 +69,6 @@ export default function Notifications() {
 
       if (profile.role === 'SENIOR') {
         query = query.is('id_caretaker', null).is('id_volunteer', null);
-      } else if (profile.role === 'CARETAKER') {
-        query = query.eq('id_caretaker', profile.id);
       }
 
       const { data, error } = await query;
