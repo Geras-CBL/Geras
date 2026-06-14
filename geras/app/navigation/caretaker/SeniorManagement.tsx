@@ -33,10 +33,17 @@ interface GroceryItemState {
 }
 
 interface MonitoringItem {
+  id: number;
+  metricType: string;
   title: string;
   status: 'Adequado' | 'Moderado' | 'Excessivo';
   value: number | string;
   unit: string;
+  previousRecord?: {
+    value_primary: number;
+    value_secondary?: number | null;
+    measured_at: string | null;
+  };
 }
 
 interface MedicationAlert {
@@ -59,7 +66,7 @@ export default function SeniorManagement() {
 
   const fetchSeniorData = useCallback(async () => {
     if (!selectedProfile?.id) return;
-    setLoading(true);
+    setLoading(true)
 
     try {
       const { data: monitoringData } = await supabase
@@ -91,12 +98,69 @@ export default function SeniorManagement() {
             value = `${Math.round(item.value_primary)}/${Math.round(item.value_secondary)}`;
           }
 
-          let status = getMetricStatus(item.metric_type, item.value_primary);
+          let status = getMetricStatus(
+            item.metric_type,
+            item.value_primary,
+            item.value_secondary,
+          );
 
           return { title, value, unit, status };
         });
 
-        setMonitoring(mapped);
+        if (monitoringData) {
+          // Agrupar por tipo para reter apenas o mais recente e o anterior
+          const latestMetrics: Record<string, (typeof monitoringData)[0]> = {};
+          const previousMetrics: Record<string, (typeof monitoringData)[0]> = {};
+          for (const item of monitoringData) {
+            if (item.metric_type) {
+              if (!latestMetrics[item.metric_type]) {
+                latestMetrics[item.metric_type] = item;
+              } else if (!previousMetrics[item.metric_type]) {
+                previousMetrics[item.metric_type] = item;
+              }
+            }
+          }
+
+          const mapped = Object.values(latestMetrics).map((item) => {
+            const def = (item as any).metric_definitions;
+            const title =
+              METRIC_LABELS[item.metric_type] || item.metric_type || 'Métrica';
+            const unit = def?.unit || '';
+
+            let value: number | string = item.value_primary;
+            if (
+              item.metric_type === 'BLOOD PRESSURE' &&
+              item.value_secondary !== null
+            ) {
+              value = `${Math.round(item.value_primary)}/${Math.round(item.value_secondary)}`;
+            }
+
+            let status = getMetricStatus(
+              item.metric_type,
+              item.value_primary,
+              item.value_secondary,
+            );
+
+            const prev = previousMetrics[item.metric_type];
+            const previousRecord = prev ? {
+              value_primary: prev.value_primary,
+              value_secondary: prev.value_secondary,
+              measured_at: prev.measured_at,
+            } : undefined;
+
+            return {
+              id: item.id,
+              metricType: item.metric_type,
+              title,
+              value,
+              unit,
+              status,
+              previousRecord
+            };
+          });
+
+          setMonitoring(mapped);
+        }
       }
 
       const { data: groceriesData } = await supabase
@@ -165,6 +229,37 @@ export default function SeniorManagement() {
   const handleWarn = () =>
     Alert.alert(`${selectedProfile?.name || 'Sénior'} avisado`);
   const handleCall = () => Linking.openURL(`tel:${963744454}`);
+
+
+  const handleEditMetric = async (id: number, valuePrimary: number, valueSecondary?: number | null) => {
+    const { error } = await supabase
+      .from('monitoring')
+      .update({
+        value_primary: valuePrimary,
+        value_secondary: valueSecondary,
+      })
+      .eq('id', id);
+
+    if (error) {
+      console.error('Erro ao editar métrica:', error);
+      throw error;
+    }
+     fetchSeniorData();
+  };
+
+  const handleDeleteMetric = async (id: number) => {
+    const { error } = await supabase
+      .from('monitoring')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Erro ao eliminar métrica:', error);
+      throw error;
+    }
+     fetchSeniorData();
+  };
+
 
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-24">
@@ -236,10 +331,15 @@ export default function SeniorManagement() {
                   {monitoring.map((item, index) => (
                     <View key={index} className="aspect-square w-[48%]">
                       <MedicationCard
+                        id={item.id}
+                        metricType={item.metricType}
                         title={item.title}
                         status={item.status}
                         value={item.value}
                         unit={item.unit}
+                        previousRecord={item.previousRecord}
+                        onEdit={handleEditMetric}
+                        onDelete={handleDeleteMetric}
                       />
                     </View>
                   ))}

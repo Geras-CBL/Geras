@@ -29,11 +29,17 @@ interface NotificationItem {
 }
 
 interface MonitoringItem {
-  id: string;
+  id: number;
+  metricType: string;
   title: string;
   value: number | string;
   unit: string;
   status: 'Adequado' | 'Moderado' | 'Excessivo';
+  previousRecord?: {
+    value_primary: number;
+    value_secondary?: number | null;
+    measured_at: string | null;
+  }
 }
 
 interface MedicineItem {
@@ -60,29 +66,48 @@ export const METRIC_LABELS: Record<string, string> = {
 
 export const getMetricStatus = (
   type: string | null,
-  value: number,
+  valuePrimary: number,
+  valueSecondary?: number | null,
 ): 'Adequado' | 'Moderado' | 'Excessivo' => {
-  if (type === 'HEART RATE') {
-    if (value < 60 || value > 100)
-      return value > 120 || value < 50 ? 'Excessivo' : 'Moderado';
-    return 'Adequado';
-  } else if (type === 'TEMPERATURE') {
-    if (value < 36.0 || value > 37.2)
-      return value > 38.0 || value < 35.5 ? 'Excessivo' : 'Moderado';
-    return 'Adequado';
-  } else if (type === 'BLOOD PRESSURE') {
-    if (value < 90 || value > 120)
-      return value > 140 || value < 85 ? 'Excessivo' : 'Moderado';
-    return 'Adequado';
-  } else if (type === 'BLOOD OXYGEN') {
-    if (value < 95) return value < 90 ? 'Excessivo' : 'Moderado';
-    return 'Adequado';
-  } else if (type === 'BLOOD GLUCOSE') {
-    if (value < 70 || value > 140)
-      return value < 60 || value > 180 ? 'Excessivo' : 'Moderado';
-    return 'Adequado';
-  } else {
-    return 'Adequado';
+  if (valuePrimary === undefined || valuePrimary === null) return 'Adequado';
+  switch (type) {
+    case 'HEART RATE':
+      if (valuePrimary < 50 || valuePrimary > 120) return 'Excessivo';
+      if (valuePrimary < 60 || valuePrimary > 100) return 'Moderado';
+      return 'Adequado';
+    case 'TEMPERATURE':
+      if (valuePrimary < 35.5 || valuePrimary >= 37.8) return 'Excessivo';
+      if (valuePrimary < 35.8 || valuePrimary > 37.2) return 'Moderado';
+      return 'Adequado';
+    case 'BLOOD PRESSURE': {
+      const sbp = valuePrimary; // Sistólica
+      const dbp = valueSecondary; // Diastólica
+      // Caso não exista valor diastólico (fallback de segurança)
+      if (dbp === undefined || dbp === null) {
+        if (sbp < 85 || sbp >= 160) return 'Excessivo';
+        if (sbp < 90 || sbp >= 140) return 'Moderado';
+        return 'Adequado';
+      }
+      // Avaliação conjunta (Sistólica & Diastólica)
+      if (sbp < 85 || sbp >= 160 || dbp < 50 || dbp >= 100) {
+        return 'Excessivo';
+      }
+      if (sbp >= 90 && sbp < 140 && dbp >= 60 && dbp < 90) {
+        return 'Adequado';
+      }
+      return 'Moderado';
+    }
+    case 'BLOOD OXYGEN':
+      if (valuePrimary < 90) return 'Excessivo';
+      if (valuePrimary < 94) return 'Moderado';
+      return 'Adequado';
+    case 'BLOOD GLUCOSE':
+      if (valuePrimary < 70 || valuePrimary > 180) return 'Excessivo';
+      if (valuePrimary < 80 || valuePrimary > 140) return 'Moderado';
+      return 'Adequado';
+    case 'WEIGHT':
+    default:
+      return 'Adequado';
   }
 };
 
@@ -103,98 +128,107 @@ export default function Health() {
   // FETCH DATA
   // =========================
 
+  const fetchHealthData = useCallback(async () => {
+    if (!profile?.id) return;
+
+    try {
+      const { data: notificationsData, error: notificationsError } =
+        await supabase.from('notifications').select('*');
+
+      if (!notificationsError && notificationsData) {
+        setNotifications(
+          notificationsData.map((item) => ({
+            id: item.id.toString(),
+            description: item.description,
+            type: item.type,
+          })),
+        );
+      }
+
+      const { data: monitoringData, error: monitoringError } =
+        await supabase
+          .from('monitoring')
+          .select('*, metric_definitions(*)')
+          .eq('id_senior', profile.id)
+          .order('measured_at', { ascending: false });
+
+      if (!monitoringError && monitoringData) {
+        const latestMetrics: Record<string, (typeof monitoringData)[0]> = {};
+        const previousMetrics: Record<string, (typeof monitoringData)[0]> = {};
+
+        for (const item of monitoringData) {
+          if (item.metric_type) {
+            if (!latestMetrics[item.metric_type]) {
+              latestMetrics[item.metric_type] = item;
+            } else if (!previousMetrics[item.metric_type]) {
+              previousMetrics[item.metric_type] = item;
+            }
+          }
+        }
+
+        const mapped = Object.values(latestMetrics).map((item) => {
+          const def = (item as any).metric_definitions;
+          const title = METRIC_LABELS[item.metric_type] || item.metric_type || 'Métrica';
+          const unit = def?.unit || '';
+
+          let value: number | string = item.value_primary;
+          if (
+            item.metric_type === 'BLOOD PRESSURE' &&
+            item.value_secondary !== null
+          ) {
+            value = `${Math.round(item.value_primary)}/${Math.round(item.value_secondary)}`;
+          }
+          let status = getMetricStatus(
+            item.metric_type,
+            item.value_primary,
+            item.value_secondary,
+          );
+          const prev = previousMetrics[item.metric_type];
+          const previousRecord = prev ? {
+            value_primary: prev.value_primary,
+            value_secondary: prev.value_secondary,
+            measured_at: prev.measured_at,
+          } : undefined;
+          return {
+            id: item.id,
+            metricType: item.metric_type,
+            title,
+            value,
+            unit,
+            status,
+            previousRecord,
+          };
+        });
+
+        setMonitoring(mapped);
+      }
+
+      const { data: medicineData, error: medicineError } = await supabase
+        .from('medicine')
+        .select('*')
+        .eq('id_senior', profile.id);
+
+      if (!medicineError && medicineData) {
+        setMedicines(
+          medicineData.map((item) => ({
+            id: item.id,
+            name: item.name,
+            dosage: item.dosage,
+            scheduled_time: item.scheduled_time,
+            start_date: item.start_date,
+            end_date: item.end_date,
+          })),
+        );
+      }
+    } catch (err) {
+      console.error('Unexpected error:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [profile?.id]);
+
   useFocusEffect(
     useCallback(() => {
-      async function fetchHealthData() {
-        if (!profile?.id) return;
-
-        try {
-          const { data: notificationsData, error: notificationsError } =
-            await supabase.from('notifications').select('*');
-
-          if (!notificationsError && notificationsData) {
-            setNotifications(
-              notificationsData.map((item) => ({
-                id: item.id.toString(),
-                description: item.description,
-                type: item.type,
-              })),
-            );
-          }
-
-          const { data: monitoringData, error: monitoringError } =
-            await supabase
-              .from('monitoring')
-              .select('*, metric_definitions(*)')
-              .eq('id_senior', profile.id)
-              .order('measured_at', { ascending: false });
-
-          if (!monitoringError && monitoringData) {
-            // Agrupar por metric_type para mostrar apenas a leitura mais recente de cada tipo
-            const latestMetrics: Record<string, (typeof monitoringData)[0]> =
-              {};
-            for (const item of monitoringData) {
-              if (item.metric_type && !latestMetrics[item.metric_type]) {
-                latestMetrics[item.metric_type] = item;
-              }
-            }
-
-            const mapped = Object.values(latestMetrics).map((item) => {
-              const def = (item as any).metric_definitions;
-              const title =
-                METRIC_LABELS[item.metric_type] ||
-                item.metric_type ||
-                'Métrica';
-              const unit = def?.unit || '';
-
-              let value: number | string = item.value_primary;
-              if (
-                item.metric_type === 'BLOOD PRESSURE' &&
-                item.value_secondary !== null
-              ) {
-                value = `${Math.round(item.value_primary)}/${Math.round(item.value_secondary)}`;
-              }
-
-              let status = getMetricStatus(
-                item.metric_type,
-                item.value_primary,
-              );
-
-              return {
-                id: item.id.toString(),
-                title,
-                value,
-                unit,
-                status,
-              };
-            });
-
-            setMonitoring(mapped);
-          }
-
-          const { data: medicineData, error: medicineError } = await supabase
-            .from('medicine')
-            .select('*')
-            .eq('id_senior', profile.id);
-
-          if (!medicineError && medicineData) {
-            setMedicines(
-              medicineData.map((item) => ({
-                id: item.id.toString(),
-                name: item.name,
-                dosage: item.dosage,
-                scheduled_time: item.scheduled_time,
-                start_date: item.start_date,
-                end_date: item.end_date,
-              })),
-            );
-          }
-        } catch (err) {
-          console.error('Unexpected error:', err);
-        } finally {
-          setLoading(false);
-        }
-      }
       fetchHealthData();
 
       if (!profile?.id) return;
@@ -222,8 +256,40 @@ export default function Health() {
       return () => {
         supabase.removeChannel(channel);
       };
-    }, [profile?.id]),
+    }, [profile?.id, fetchHealthData]),
   );
+
+
+  const handleEditMetric = async (id: number, valuePrimary: number, valueSecondary?: number | null) => {
+    const { error } = await supabase
+      .from('monitoring')
+      .update({
+        value_primary: valuePrimary,
+        value_secondary: valueSecondary,
+      })
+      .eq('id', id);
+
+    if (error) {
+      console.error('Erro ao editar métrica:', error);
+      throw error;
+    }
+    fetchHealthData();
+  };
+
+  const handleDeleteMetric = async (id: number) => {
+    const { error } = await supabase
+      .from('monitoring')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Erro ao eliminar métrica:', error);
+      throw error;
+    }
+    fetchHealthData();
+  };
+
+
 
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-24">
@@ -258,10 +324,15 @@ export default function Health() {
               monitoring.map((metric) => (
                 <View key={metric.id} className="aspect-square w-1/2 p-4">
                   <MedicationCard
+                    id={metric.id}
+                    metricType={metric.metricType}
                     title={metric.title}
                     status={metric.status}
                     value={metric.value}
                     unit={metric.unit}
+                    previousRecord={metric.previousRecord}
+                    onEdit={handleEditMetric}
+                    onDelete={handleDeleteMetric}
                   />
                 </View>
               ))

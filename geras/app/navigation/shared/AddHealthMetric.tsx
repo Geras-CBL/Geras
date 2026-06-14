@@ -17,6 +17,10 @@ import SectionTitle from '@/components/shared/SectionTitle';
 import BottomActions from '@/components/senior/BottomActions';
 import { useAuth } from '@/context/AuthContext';
 
+import { getMetricStatus } from '../senior/Health';
+import { useProfile } from '@/context/ProfileContext';
+
+
 const AVAILABLE_METRICS = [
   {
     type: 'HEART RATE',
@@ -51,6 +55,7 @@ export default function AddHealthMetric() {
   const { profile } = useAuth();
 
   const role = profile?.role;
+  const { selectedProfile } = useProfile();
 
   const [selectedType, setSelectedType] =
     useState<(typeof AVAILABLE_METRICS)[number]['type']>('HEART RATE');
@@ -65,8 +70,12 @@ export default function AddHealthMetric() {
       return;
     }
 
-    if (!profile?.id) {
-      Alert.alert('Erro', 'Sessão inválida. Por favor faça login novamente.');
+    const targetSeniorId = profile?.role === 'SENIOR'
+      ? profile.id
+      : (selectedProfile?.id ? parseInt(selectedProfile.id) : null);
+
+    if (!targetSeniorId) {
+      Alert.alert('Erro', 'Não foi possível identificar o sénior para registar a métrica.');
       return;
     }
 
@@ -101,7 +110,7 @@ export default function AddHealthMetric() {
     try {
       const { error } = await supabase.from('monitoring').insert([
         {
-          id_senior: profile.id,
+          id_senior: targetSeniorId,
           metric_type: selectedType,
           value_primary: valPrimary,
           value_secondary: valSecondary,
@@ -113,12 +122,47 @@ export default function AddHealthMetric() {
       if (error) {
         console.error('Error saving metric:', error);
         Alert.alert('Erro', 'Não foi possível guardar o registo.');
-      } else {
-        router.back();
+        return;
       }
+      // --- CRIAÇÃO DA NOTIFICAÇÃO SE FOR ANÓMALA ---
+      const status = getMetricStatus(selectedType, valPrimary, valSecondary);
+      if (status === 'Excessivo' || status === 'Moderado') {
+        let idCaretaker = null;
+        // Identificar o cuidador associado
+        if (profile?.role === 'CARETAKER') {
+          idCaretaker = profile.id;
+        } else {
+          const { data: relation } = await supabase
+            .from('senior_caretaker')
+            .select('id_caretaker')
+            .eq('id_senior', targetSeniorId)
+            .maybeSingle();
+          idCaretaker = relation?.id_caretaker || null;
+        }
+        // Formatar o valor exibido na notificação
+        const formattedVal = selectedType === 'BLOOD PRESSURE' && valSecondary
+          ? `${Math.round(valPrimary)}/${Math.round(valSecondary)}`
+          : valPrimary;
+        // Definir mensagem em português
+        const description = status === 'Excessivo'
+          ? `Urgente: A medição de ${activeMetric.label} registou um valor excessivo de ${formattedVal} ${activeMetric.unit}.`
+          : `Aviso: A medição de ${activeMetric.label} registou um valor moderado de ${formattedVal} ${activeMetric.unit}.`;
+        const notifType = status === 'Excessivo' ? 'alert' : 'info';
+        // Gravar na tabela 'notifications'
+        await supabase.from('notifications').insert([
+          {
+            id_senior: targetSeniorId,
+            id_caretaker: idCaretaker,
+            description,
+            type: notifType,
+          },
+        ]);
+      }
+      // Voltar para o ecrã anterior após tudo gravado com sucesso
+      router.back();
     } catch (err) {
       console.error('Unexpected error:', err);
-      Alert.alert('Erro', 'Ocorreu um erro inesperado.');
+      Alert.alert('Erro', 'Ocorreu um erro inesperado ao guardar o registo.');
     }
   };
 
@@ -187,11 +231,10 @@ export default function AddHealthMetric() {
                   setValuePrimary('');
                   setValueSecondary('');
                 }}
-                className={`aspect-[1.1] w-[48%] flex-col items-center justify-center rounded-3xl border p-4 shadow-sm ${
-                  isSelected
+                className={`aspect-[1.1] w-[48%] flex-col items-center justify-center rounded-3xl border p-4 shadow-sm ${isSelected
                     ? 'border-emerald-600 bg-emerald-50'
                     : 'border-gray-200 bg-gray-50'
-                }`}
+                  }`}
               >
                 <MaterialCommunityIcons
                   name={metric.icon as any}
