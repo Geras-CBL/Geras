@@ -1,5 +1,17 @@
 import * as React from 'react';
-import { View, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+  TextInput,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
+import { supabase } from '@/lib/supabase';
+import Button from '@/components/shared/Button';
 import {
   BottomSheetModal,
   BottomSheetView,
@@ -19,8 +31,37 @@ const ProfileBottomSheet = React.forwardRef<
   ProfileBottomSheetRef,
   ProfileBottomSheetProps
 >(({ onSelectProfile }, ref) => {
-  const snapPoints = React.useMemo(() => ['55%'], []);
-  const { profiles, isLoading } = useProfile();
+  const snapPoints = React.useMemo(() => ['70%', '85%'], []);
+  const { profiles, isLoading, refreshProfiles } = useProfile();
+
+  const [code, setCode] = React.useState('');
+  const [isAssociating, setIsAssociating] = React.useState(false);
+
+  const handleAssociate = async () => {
+    if (!code || code.length !== 6) {
+      Alert.alert('Erro', 'O código deve ter 6 caracteres.');
+      return;
+    }
+    setIsAssociating(true);
+    try {
+      const { error } = await supabase.rpc('associate_with_code', {
+        p_code: code.toUpperCase(),
+      });
+      if (error) throw error;
+
+      Alert.alert('Sucesso', 'Sénior associado com sucesso!');
+      setCode('');
+      await refreshProfiles();
+    } catch (error: any) {
+      Alert.alert(
+        'Erro',
+        error.message ||
+          'Não foi possível associar. Verifique se o código é válido e não expirou.',
+      );
+    } finally {
+      setIsAssociating(false);
+    }
+  };
 
   const renderBackdrop = React.useCallback(
     (props: any) => (
@@ -128,6 +169,29 @@ const ProfileBottomSheet = React.forwardRef<
                 Nenhum idoso associado.
               </ThemedText>
             )}
+
+            <View className="mt-6 gap-4 border-t border-gray-200 pt-6">
+              <ThemedText type="subtitle" className="text-center text-primary">
+                Associar Idoso
+              </ThemedText>
+              <ThemedText type="bodyInfo" className="text-center text-gray-500">
+                Insira o código de 6 dígitos gerado na aplicação do Sénior.
+              </ThemedText>
+
+              <TextInput
+                value={code}
+                onChangeText={setCode}
+                placeholder="Ex: A7X9B2"
+                maxLength={6}
+                autoCapitalize="characters"
+                className="w-full rounded-2xl border border-gray-300 bg-white p-4 text-center text-2xl font-bold uppercase tracking-widest text-primary shadow-sm"
+              />
+              <Button
+                title={isAssociating ? 'A associar...' : 'Associar'}
+                onPress={handleAssociate}
+                disabled={isAssociating || code.length !== 6}
+              />
+            </View>
           </View>
         )}
       </BottomSheetView>

@@ -57,7 +57,10 @@ export default function SeniorManagement() {
   };
 
   const fetchSeniorData = useCallback(async () => {
-    if (!selectedProfile?.id) return;
+    if (!selectedProfile?.id) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
 
     try {
