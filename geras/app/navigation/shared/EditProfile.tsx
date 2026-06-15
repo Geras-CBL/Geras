@@ -32,6 +32,7 @@ export default function EditProfile() {
   const [local, setLocal] = useState('');
   const [district, setDistrict] = useState('');
   const [image, setImage] = useState<string | null>(null);
+  const [phone, setPhone] = useState('');
 
   const [showDistrictPicker, setShowDistrictPicker] = useState(false);
   const [showMunicipalityPicker, setShowMunicipalityPicker] = useState(false);
@@ -45,6 +46,7 @@ export default function EditProfile() {
       setZipCode(profile.zip_code || '');
       setLocal(profile.local || '');
       setImage(profile.profile_picture?.uri || null);
+      setPhone(profile.phone || '');
 
       if (profile.local) {
         const foundDistrict = locations.find((d) =>
@@ -80,6 +82,14 @@ export default function EditProfile() {
   const handleSave = async () => {
     if (!profile?.id) return;
 
+    if (phone && !/^[0-9]{9}$/.test(phone)) {
+      Alert.alert(
+        'Erro',
+        'O número de telemóvel deve ter exatamente 9 dígitos.',
+      );
+      return;
+    }
+
     setIsSaving(true);
     try {
       const { error } = await supabase
@@ -90,6 +100,7 @@ export default function EditProfile() {
           address,
           zip_code: zipCode,
           local,
+          phone,
           profile_picture: image ? { uri: image } : null,
           updated_at: new Date().toISOString(),
         })
@@ -192,6 +203,16 @@ export default function EditProfile() {
           value={zipCode}
           onChangeText={setZipCode}
           keyboardType="numeric"
+        />
+
+        <SectionTitle title="Telemóvel" />
+        <FormField
+          className="-mt-6"
+          placeholder="Número de Telemóvel (9 dígitos)"
+          value={phone}
+          onChangeText={(t) => setPhone(t.replace(/[^0-9]/g, ''))}
+          keyboardType="number-pad"
+          maxLength={9}
         />
 
         <SectionTitle title="Distrito" />
