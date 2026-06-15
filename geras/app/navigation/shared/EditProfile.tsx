@@ -21,6 +21,8 @@ import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { locations } from '@/data/locations';
 
+import { geocodeAddress } from '@/services/locationHelperService';
+
 export default function EditProfile() {
   const { profile, refreshProfile, isLoading } = useAuth();
   const router = useRouter();
@@ -82,17 +84,29 @@ export default function EditProfile() {
 
     setIsSaving(true);
     try {
+      let locationPoint: string | null = null;
+      // Se for sénior, geocodificamos a nova morada
+      if (profile.role === 'SENIOR') {
+        const coords = await geocodeAddress(address, zipCode, local);
+        if (coords) {
+          locationPoint = `POINT(${coords.longitude} ${coords.latitude})`;
+        }
+      }
+      const updateData: any = {
+        name,
+        email,
+        address,
+        zip_code: zipCode,
+        local,
+        profile_picture: image ? { uri: image } : null,
+        updated_at: new Date().toISOString(),
+      };
+      if (locationPoint) {
+        updateData.location = locationPoint;
+      }
       const { error } = await supabase
         .from('users')
-        .update({
-          name,
-          email,
-          address,
-          zip_code: zipCode,
-          local,
-          profile_picture: image ? { uri: image } : null,
-          updated_at: new Date().toISOString(),
-        })
+        .update(updateData)
         .eq('id', profile.id);
 
       if (error) throw error;

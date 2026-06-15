@@ -1,3 +1,6 @@
+// @ts-ignore
+import { API_KEY_MAPS } from '@env';
+
 // Função para calcular distância em Km entre duas coordenadas (Fórmula Haversine)
 export function getDistanceInKm(
   lat1: number,
@@ -18,29 +21,67 @@ export function getDistanceInKm(
   return R * c;
 }
 
-// Coordenadas das lojas de teste em Aveiro
-export const VOUCHER_COORDINATES: Record<
-  string,
-  { latitude: number; longitude: number }
-> = {
-  '1': { latitude: 40.6445, longitude: -8.6588 }, // Pingo Doce Aveiro
-  '2': { latitude: 40.6385, longitude: -8.6488 }, // Farmácia Avenida
-  '3': { latitude: 40.642, longitude: -8.65 }, // Continente Aveiro
-};
+export function parsePostGISPoint(
+  location: any,
+): { latitude: number; longitude: number } | null {
+  if (!location) return null;
+  // Caso 1: Retorna como String WKT - "POINT(longitude latitude)"
+  if (typeof location === 'string') {
+    const match = location.match(/POINT\s*\(\s*([-\d.]+)\s+([-\d.]+)\s*\)/i);
+    if (match) {
+      const longitude = parseFloat(match[1]);
+      const latitude = parseFloat(match[2]);
+      return { latitude, longitude };
+    }
+  }
+  if (
+    typeof location === 'object' &&
+    location.type === 'Point' &&
+    Array.isArray(location.coordinates)
+  ) {
+    const [longitude, latitude] = location.coordinates;
+    return { latitude, longitude };
+  }
+  return null;
+}
+
+export async function geocodeAddress(
+  address: string,
+  zipCode: string,
+  local: string,
+): Promise<{ latitude: number; longitude: number } | null> {
+  try {
+    const query = `${address}, ${zipCode} ${local}, Portugal`;
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+      query,
+    )}&key=${API_KEY_MAPS}`;
+    const response = await fetch(url);
+    const json = await response.json();
+    if (json.status === 'OK' && json.results && json.results.length > 0) {
+      const { lat, lng } = json.results[0].geometry.location;
+      return { latitude: lat, longitude: lng };
+    }
+    console.warn('Geocoding falhou ou sem resultados:', json.status);
+    return null;
+  } catch (error) {
+    console.error('Erro na geocodificação:', error);
+    return null;
+  }
+}
 
 // Obter a coordenada de uma loja de voucher
 export function getVoucherCoordinate(
-  id: string,
-  storeName: string,
-  index: number,
-) {
-  if (VOUCHER_COORDINATES[id]) {
-    return VOUCHER_COORDINATES[id];
-  }
-  // Fallback determinístico perto de Aveiro
+  dbLocation: any,
+  indexOrId: number | string = 0,
+): { latitude: number; longitude: number } {
+  const parsed = parsePostGISPoint(dbLocation);
+  if (parsed) return parsed;
+  // Fallback determinístico perto de Aveiro se a BD não tiver localização registada
   const baseLat = 40.6405;
   const baseLng = -8.6538;
-  const offset = (parseInt(id) || index || 0) * 0.003;
+  const idNum =
+    typeof indexOrId === 'string' ? parseInt(indexOrId) || 0 : indexOrId;
+  const offset = idNum * 0.003;
   return {
     latitude: baseLat + Math.sin(offset) * 0.005,
     longitude: baseLng + Math.cos(offset) * 0.005,
@@ -48,15 +89,13 @@ export function getVoucherCoordinate(
 }
 
 // Obter a coordenada de um utilizador sénior
-export function getUserCoordinate(userId: number) {
-  const mockCoords: Record<number, { latitude: number; longitude: number }> = {
-    1: { latitude: 40.6412, longitude: -8.635 }, // António
-    2: { latitude: 40.6434, longitude: -8.653 }, // Maria
-    3: { latitude: 40.6336, longitude: -8.655 }, // José
-    4: { latitude: 40.6364, longitude: -8.6531 }, // Ana
-  };
-  if (mockCoords[userId]) return mockCoords[userId];
-
+export function getUserCoordinate(
+  dbLocation: any,
+  userId: number = 0,
+): { latitude: number; longitude: number } {
+  const parsed = parsePostGISPoint(dbLocation);
+  if (parsed) return parsed;
+  // Fallback determinístico perto de Aveiro se a BD não tiver localização registada
   const baseLat = 40.6405;
   const baseLng = -8.6538;
   const offset = (userId || 0) * 0.003;

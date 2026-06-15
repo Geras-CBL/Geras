@@ -13,19 +13,55 @@ import { syncVolunteerVouchers } from '@/services/vouchersVolunteerService';
 import {
   getDistanceInKm,
   getVoucherCoordinate,
+  parsePostGISPoint,
 } from '@/services/locationHelperService';
+import { useFocusEffect } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialIcons } from '@expo/vector-icons';
+import * as Location from 'expo-location';
 
 export default function MapaHomePage() {
   const { profile } = useAuth();
-  const [requests, setRequests] = useState<RequestData[]>(REQUESTS_DATA);
+  const [requests, setRequests] = useState<RequestData[]>([]);
   const [vouchers, setVouchers] = useState<VoucherData[]>([]);
+
+  const mapRef = useRef<MapView>(null);
+  const [hasCentered, setHasCentered] = useState(false);
 
   // Localização do utilizador voluntário
   const [userLocation, setUserLocation] = useState<{
     latitude: number;
     longitude: number;
   } | null>(null);
+
+  useEffect(() => {
+    async function getInitialLocation() {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status === 'granted') {
+          const position = await Location.getCurrentPositionAsync({});
+          const newLoc = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          };
+          setUserLocation(newLoc);
+
+          mapRef.current?.animateToRegion(
+            {
+              ...newLoc,
+              latitudeDelta: 0.05,
+              longitudeDelta: 0.05,
+            },
+            1000,
+          );
+          setHasCentered(true);
+        }
+      } catch (err) {
+        console.log('Erro ao obter localização inicial no mapa:', err);
+      }
+    }
+    getInitialLocation();
+  }, []);
 
   // Bottom Sheets
   const requestBottomSheetRef = useRef<BottomSheetModal>(null);
@@ -39,11 +75,80 @@ export default function MapaHomePage() {
   );
 
   const INITIAL_REGION = {
-    latitude: 40.6405,
-    longitude: -8.6538,
+    latitude: userLocation?.latitude || 40.6405,
+    longitude: userLocation?.longitude || -8.6538,
     latitudeDelta: 0.05,
     longitudeDelta: 0.05,
   };
+
+  const fetchRequests = useCallback(async () => {
+    if (!profile?.id) return;
+    try {
+      const storedDeclined = await AsyncStorage.getItem(
+        `declined_requests_${profile.id}`,
+      );
+      const declinedList: string[] = storedDeclined
+        ? JSON.parse(storedDeclined)
+        : [];
+
+      const { data, error } = await supabase
+        .from('requests')
+        .select(
+          '*, senior:users!id_senior(name, profile_picture, gender, location, address, zip_code, local)',
+        )
+        .in('state', ['PENDING', 'ACCEPTED'])
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      if (data) {
+        const formatted: RequestData[] = data.map((req) => {
+          const coords = parsePostGISPoint(req.senior?.location);
+          return {
+            id: req.id.toString(),
+            name: req.senior?.name || 'Sénior',
+            gender: req.senior?.gender,
+            category: req.category || 'Pedido',
+            task: req.description || '',
+            type:
+              req.category?.toLowerCase() === 'compras'
+                ? 'food'
+                : req.category?.toLowerCase() === 'medicamentos'
+                  ? 'pharmacy'
+                  : req.category?.toLowerCase() === 'limpeza'
+                    ? 'cleaning'
+                    : 'other',
+            state: req.state === 'ACCEPTED',
+            isNew:
+              req.state === 'PENDING' &&
+              Date.now() - new Date(req.created_at).getTime() <
+                24 * 60 * 60 * 1000,
+            date: new Date(req.created_at).toLocaleDateString('pt-PT'),
+            time: new Date(req.created_at).toLocaleTimeString('pt-PT', {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false,
+            }),
+            imageUrl: req.senior?.profile_picture || '',
+            distance: req.distance ? `${req.distance} Km` : 'N/A',
+            location:
+              req.location_address ||
+              (req.senior?.address
+                ? `${req.senior.address}, ${req.senior.zip_code || ''} ${req.senior.local || ''}`.trim()
+                : 'Endereço não disponível'),
+            latitude: coords?.latitude || 40.6405,
+            longitude: coords?.longitude || -8.6538,
+          };
+        });
+
+        // Filtrar pedidos recusados localmente
+        const filtered = formatted.filter((r) => !declinedList.includes(r.id));
+        setRequests(filtered);
+      }
+    } catch (err) {
+      console.error('Erro a carregar pedidos no mapa:', err);
+    }
+  }, [profile?.id]);
 
   // Carregar e sincronizar vouchers
   const fetchVouchers = useCallback(async () => {
@@ -62,7 +167,8 @@ export default function MapaHomePage() {
             store_name,
             address,
             value,
-            needed_tasks
+            needed_tasks,
+            location
           )
         `,
         )
@@ -73,12 +179,11 @@ export default function MapaHomePage() {
       if (data) {
         const mapped = data.map((item: any, index: number) => {
           let distStr = 'N/A';
+          const storeCoord = getVoucherCoordinate(
+            item.vouchers.location,
+            item.vouchers.id.toString(),
+          );
           if (userLocation) {
-            const storeCoord = getVoucherCoordinate(
-              item.vouchers.id.toString(),
-              item.vouchers.store_name,
-              index,
-            );
             const dist = getDistanceInKm(
               userLocation.latitude,
               userLocation.longitude,
@@ -97,6 +202,8 @@ export default function MapaHomePage() {
             totalTasks: item.vouchers.needed_tasks || 5,
             status: item.status,
             distance: distStr,
+            latitude: storeCoord?.latitude || 40.6405,
+            longitude: storeCoord?.longitude || -8.6538,
           };
         });
         setVouchers(mapped);
@@ -106,9 +213,12 @@ export default function MapaHomePage() {
     }
   }, [profile?.id, userLocation]);
 
-  useEffect(() => {
-    fetchVouchers();
-  }, [fetchVouchers]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchRequests();
+      fetchVouchers();
+    }, [fetchRequests, fetchVouchers]),
+  );
 
   // Ao pressionar uma tarefa
   const handleMarkerPress = useCallback((item: RequestData) => {
@@ -122,17 +232,43 @@ export default function MapaHomePage() {
     voucherBottomSheetRef.current?.present();
   }, []);
 
-  const handleAcceptRequest = () => {
-    if (!selectedRequest) return;
-    const updatedList = requests.map((req) =>
-      req.id === selectedRequest.id ? { ...req, state: true } : req,
-    );
-    setRequests(updatedList);
-    requestBottomSheetRef.current?.dismiss();
+  const handleAcceptRequest = async () => {
+    if (!selectedRequest || !profile?.id) return;
+    try {
+      const { error } = await supabase
+        .from('requests')
+        .update({
+          id_volunteer: profile.id,
+          state: 'ACCEPTED',
+        })
+        .eq('id', selectedRequest.id);
+      if (error) throw error;
+      requestBottomSheetRef.current?.dismiss();
+      fetchRequests();
+    } catch (err) {
+      console.error('Erro ao aceitar pedido no mapa:', err);
+    }
   };
 
-  const handleDeclineRequest = () => {
-    requestBottomSheetRef.current?.dismiss();
+  const handleDeclineRequest = async () => {
+    if (!selectedRequest || !profile?.id) return;
+    try {
+      const storedDeclined = await AsyncStorage.getItem(
+        `declined_requests_${profile.id}`,
+      );
+      const declinedList: string[] = storedDeclined
+        ? JSON.parse(storedDeclined)
+        : [];
+      const updatedDeclined = [...declinedList, selectedRequest.id];
+      await AsyncStorage.setItem(
+        `declined_requests_${profile.id}`,
+        JSON.stringify(updatedDeclined),
+      );
+      setRequests((prev) => prev.filter((r) => r.id !== selectedRequest.id));
+      requestBottomSheetRef.current?.dismiss();
+    } catch (err) {
+      console.error('Erro ao recusar pedido no mapa:', err);
+    }
   };
 
   // Filtrar os pedidos que estão dentro do raio de ação do voluntário
@@ -152,6 +288,7 @@ export default function MapaHomePage() {
   return (
     <View className="flex-1 overflow-hidden rounded-2xl bg-neutralLight">
       <MapView
+        ref={mapRef}
         style={{ flex: 1 }}
         initialRegion={INITIAL_REGION}
         provider={PROVIDER_DEFAULT}
@@ -159,10 +296,22 @@ export default function MapaHomePage() {
         onUserLocationChange={(event) => {
           const coord = event.nativeEvent.coordinate;
           if (coord) {
-            setUserLocation({
+            const newLoc = {
               latitude: coord.latitude,
               longitude: coord.longitude,
-            });
+            };
+            setUserLocation(newLoc);
+            if (!hasCentered) {
+              mapRef.current?.animateToRegion(
+                {
+                  ...newLoc,
+                  latitudeDelta: 0.05,
+                  longitudeDelta: 0.05,
+                },
+                1000,
+              );
+              setHasCentered(true);
+            }
           }
         }}
         onPress={() => {
@@ -183,14 +332,13 @@ export default function MapaHomePage() {
           />
         ))}
 
-        {/* Marcadores dos Vouchers (Aparecem sempre no mapa com pins customizados) */}
-        {vouchers.map((voucher, index) => {
-          const coord = getVoucherCoordinate(
-            voucher.id,
-            voucher.name_store,
-            index,
-          );
+        {/* Marcadores dos Vouchers */}
+        {vouchers.map((voucher) => {
           const isAvailable = voucher.status === 'AVAILABLE';
+          const coord = {
+            latitude: voucher.latitude || 40.6405,
+            longitude: voucher.longitude || -8.6538,
+          };
 
           return (
             <Marker

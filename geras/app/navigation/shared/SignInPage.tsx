@@ -16,6 +16,7 @@ import { Stack, useRouter } from 'expo-router';
 import { Svg, G, Path, Defs, ClipPath } from 'react-native-svg';
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { geocodeAddress } from '@/services/locationHelperService';
 
 export default function SignInPage() {
   const router = useRouter();
@@ -79,20 +80,28 @@ export default function SignInPage() {
     });
 
     if (data?.user) {
-      // O trigger da base de dados pode não estar a copiar estes campos novos,
-      // por isso fazemos um update explícito à tabela 'users'
       let genderEnum = gender.toUpperCase();
+      let locationPoint: string | null = null;
       if (genderEnum === 'MASCULINO') genderEnum = 'MALE';
       if (genderEnum === 'FEMININO') genderEnum = 'FEMALE';
+
+      if (role === 'SENIOR') {
+        const coords = await geocodeAddress(address, postalCode, city);
+        if (coords) {
+          locationPoint = `POINT(${coords.longitude} ${coords.latitude})`;
+        }
+      }
 
       const updateData: any = {
         gender: genderEnum,
         local: city,
       };
-
       if (role === 'SENIOR') {
         updateData.address = address;
         updateData.zip_code = postalCode;
+        if (locationPoint) {
+          updateData.location = locationPoint;
+        }
       } else if (role === 'VOLUNTEER') {
         updateData.action_radius = actionRadius;
       }

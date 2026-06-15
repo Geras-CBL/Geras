@@ -9,8 +9,11 @@ import { useRouter, useFocusEffect } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import { getDistanceInKm } from '@/services/locationHelperService';
+import * as Location from 'expo-location';
+import {
+  getDistanceInKm,
+  parsePostGISPoint,
+} from '@/services/locationHelperService';
 
 interface PedidosHomePageProps {
   filterStatus: 'todos' | 'disponivel' | 'decorrer';
@@ -48,81 +51,84 @@ export default function PedidosHomePage({
     try {
       const { data, error } = await supabase
         .from('requests')
-        .select('*, senior:users!id_senior(name, profile_picture, gender)')
+        .select(
+          '*, senior:users!id_senior(name, profile_picture, gender, location, address, zip_code, local)',
+        )
         .in('state', ['PENDING', 'ACCEPTED'])
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
       if (data) {
-        const formatted: RequestData[] = data.map((req) => ({
-          id: req.id.toString(),
-          name: req.senior?.name || 'Sénior',
-          gender: req.senior?.gender,
-          category: req.category || 'Pedido',
-          task: req.description || '',
-          type:
-            req.category?.toLowerCase() === 'compras'
-              ? 'food'
-              : req.category?.toLowerCase() === 'medicamentos'
-                ? 'pharmacy'
-                : req.category?.toLowerCase() === 'limpeza'
-                  ? 'cleaning'
-                  : 'other',
-          state: req.state === 'ACCEPTED',
-          isNew:
-            req.state === 'PENDING' &&
-            Date.now() - new Date(req.created_at).getTime() <
-              24 * 60 * 60 * 1000,
-          date: new Date(req.created_at).toLocaleDateString('pt-PT'),
-          time: new Date(req.created_at).toLocaleTimeString('pt-PT', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false,
-          }),
-          imageUrl: req.senior?.profile_picture || '',
-          distance: req.distance ? `${req.distance} Km` : 'N/A',
-          location: req.location_address || 'Endereço não disponível',
-          latitude: req.latitude || 40.6405,
-          longitude: req.longitude || -8.6538,
-        }));
+        const formatted: RequestData[] = data.map((req) => {
+          const coords = parsePostGISPoint(req.senior?.location);
+          return {
+            id: req.id.toString(),
+            name: req.senior?.name || 'Sénior',
+            gender: req.senior?.gender,
+            category: req.category || 'Pedido',
+            task: req.description || '',
+            type:
+              req.category?.toLowerCase() === 'compras'
+                ? 'food'
+                : req.category?.toLowerCase() === 'medicamentos'
+                  ? 'pharmacy'
+                  : req.category?.toLowerCase() === 'limpeza'
+                    ? 'cleaning'
+                    : 'other',
+            state: req.state === 'ACCEPTED',
+            isNew:
+              req.state === 'PENDING' &&
+              Date.now() - new Date(req.created_at).getTime() <
+                24 * 60 * 60 * 1000,
+            date: new Date(req.created_at).toLocaleDateString('pt-PT'),
+            time: new Date(req.created_at).toLocaleTimeString('pt-PT', {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false,
+            }),
+            imageUrl: req.senior?.profile_picture || '',
+            distance: req.distance ? `${req.distance} Km` : 'N/A',
+            location:
+              req.location_address ||
+              (req.senior?.address
+                ? `${req.senior.address}, ${req.senior.zip_code || ''} ${req.senior.local || ''}`.trim()
+                : 'Endereço não disponível'),
+            latitude: coords?.latitude || 40.6405,
+            longitude: coords?.longitude || -8.6538,
+          };
+        });
 
         // Filtrar pedidos recusados localmente
         let filtered = formatted.filter((r) => !declinedList.includes(r.id));
 
         // Aplicar filtragem de raio com base na localização atual do voluntário
-        if (global.navigator && global.navigator.geolocation) {
-          global.navigator.geolocation.getCurrentPosition(
-            (position) => {
-              const uLat = position.coords.latitude;
-              const uLng = position.coords.longitude;
-              const maxRadius = profile?.action_radius || 5; // Raio em Km (5 por defeito)
-
-              filtered = filtered.filter((req) => {
-                const dist = getDistanceInKm(
-                  uLat,
-                  uLng,
-                  req.latitude,
-                  req.longitude,
-                );
-                // Atualizar dinamicamente a distância para o ecrã
-                req.distance = `${dist.toFixed(1)} Km`;
-                return dist <= maxRadius;
-              });
-
-              setRequests(filtered);
-            },
-            (err) => {
-              console.log(
-                'Erro ao obter localização para filtrar a lista:',
-                err,
+        try {
+          const { status } = await Location.requestForegroundPermissionsAsync();
+          if (status === 'granted') {
+            const position = await Location.getCurrentPositionAsync({});
+            const uLat = position.coords.latitude;
+            const uLng = position.coords.longitude;
+            const maxRadius = profile?.action_radius || 5; // Raio em Km (5 por defeito)
+            filtered = filtered.filter((req) => {
+              const dist = getDistanceInKm(
+                uLat,
+                uLng,
+                req.latitude,
+                req.longitude,
               );
-              // Fallback: caso dê erro de GPS, carrega todos sem filtragem geográfica
-              setRequests(filtered);
-            },
-          );
-        } else {
-          // Fallback sem suporte a localização
+              // Atualizar dinamicamente a distância para o ecrã
+              req.distance = `${dist.toFixed(1)} Km`;
+              return dist <= maxRadius;
+            });
+
+            setRequests(filtered);
+          } else {
+            console.log('Permissão de geolocalização negada.');
+            setRequests(filtered);
+          }
+        } catch (err) {
+          console.log('Erro ao obter localização para filtrar a lista:', err);
           setRequests(filtered);
         }
       }
@@ -132,12 +138,6 @@ export default function PedidosHomePage({
       setLoading(false);
     }
   }, [profile?.id, profile?.action_radius]);
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchRequests();
-    }, [fetchRequests]),
-  );
 
   const filteredRequests = useMemo(() => {
     return requests.filter((item) => {
@@ -160,6 +160,12 @@ export default function PedidosHomePage({
       return matchesStatus && matchesSenior && matchesType;
     });
   }, [requests, filterStatus, filterSenior, filterType]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchRequests();
+    }, [fetchRequests]),
+  );
 
   const handleCardPress = useCallback(
     (item: RequestData) => {
