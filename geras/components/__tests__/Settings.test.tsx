@@ -6,6 +6,32 @@ import { StyleSheet } from 'react-native';
 
 // 1. Mocks Essenciais
 // O Jest não tem ecrã, por isso temos de "fingir" as bibliotecas visuais e de navegação
+jest.mock('@/lib/supabase', () => ({
+  supabase: {
+    auth: { signOut: jest.fn(), getSession: jest.fn() },
+    from: jest.fn(() => ({ select: jest.fn(), insert: jest.fn() })),
+  },
+}));
+
+jest.mock('@react-native-google-signin/google-signin', () => ({
+  GoogleSignin: {
+    configure: jest.fn(),
+    signIn: jest.fn(),
+    signOut: jest.fn(),
+    isSignedIn: jest.fn(() => false),
+    getTokens: jest.fn(),
+  },
+}));
+
+jest.mock('@/context/AuthContext', () => ({
+  useAuth: () => ({
+    session: null,
+    user: null,
+    signOut: jest.fn(),
+    loading: false,
+  }),
+}));
+
 jest.mock('@expo/vector-icons', () => ({
   MaterialIcons: 'MaterialIcons',
 }));

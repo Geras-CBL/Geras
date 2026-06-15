@@ -15,6 +15,7 @@ interface ProfileContextType {
   profiles: SeniorProfile[];
   isLoading: boolean;
   handleSelectProfile: (profile: { id: string }) => void;
+  refreshProfiles: () => Promise<void>;
 }
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
@@ -102,6 +103,8 @@ export function ProfileProvider({
         console.log(
           'ProfileContext: No associations found in senior_caretaker',
         );
+        setProfiles([]);
+        setSelectedProfile(null);
       }
     } catch (err) {
       console.error('ProfileContext: Erro ao carregar perfis associados:', err);
@@ -131,8 +134,14 @@ export function ProfileProvider({
   );
 
   const contextValue = useMemo(
-    () => ({ selectedProfile, profiles, isLoading, handleSelectProfile }),
-    [selectedProfile, profiles, isLoading, handleSelectProfile],
+    () => ({
+      selectedProfile,
+      profiles,
+      isLoading,
+      handleSelectProfile,
+      refreshProfiles: fetchProfiles,
+    }),
+    [selectedProfile, profiles, isLoading, handleSelectProfile, fetchProfiles],
   );
 
   return (
