@@ -10,6 +10,8 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { getDistanceInKm } from '@/services/locationHelperService';
+
 interface PedidosHomePageProps {
   filterStatus: 'todos' | 'disponivel' | 'decorrer';
   filterSenior: string | null;
@@ -42,6 +44,7 @@ export default function PedidosHomePage({
       ? JSON.parse(storedDeclined)
       : [];
     setDeclinedIds(declinedList);
+
     try {
       const { data, error } = await supabase
         .from('requests')
@@ -50,7 +53,6 @@ export default function PedidosHomePage({
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      console.log('Volunteer Requests Data:', data);
 
       if (data) {
         const formatted: RequestData[] = data.map((req) => ({
@@ -84,15 +86,52 @@ export default function PedidosHomePage({
           latitude: req.latitude || 40.6405,
           longitude: req.longitude || -8.6538,
         }));
-        const filtered = formatted.filter((r) => !declinedList.includes(r.id));
-        setRequests(filtered);
+
+        // Filtrar pedidos recusados localmente
+        let filtered = formatted.filter((r) => !declinedList.includes(r.id));
+
+        // Aplicar filtragem de raio com base na localização atual do voluntário
+        if (global.navigator && global.navigator.geolocation) {
+          global.navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const uLat = position.coords.latitude;
+              const uLng = position.coords.longitude;
+              const maxRadius = profile?.action_radius || 5; // Raio em Km (5 por defeito)
+
+              filtered = filtered.filter((req) => {
+                const dist = getDistanceInKm(
+                  uLat,
+                  uLng,
+                  req.latitude,
+                  req.longitude,
+                );
+                // Atualizar dinamicamente a distância para o ecrã
+                req.distance = `${dist.toFixed(1)} Km`;
+                return dist <= maxRadius;
+              });
+
+              setRequests(filtered);
+            },
+            (err) => {
+              console.log(
+                'Erro ao obter localização para filtrar a lista:',
+                err,
+              );
+              // Fallback: caso dê erro de GPS, carrega todos sem filtragem geográfica
+              setRequests(filtered);
+            },
+          );
+        } else {
+          // Fallback sem suporte a localização
+          setRequests(filtered);
+        }
       }
     } catch (err) {
       console.error('Error fetching volunteer requests:', err);
     } finally {
       setLoading(false);
     }
-  }, [profile?.id]);
+  }, [profile?.id, profile?.action_radius]);
 
   useFocusEffect(
     useCallback(() => {

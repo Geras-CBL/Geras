@@ -20,6 +20,7 @@ interface VoucherProps {
   currentTasks: number;
   totalTasks: number;
   isCompleted?: boolean;
+  distance?: string;
   onPress: () => void;
 }
 
@@ -30,6 +31,7 @@ const Voucher = ({
   currentTasks,
   totalTasks,
   isCompleted = false,
+  distance,
   onPress,
 }: VoucherProps) => {
   // Percentage calculation
@@ -111,6 +113,11 @@ const Voucher = ({
             <ThemedText className="capitalize text-neutral">
               {address}
             </ThemedText>
+            {distance && (
+              <ThemedText className="text-sm font-bold text-primary">
+                A {distance} de ti
+              </ThemedText>
+            )}
           </View>
 
           {/* Chip de Valor (Direita) - Keeps Primary color as per standard design, or change to progressTextClass if preferred */}
