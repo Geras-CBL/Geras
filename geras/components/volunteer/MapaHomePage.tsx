@@ -281,6 +281,9 @@ export default function MapaHomePage() {
       req.latitude,
       req.longitude,
     );
+
+    req.distance = `${reqDistance.toFixed(1)} Km`;
+
     const maxRadius = profile?.action_radius || 5; // Raio máximo em Km (padrão 5 Km)
     return reqDistance <= maxRadius;
   });

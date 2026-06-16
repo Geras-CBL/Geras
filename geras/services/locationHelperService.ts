@@ -33,6 +33,31 @@ export function parsePostGISPoint(
       const latitude = parseFloat(match[2]);
       return { latitude, longitude };
     }
+
+    // Caso 2: Hexadecimal EWKB (formato padrão de ponto geográfico retornado pelo Supabase)
+    if (/^[0-9a-fA-F]{50}$/.test(location)) {
+      const isLittleEndian = location.substring(0, 2) === '01';
+      const xHex = location.substring(18, 34);
+      const yHex = location.substring(34, 50);
+
+      const parseDouble = (hexStr: string) => {
+        const bytes = new Uint8Array(8);
+        for (let i = 0; i < 8; i++) {
+          const byteIndex = isLittleEndian ? i : 7 - i;
+          bytes[byteIndex] = parseInt(hexStr.substring(i * 2, i * 2 + 2), 16);
+        }
+        const view = new DataView(bytes.buffer);
+        return view.getFloat64(0, true);
+      };
+
+      try {
+        const longitude = parseDouble(xHex);
+        const latitude = parseDouble(yHex);
+        return { latitude, longitude };
+      } catch (e) {
+        console.error('Erro ao decodificar ponto EWKB hexadecimal:', e);
+      }
+    }
   }
   if (
     typeof location === 'object' &&
