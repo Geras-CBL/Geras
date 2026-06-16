@@ -1,133 +1,183 @@
 import 'dotenv/config';
 import { ExpoConfig, ConfigContext } from 'expo/config';
+import { withAndroidManifest } from '@expo/config-plugins';
 
-export default ({ config }: ConfigContext): ExpoConfig => ({
-  ...config,
-  name: 'geras',
-  slug: 'geras',
-  version: '1.0.0',
-  orientation: 'portrait',
-  icon: './assets/images/icon.png',
-  scheme: 'geras',
-  userInterfaceStyle: 'automatic',
-  newArchEnabled: true,
-  ios: {
-    supportsTablet: true,
-    icon: {
-      dark: './assets/icons/ios-dark.png',
-      light: './assets/icons/ios-light.png',
-      tinted: './assets/icons/ios-tinted.png',
-    },
-    bundleIdentifier: 'com.geras.app',
-    infoPlist: {
-      ITSAppUsesNonExemptEncryption: false,
-    },
-  },
-  android: {
-    adaptiveIcon: {
-      backgroundColor: '#ffffff',
-      foregroundImage: './assets/icons/adaptive-icon.png',
-      monochromeImage: './assets/icons/adaptive-icon.png',
-    },
-    intentFilters: [
-      {
-        action: 'androidx.health.ACTION_SHOW_PRIVACY_POLICY',
-        category: ['android.intent-filter.category.DEFAULT'],
+const withHealthConnectActivityAlias = (config: ExpoConfig): ExpoConfig => {
+  return withAndroidManifest(config, (config) => {
+    const androidManifest = config.modResults.manifest;
+    const application = androidManifest.application?.[0];
+    if (application) {
+      if (!application['activity-alias']) {
+        application['activity-alias'] = [];
+      }
+      const aliasExists = application['activity-alias'].some(
+        (alias: any) =>
+          alias.$?.['android:name'] === 'ViewPermissionUsageActivity',
+      );
+      if (!aliasExists) {
+        application['activity-alias'].push({
+          $: {
+            'android:name': 'ViewPermissionUsageActivity',
+            'android:exported': 'true',
+            'android:targetActivity': '.MainActivity',
+            'android:permission':
+              'android.permission.START_VIEW_PERMISSION_USAGE',
+          },
+          'intent-filter': [
+            {
+              action: [
+                {
+                  $: {
+                    'android:name':
+                      'android.intent.action.VIEW_PERMISSION_USAGE',
+                  },
+                },
+              ],
+              category: [
+                {
+                  $: {
+                    'android:name':
+                      'android.intent.category.HEALTH_PERMISSIONS',
+                  },
+                },
+              ],
+            },
+          ],
+        });
+      }
+    }
+    return config;
+  });
+};
+
+export default ({ config }: ConfigContext): ExpoConfig =>
+  withHealthConnectActivityAlias({
+    ...config,
+    name: 'geras',
+    slug: 'geras',
+    version: '1.0.0',
+    orientation: 'portrait',
+    icon: './assets/images/icon.png',
+    scheme: 'geras',
+    userInterfaceStyle: 'automatic',
+    newArchEnabled: true,
+    ios: {
+      supportsTablet: true,
+      icon: {
+        dark: './assets/icons/ios-dark.png',
+        light: './assets/icons/ios-light.png',
+        tinted: './assets/icons/ios-tinted.png',
       },
-    ],
-    edgeToEdgeEnabled: true,
-    predictiveBackGestureEnabled: true,
-    permissions: [
-      'android.permission.RECORD_AUDIO',
-      'android.permission.MODIFY_AUDIO_SETTINGS',
-      'android.permission.health.READ_OXYGEN_SATURATION',
-      'android.permission.health.READ_HEART_RATE',
-      'android.permission.health.READ_BLOOD_GLUCOSE',
-      'android.permission.health.READ_BLOOD_PRESSURE',
-      'android.permission.health.READ_BODY_TEMPERATURE',
-      'android.permission.health.READ_WEIGHT',
-    ],
-    package: 'com.geras.app',
-    config: {
-      googleMaps: {
-        apiKey: process.env.API_KEY_MAPS || '',
+      bundleIdentifier: 'com.geras.app',
+      infoPlist: {
+        ITSAppUsesNonExemptEncryption: false,
       },
     },
-  },
-  web: {
-    bundler: 'metro',
-    output: 'static',
-    favicon: './assets/images/favicon.png',
-  },
-  plugins: [
-    'expo-router',
-    [
-      'expo-speech-recognition',
-      {
-        microphonePermission:
-          'Allow this app to access your microphone to record voice commands.',
-        speechRecognitionPermission:
-          'Allow this app to recognize your speech for voice commands.',
-      },
-    ],
-    [
-      'expo-build-properties',
-      {
-        android: {
-          useAndroidX: true,
-          enableJetifier: true,
-          minSdkVersion: 26,
-        },
-        ios: {
-          useFrameworks: 'static',
-        },
-      },
-    ],
-    ['@react-native-google-signin/google-signin'],
-    [
-      'expo-splash-screen',
-      {
-        image: './assets/icons/splash-icon-dark.png',
-        imageWidth: 200,
-        resizeMode: 'contain',
+    android: {
+      adaptiveIcon: {
         backgroundColor: '#ffffff',
-        dark: {
-          image: './assets/icons/splash-icon-light.png',
-          backgroundColor: '#000000',
+        foregroundImage: './assets/icons/adaptive-icon.png',
+        monochromeImage: './assets/icons/adaptive-icon.png',
+      },
+      intentFilters: [
+        {
+          action: 'androidx.health.ACTION_SHOW_PRIVACY_POLICY',
+          category: ['android.intent-filter.category.DEFAULT'],
+        },
+      ],
+      edgeToEdgeEnabled: true,
+      predictiveBackGestureEnabled: true,
+      permissions: [
+        'android.permission.RECORD_AUDIO',
+        'android.permission.MODIFY_AUDIO_SETTINGS',
+        'android.permission.health.READ_OXYGEN_SATURATION',
+        'android.permission.health.READ_HEART_RATE',
+        'android.permission.health.READ_BLOOD_GLUCOSE',
+        'android.permission.health.READ_BLOOD_PRESSURE',
+        'android.permission.health.READ_BODY_TEMPERATURE',
+        'android.permission.health.READ_WEIGHT',
+      ],
+      package: 'com.geras.app',
+      config: {
+        googleMaps: {
+          apiKey: process.env.API_KEY_MAPS || '',
         },
       },
-    ],
-    [
-      'react-native-health-connect',
-      {
-        permissions: [
-          'ReadHeartRate',
-          'ReadBloodPressure',
-          'ReadOxygenSaturation',
-
-          'ReadBloodGlucose',
-          'ReadBodyTemperature',
-          'ReadWeight',
-        ],
-      },
-    ],
-    'expo-font',
-    'expo-audio',
-    '@react-native-community/datetimepicker',
-    'expo-build-properties',
-    'expo-speech-recognition',
-    '@maplibre/maplibre-react-native',
-    'expo-asset',
-  ],
-  experiments: {
-    typedRoutes: true,
-    reactCompiler: true,
-  },
-  extra: {
-    router: {},
-    eas: {
-      projectId: '0cb812b9-b636-474f-a176-616ed4e7c804',
     },
-  },
-  owner: 'geras-cbl',
-});
+    web: {
+      bundler: 'metro',
+      output: 'static',
+      favicon: './assets/images/favicon.png',
+    },
+    plugins: [
+      'expo-router',
+      [
+        'expo-speech-recognition',
+        {
+          microphonePermission:
+            'Allow this app to access your microphone to record voice commands.',
+          speechRecognitionPermission:
+            'Allow this app to recognize your speech for voice commands.',
+        },
+      ],
+      [
+        'expo-build-properties',
+        {
+          android: {
+            useAndroidX: true,
+            enableJetifier: true,
+            minSdkVersion: 26,
+          },
+          ios: {
+            useFrameworks: 'static',
+          },
+        },
+      ],
+      ['@react-native-google-signin/google-signin'],
+      [
+        'expo-splash-screen',
+        {
+          image: './assets/icons/splash-icon-dark.png',
+          imageWidth: 200,
+          resizeMode: 'contain',
+          backgroundColor: '#ffffff',
+          dark: {
+            image: './assets/icons/splash-icon-light.png',
+            backgroundColor: '#000000',
+          },
+        },
+      ],
+      [
+        'react-native-health-connect',
+        {
+          permissions: [
+            'ReadHeartRate',
+            'ReadBloodPressure',
+            'ReadOxygenSaturation',
+
+            'ReadBloodGlucose',
+            'ReadBodyTemperature',
+            'ReadWeight',
+          ],
+        },
+      ],
+      'expo-font',
+      'expo-audio',
+      '@react-native-community/datetimepicker',
+      'expo-build-properties',
+      'expo-speech-recognition',
+      '@maplibre/maplibre-react-native',
+      'expo-asset',
+    ],
+    experiments: {
+      typedRoutes: true,
+      reactCompiler: true,
+    },
+    extra: {
+      router: {},
+      eas: {
+        projectId: '0cb812b9-b636-474f-a176-616ed4e7c804',
+      },
+    },
+    owner: 'geras-cbl',
+  });

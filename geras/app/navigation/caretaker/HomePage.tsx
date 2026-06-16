@@ -63,10 +63,14 @@ export default function HomePage() {
       const caretakerId = profile?.id;
 
       // 1. Notificações
+      const nowIso = new Date().toISOString();
       const { data: notifs, error: notifError } = await supabase
         .from('notifications')
         .select('*')
-        .eq('id_senior', seniorId);
+        .eq('id_senior', seniorId)
+        .is('dismissed_at', null)
+        .or(`expires_at.is.null,expires_at.gt.${nowIso}`)
+        .order('created_at', { ascending: false });
 
       if (!notifError && notifs) {
         setNotifications(notifs);

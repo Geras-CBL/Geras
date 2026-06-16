@@ -45,10 +45,13 @@ export default function Notifications() {
     }
     setIsLoading(true);
     try {
+      const nowIso = new Date().toISOString();
       const { data, error } = await supabase
         .from('notifications')
         .select('*')
         .eq('id_senior', selectedProfile.id)
+        .is('dismissed_at', null)
+        .or(`expires_at.is.null,expires_at.gt.${nowIso}`)
         .order('created_at', { ascending: false });
 
       if (!error && data) {
@@ -126,8 +129,12 @@ export default function Notifications() {
                           icon="call"
                           onPress={() => Linking.openURL(`tel:${963744454}`)}
                         />
-                        onPress=
-                        {() => router.push('/navigation/caretaker/Sensors')}
+                        <ActionButton
+                          icon="videocam"
+                          onPress={() =>
+                            router.push('/navigation/caretaker/Sensors')
+                          }
+                        />
                       </>
                     ) : null
                   }

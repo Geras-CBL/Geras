@@ -236,7 +236,10 @@ export type Database = {
       };
       notifications: {
         Row: {
+          created_at: string | null;
           description: string;
+          dismissed_at: string | null;
+          expires_at: string | null;
           id: number;
           id_caretaker: number | null;
           id_senior: number | null;
@@ -244,7 +247,10 @@ export type Database = {
           type: string | null;
         };
         Insert: {
+          created_at?: string | null;
           description: string;
+          dismissed_at?: string | null;
+          expires_at?: string | null;
           id?: number;
           id_caretaker?: number | null;
           id_senior?: number | null;
@@ -252,7 +258,10 @@ export type Database = {
           type?: string | null;
         };
         Update: {
+          created_at?: string | null;
           description?: string;
+          dismissed_at?: string | null;
+          expires_at?: string | null;
           id?: number;
           id_caretaker?: number | null;
           id_senior?: number | null;

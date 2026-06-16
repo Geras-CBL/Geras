@@ -129,6 +129,15 @@ export default function AddHealthMetric() {
         Alert.alert('Erro', 'Não foi possível guardar o registo.');
         return;
       }
+
+      // Descartar notificações anteriores ativas deste tipo de métrica
+      await supabase
+        .from('notifications')
+        .update({ dismissed_at: new Date().toISOString() })
+        .eq('id_senior', targetSeniorId)
+        .ilike('description', `%${activeMetric.label}%`)
+        .is('dismissed_at', null);
+
       // --- CRIAÇÃO DA NOTIFICAÇÃO SE FOR ANÓMALA ---
       const status = getMetricStatus(selectedType, valPrimary, valSecondary);
       if (status === 'Excessivo' || status === 'Moderado') {
@@ -155,6 +164,12 @@ export default function AddHealthMetric() {
             ? `Urgente: A medição de ${activeMetric.label} registou um valor excessivo de ${formattedVal} ${activeMetric.unit}.`
             : `Aviso: A medição de ${activeMetric.label} registou um valor moderado de ${formattedVal} ${activeMetric.unit}.`;
         const notifType = status === 'Excessivo' ? 'alert' : 'info';
+
+        // Data de expiração: 5 horas a partir de agora
+        const expiresAt = new Date(
+          Date.now() + 5 * 60 * 60 * 1000,
+        ).toISOString();
+
         // Gravar na tabela 'notifications'
         await supabase.from('notifications').insert([
           {
@@ -162,6 +177,7 @@ export default function AddHealthMetric() {
             id_caretaker: idCaretaker,
             description,
             type: notifType,
+            expires_at: expiresAt,
           },
         ]);
       }

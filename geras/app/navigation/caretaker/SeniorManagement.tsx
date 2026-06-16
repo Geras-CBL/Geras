@@ -23,6 +23,7 @@ import { ThemedText } from '@/components/ThemedText';
 import ProfilePicker from '@/components/caretaker/ProfilePicker';
 import ProfileBottomSheet from '@/components/caretaker/ProfileBottomSheet';
 import { useProfile } from '@/context/ProfileContext';
+import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { getMetricStatus, METRIC_LABELS } from '../senior/Health';
 
@@ -57,6 +58,7 @@ export default function SeniorManagement() {
   const router = useRouter();
   const sheetRef = useRef<any>(null);
   const { selectedProfile, handleSelectProfile } = useProfile();
+  const { profile } = useAuth();
 
   const [items, setItems] = useState<GroceryItemState[]>([]);
   const [monitoring, setMonitoring] = useState<MonitoringItem[]>([]);
@@ -181,11 +183,15 @@ export default function SeniorManagement() {
         );
       }
 
+      const nowIso = new Date().toISOString();
       const { data: notificationData } = await supabase
         .from('notifications')
         .select('*')
         .eq('id_senior', selectedProfile.id)
         .eq('type', 'medication')
+        .is('dismissed_at', null)
+        .or(`expires_at.is.null,expires_at.gt.${nowIso}`)
+        .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle();
 
@@ -224,13 +230,33 @@ export default function SeniorManagement() {
     sheetRef.current?.present();
   };
 
-  const handleIgnore = () => {
+  const handleIgnore = async () => {
+    if (medicationAlert?.id) {
+      const { error } = await supabase
+        .from('notifications')
+        .update({ dismissed_at: new Date().toISOString() })
+        .eq('id', parseInt(medicationAlert.id));
+      if (error) {
+        console.error('Erro ao ignorar notificação:', error);
+      }
+    }
     Alert.alert('Notificação ignorada');
     setMedicationAlert(null);
   };
 
-  const handleWarn = () =>
+  const handleWarn = async () => {
+    if (medicationAlert?.id) {
+      const { error } = await supabase
+        .from('notifications')
+        .update({ dismissed_at: new Date().toISOString() })
+        .eq('id', parseInt(medicationAlert.id));
+      if (error) {
+        console.error('Erro ao avisar/descartar notificação:', error);
+      }
+    }
     Alert.alert(`${selectedProfile?.name || 'Sénior'} avisado`);
+    setMedicationAlert(null);
+  };
   const handleCall = () => Linking.openURL(`tel:${963744454}`);
 
   const handleEditMetric = async (
@@ -238,6 +264,15 @@ export default function SeniorManagement() {
     valuePrimary: number,
     valueSecondary?: number | null,
   ) => {
+    // Buscar tipo de métrica antes de atualizar
+    const { data: metricData } = await supabase
+      .from('monitoring')
+      .select('metric_type')
+      .eq('id', id)
+      .maybeSingle();
+
+    const metricType = metricData?.metric_type;
+
     const { error } = await supabase
       .from('monitoring')
       .update({
@@ -250,16 +285,113 @@ export default function SeniorManagement() {
       console.error('Erro ao editar métrica:', error);
       throw error;
     }
+
+    if (metricType && selectedProfile?.id) {
+      const targetSeniorId = parseInt(selectedProfile.id);
+      const metricLabels: Record<string, string> = {
+        'HEART RATE': 'Batimento Cardíaco',
+        'BLOOD PRESSURE': 'Pressão Arterial',
+        TEMPERATURE: 'Temperatura',
+        'BLOOD GLUCOSE': 'Glicémia',
+        'BLOOD OXYGEN': 'Saturação de Oxigénio',
+        WEIGHT: 'Peso',
+      };
+      const pattern = metricLabels[metricType];
+
+      // Descartar notificações anteriores ativas deste tipo de métrica
+      if (pattern) {
+        await supabase
+          .from('notifications')
+          .update({ dismissed_at: new Date().toISOString() })
+          .eq('id_senior', targetSeniorId)
+          .ilike('description', `%${pattern}%`)
+          .is('dismissed_at', null);
+      }
+
+      // Recalcular estado e gerar novo alerta se continuar anómalo
+      const status = getMetricStatus(metricType, valuePrimary, valueSecondary);
+      if (status === 'Excessivo' || status === 'Moderado') {
+        const idCaretaker = profile?.id || null;
+
+        const formattedVal =
+          metricType === 'BLOOD PRESSURE' && valueSecondary
+            ? `${Math.round(valuePrimary)}/${Math.round(valueSecondary)}`
+            : valuePrimary;
+
+        const unit =
+          metricType === 'HEART RATE'
+            ? 'bpm'
+            : metricType === 'BLOOD PRESSURE'
+              ? 'mmHg'
+              : metricType === 'TEMPERATURE'
+                ? '°C'
+                : metricType === 'BLOOD GLUCOSE'
+                  ? 'mg/dL'
+                  : metricType === 'BLOOD OXYGEN'
+                    ? '%'
+                    : 'kg';
+
+        const description =
+          status === 'Excessivo'
+            ? `Urgente: A medição de ${pattern} registou um valor excessivo de ${formattedVal} ${unit}.`
+            : `Aviso: A medição de ${pattern} registou um valor moderado de ${formattedVal} ${unit}.`;
+        const notifType = status === 'Excessivo' ? 'alert' : 'info';
+        const expiresAt = new Date(
+          Date.now() + 5 * 60 * 60 * 1000,
+        ).toISOString();
+
+        await supabase.from('notifications').insert([
+          {
+            id_senior: targetSeniorId,
+            id_caretaker: idCaretaker,
+            description,
+            type: notifType,
+            expires_at: expiresAt,
+          },
+        ]);
+      }
+    }
+
     fetchSeniorData();
   };
 
   const handleDeleteMetric = async (id: number) => {
+    // Buscar tipo de métrica antes de apagar
+    const { data: metricData } = await supabase
+      .from('monitoring')
+      .select('metric_type')
+      .eq('id', id)
+      .maybeSingle();
+
+    const metricType = metricData?.metric_type;
+
     const { error } = await supabase.from('monitoring').delete().eq('id', id);
 
     if (error) {
       console.error('Erro ao eliminar métrica:', error);
       throw error;
     }
+
+    if (metricType && selectedProfile?.id) {
+      const metricLabels: Record<string, string> = {
+        'HEART RATE': 'Batimento Cardíaco',
+        'BLOOD PRESSURE': 'Pressão Arterial',
+        TEMPERATURE: 'Temperatura',
+        'BLOOD GLUCOSE': 'Glicémia',
+        'BLOOD OXYGEN': 'Saturação de Oxigénio',
+        WEIGHT: 'Peso',
+      };
+      const pattern = metricLabels[metricType];
+      if (pattern) {
+        await supabase
+          .from('notifications')
+          .update({ dismissed_at: new Date().toISOString() })
+          .eq('id_senior', parseInt(selectedProfile.id))
+          .ilike('description', `%${pattern}%`)
+          .is('dismissed_at', null);
+      }
+    }
+
     fetchSeniorData();
   };
 

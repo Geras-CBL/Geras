@@ -23,84 +23,12 @@ interface MonitoringRecord {
   source: string;
 }
 
-// /**
-//  * Gera dados de saúde simulados para fins de teste/bypass.
-//  */
-// function generateMockHealthData(userId: number): MonitoringRecord[] {
-//   const now = new Date();
-
-//   // Valores realistas para idosos
-//   const heartRate = Math.floor(Math.random() * (90 - 65 + 1)) + 65; // 65-90 bpm
-//   const systolic = Math.floor(Math.random() * (135 - 115 + 1)) + 115; // 115-135 mmHg (Sistólica)
-//   const diastolic = Math.floor(Math.random() * (85 - 70 + 1)) + 70; // 70-85 mmHg (Diastólica)
-//   const glucose = Math.floor(Math.random() * (140 - 80 + 1)) + 80; // 80-140 mg/dL
-//   const oxygen = Math.floor(Math.random() * (99 - 95 + 1)) + 95; // 95-99 %
-//   const temperature = parseFloat((Math.random() * (37.2 - 36.1) + 36.1).toFixed(1)); // 36.1-37.2 ºC
-//   const weight = parseFloat((Math.random() * (85 - 68) + 68).toFixed(1)); // 68-85 kg
-
-//   const measuredAt = now.toISOString();
-
-//   return [
-//     {
-//       id_senior: userId,
-//       metric_type: 'HEART RATE',
-//       value_primary: heartRate,
-//       value_secondary: null,
-//       measured_at: measuredAt,
-//       source: 'mock',
-//     },
-//     {
-//       id_senior: userId,
-//       metric_type: 'BLOOD PRESSURE',
-//       value_primary: systolic,
-//       value_secondary: diastolic,
-//       measured_at: measuredAt,
-//       source: 'mock',
-//     },
-//     {
-//       id_senior: userId,
-//       metric_type: 'TEMPERATURE',
-//       value_primary: temperature,
-//       value_secondary: null,
-//       measured_at: measuredAt,
-//       source: 'mock',
-//     },
-//     {
-//       id_senior: userId,
-//       metric_type: 'BLOOD GLUCOSE',
-//       value_primary: glucose,
-//       value_secondary: null,
-//       measured_at: measuredAt,
-//       source: 'mock',
-//     },
-//     {
-//       id_senior: userId,
-//       metric_type: 'BLOOD OXYGEN',
-//       value_primary: oxygen,
-//       value_secondary: null,
-//       measured_at: measuredAt,
-//       source: 'mock',
-//     },
-//     {
-//       id_senior: userId,
-//       metric_type: 'WEIGHT',
-//       value_primary: weight,
-//       value_secondary: null,
-//       measured_at: measuredAt,
-//       source: 'mock',
-//     },
-//   ];
-// }
-
-/**
- * Lê os dados reais do Health Connect a partir dos últimos 30 dias.
- */
 async function readRealHealthData(userId: number): Promise<MonitoringRecord[]> {
   const records: MonitoringRecord[] = [];
   const endTime = new Date().toISOString();
   const startTime = new Date(
-    Date.now() - 30 * 24 * 60 * 60 * 1000,
-  ).toISOString(); // últimos 30 dias
+    Date.now() - 7 * 24 * 60 * 60 * 1000,
+  ).toISOString(); // últimos 7 dias
 
   const timeRangeFilter = {
     operator: 'between',
@@ -117,9 +45,7 @@ async function readRealHealthData(userId: number): Promise<MonitoringRecord[]> {
     const { records: heartRates } = await readRecords('HeartRate', {
       timeRangeFilter,
     });
-    console.log(
-      `[HealthConnect] Lidos ${heartRates.length} registos de Ritmo Cardíaco (HeartRate).`,
-    );
+
     if (heartRates.length > 0) {
       const lastHR = heartRates[heartRates.length - 1];
       const samples = (lastHR as any).samples || [];
@@ -140,9 +66,7 @@ async function readRealHealthData(userId: number): Promise<MonitoringRecord[]> {
     const { records: bloodPressures } = await readRecords('BloodPressure', {
       timeRangeFilter,
     });
-    console.log(
-      `[HealthConnect] Lidos ${bloodPressures.length} registos de Pressão Arterial (BloodPressure).`,
-    );
+
     if (bloodPressures.length > 0) {
       const lastBP = bloodPressures[bloodPressures.length - 1];
       const systolic = (lastBP as any).systolic?.inMillimetersOfMercury || null;
@@ -165,9 +89,7 @@ async function readRealHealthData(userId: number): Promise<MonitoringRecord[]> {
     const { records: temperatures } = await readRecords('BodyTemperature', {
       timeRangeFilter,
     });
-    console.log(
-      `[HealthConnect] Lidos ${temperatures.length} registos de Temperatura Corporal (BodyTemperature).`,
-    );
+
     if (temperatures.length > 0) {
       const lastTemp = temperatures[temperatures.length - 1];
       const tempVal = (lastTemp as any).temperature?.inCelsius || null;
@@ -188,9 +110,7 @@ async function readRealHealthData(userId: number): Promise<MonitoringRecord[]> {
     const { records: glucoses } = await readRecords('BloodGlucose', {
       timeRangeFilter,
     });
-    console.log(
-      `[HealthConnect] Lidos ${glucoses.length} registos de Glicémia (BloodGlucose).`,
-    );
+
     if (glucoses.length > 0) {
       const lastGluc = glucoses[glucoses.length - 1];
       const glucoseVal =
@@ -212,9 +132,7 @@ async function readRealHealthData(userId: number): Promise<MonitoringRecord[]> {
     const { records: oxygens } = await readRecords('OxygenSaturation', {
       timeRangeFilter,
     });
-    console.log(
-      `[HealthConnect] Lidos ${oxygens.length} registos de Saturação (OxygenSaturation).`,
-    );
+
     if (oxygens.length > 0) {
       const lastOxy = oxygens[oxygens.length - 1];
       const oxygenVal = (lastOxy as any).percentage || null;
@@ -235,9 +153,7 @@ async function readRealHealthData(userId: number): Promise<MonitoringRecord[]> {
     const { records: weights } = await readRecords('Weight', {
       timeRangeFilter,
     });
-    console.log(
-      `[HealthConnect] Lidos ${weights.length} registos de Peso (Weight).`,
-    );
+
     if (weights.length > 0) {
       const lastWeight = weights[weights.length - 1];
       const weightVal = (lastWeight as any).weight?.inKilograms || null;
