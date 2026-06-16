@@ -256,14 +256,14 @@ export default function AddHealthMetric() {
                 }}
                 className={`aspect-[1.1] w-[48%] flex-col items-center justify-center rounded-3xl border p-4 shadow-sm ${
                   isSelected
-                    ? 'border-emerald-600 bg-emerald-50'
+                    ? 'border-primary bg-emerald-50'
                     : 'border-gray-200 bg-gray-50'
                 }`}
               >
                 <MaterialCommunityIcons
                   name={metric.icon as any}
                   size={32}
-                  color={isSelected ? '#059669' : '#4b5563'}
+                  color={isSelected ? '#205A2D' : '#4b5563'}
                 />
                 <ThemedText
                   type="bodyBold"
@@ -280,7 +280,7 @@ export default function AddHealthMetric() {
                   type="body"
                   style={{
                     fontSize: 12,
-                    color: isSelected ? '#047857' : '#9ca3af',
+                    color: isSelected ? 'Primary' : '#9ca3af',
                   }}
                 >
                   ({metric.unit})

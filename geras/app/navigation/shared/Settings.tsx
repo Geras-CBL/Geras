@@ -201,7 +201,7 @@ export default function Settings() {
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={handleToggleSync}
-                className="flex-row items-center justify-between py-4"
+                className="mr-2 flex-row items-center justify-between py-4"
                 accessible={true}
                 accessibilityRole="switch"
                 accessibilityState={{ checked: isSyncEnabled }}

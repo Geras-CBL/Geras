@@ -157,11 +157,22 @@ const MedicationCard = ({
         >
           {title}
         </ThemedText>
-        <View className="flex-row gap-4">
+        <View className="flex-row items-center gap-4">
           <View className={`rounded-full bg-${color} p-4`} />
-          <ThemedText type="bodyBold" style={{ fontSize: 20 }}>
-            {value} {unit}
-          </ThemedText>
+          {metricType === 'BLOOD PRESSURE' ? (
+            <View className="flex-col">
+              <ThemedText type="bodyBold" style={{ fontSize: 20 }}>
+                {value}
+              </ThemedText>
+              <ThemedText type="bodyBold" style={{ fontSize: 20 }}>
+                {unit}
+              </ThemedText>
+            </View>
+          ) : (
+            <ThemedText type="bodyBold" style={{ fontSize: 20 }}>
+              {value} {unit}
+            </ThemedText>
+          )}
         </View>
         <ThemedText>{status}</ThemedText>
       </TouchableOpacity>
@@ -208,9 +219,23 @@ const MedicationCard = ({
 
             <View className="flex-row items-center gap-4">
               <View className={`rounded-full bg-${color} p-4`} />
-              <ThemedText type="bodyBold" style={{ fontSize: 24 }}>
-                {value} {unit}
-              </ThemedText>
+              {metricType === 'BLOOD PRESSURE' ? (
+                <View className="flex-col">
+                  <ThemedText type="bodyBold" style={{ fontSize: 22 }}>
+                    {value}
+                  </ThemedText>
+                  <ThemedText
+                    style={{ fontSize: 14 }}
+                    className="text-gray-400"
+                  >
+                    {unit}
+                  </ThemedText>
+                </View>
+              ) : (
+                <ThemedText type="bodyBold" style={{ fontSize: 24 }}>
+                  {value} {unit}
+                </ThemedText>
+              )}
             </View>
 
             <ThemedText>{status}</ThemedText>
