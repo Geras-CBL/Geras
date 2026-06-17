@@ -18,6 +18,7 @@ import { useState, useCallback } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
+import { syncHealthData } from '@/services/healthService';
 
 // ── Tipos de notificação ──────────────────────────────────────────────────────
 // Mapeamento: valor do campo `type` no Supabase → configuração visual
@@ -165,6 +166,11 @@ export default function Home() {
             if (caretaker?.name) setCaretakerName(caretaker.name.split(' ')[0]);
             if (caretaker?.phone) setCaretakerPhone(caretaker.phone);
           }
+
+          // Executar a sincronização de saúde em background de forma assíncrona
+          syncHealthData(profile.id).catch((err) =>
+            console.error('Erro ao sincronizar saúde na HomePage:', err),
+          );
         } catch (err) {
           console.error('Error fetching homepage data:', err);
         } finally {
