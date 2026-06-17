@@ -274,20 +274,22 @@ export default function SignInPage() {
               </Text>
               <View className="mb-2 w-full flex-row justify-between">
                 <TouchableOpacity
-                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${gender === 'Masculino'
+                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${
+                    gender === 'Masculino'
                       ? 'bg-[#325439]'
                       : 'bg-neutralLight/40'
-                    }`}
+                  }`}
                   onPress={() => setGender('Masculino')}
                 >
                   <Text className="font-bold text-white">Masculino</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${gender === 'Feminino'
+                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${
+                    gender === 'Feminino'
                       ? 'bg-[#325439]'
                       : 'bg-neutralLight/40'
-                    }`}
+                  }`}
                   onPress={() => setGender('Feminino')}
                 >
                   <Text className="font-bold text-white">Feminino</Text>
