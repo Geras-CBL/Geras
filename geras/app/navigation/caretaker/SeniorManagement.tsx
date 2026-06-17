@@ -41,6 +41,11 @@ interface MonitoringItem {
   status: 'Adequado' | 'Moderado' | 'Excessivo';
   value: number | string;
   unit: string;
+  previousRecord?: {
+    value_primary: number;
+    value_secondary: number | null;
+    measured_at: string;
+  };
 }
 
 interface MedicationAlert {
@@ -60,6 +65,8 @@ export default function SeniorManagement() {
   const [monitoring, setMonitoring] = useState<MonitoringItem[]>([]);
   const [medicines, setMedicines] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [medicationAlert, setMedicationAlert] =
+    useState<MedicationAlert | null>(null);
 
   const fetchSeniorData = useCallback(async () => {
     if (!selectedProfile?.id) {
@@ -145,10 +152,10 @@ export default function SeniorManagement() {
             const prev = previousMetrics[item.metric_type];
             const previousRecord = prev
               ? {
-                value_primary: prev.value_primary,
-                value_secondary: prev.value_secondary,
-                measured_at: prev.measured_at,
-              }
+                  value_primary: prev.value_primary,
+                  value_secondary: prev.value_secondary,
+                  measured_at: prev.measured_at,
+                }
               : undefined;
 
             return {

@@ -6,7 +6,6 @@ import MedicationCard, {
 } from '@/components/shared/MedicationCard';
 import { NotificationCard } from '@/components/shared/Notification';
 import SectionTitle from '@/components/shared/SectionTitle';
-
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter, useFocusEffect } from 'expo-router';
 
@@ -14,7 +13,7 @@ import { useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 
-import { ScrollView, View, ActivityIndicator } from 'react-native';
+import { ScrollView, View, ActivityIndicator, Alert } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/ThemedText';
@@ -194,10 +193,10 @@ export default function Health() {
           const prev = previousMetrics[item.metric_type];
           const previousRecord = prev
             ? {
-              value_primary: prev.value_primary,
-              value_secondary: prev.value_secondary,
-              measured_at: prev.measured_at,
-            }
+                value_primary: prev.value_primary,
+                value_secondary: prev.value_secondary,
+                measured_at: prev.measured_at,
+              }
             : undefined;
           return {
             id: item.id,
@@ -454,7 +453,6 @@ export default function Health() {
                   title={title}
                   iconName={icon as any}
                   description={notification.description}
-                  onDismiss={() => handleDismiss(notification.id)}
                 />
               );
             })

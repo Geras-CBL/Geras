@@ -27,13 +27,13 @@ const NOTIFICATION_CONFIG: Record<
   string,
   {
     variant:
-    | 'alert'
-    | 'request'
-    | 'health'
-    | 'medication'
-    | 'motion'
-    | 'info'
-    | 'pantry';
+      | 'alert'
+      | 'request'
+      | 'health'
+      | 'medication'
+      | 'motion'
+      | 'info'
+      | 'pantry';
     icon: any;
     title: string;
     priority: number;
@@ -165,7 +165,6 @@ export default function Home() {
               : (assoc.caretaker as any);
             if (caretaker?.name) setCaretakerName(caretaker.name.split(' ')[0]);
             if (caretaker?.phone) setCaretakerPhone(caretaker.phone);
-
           }
 
           // Executar a sincronização de saúde em background de forma assíncrona

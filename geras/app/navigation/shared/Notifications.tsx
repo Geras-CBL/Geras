@@ -22,13 +22,13 @@ const NOTIFICATION_CONFIG: Record<
   string,
   {
     variant:
-    | 'alert'
-    | 'request'
-    | 'health'
-    | 'medication'
-    | 'info'
-    | 'pantry'
-    | 'reminder';
+      | 'alert'
+      | 'request'
+      | 'health'
+      | 'medication'
+      | 'info'
+      | 'pantry'
+      | 'reminder';
     icon: any;
     label: string;
   }
