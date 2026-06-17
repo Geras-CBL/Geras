@@ -1,6 +1,6 @@
 import { Rubik_400Regular, Rubik_700Bold } from '@expo-google-fonts/rubik';
 import { useFonts } from 'expo-font';
-import { Stack, useRouter, usePathname } from 'expo-router';
+import { Stack, router, useRouter, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
@@ -21,7 +21,6 @@ const queryClient = new QueryClient();
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const router = useRouter();
   const [loaded] = useFonts({
     Rubik: Rubik_400Regular,
     'Rubik-Bold': Rubik_700Bold,
@@ -466,6 +465,11 @@ export default function RootLayout() {
                           />
                         ),
                       }}
+                    />
+
+                    <Stack.Screen
+                      name="navigation/shared/CompleteProfilePage"
+                      options={{ headerShown: false }}
                     />
                   </Stack>
                 </BottomSheetModalProvider>

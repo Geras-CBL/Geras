@@ -240,6 +240,8 @@ export default function HomePage() {
     React.useCallback(() => {
       fetchData();
 
+      if (!selectedProfile?.id) return;
+
       // Subscrição realtime: atualiza quando há nova leitura de sensor
       const channel = supabase
         .channel('sensor_readings_home')
@@ -287,6 +289,16 @@ export default function HomePage() {
               fetchData(); // Refresh UI
             }
           },
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'monitoring',
+            filter: `id_senior=eq.${selectedProfile.id}`,
+          },
+          () => fetchData(),
         )
         .subscribe();
 

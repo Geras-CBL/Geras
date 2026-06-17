@@ -34,6 +34,7 @@ export default function SignInPage() {
     'SENIOR',
   );
   const [loading, setLoading] = useState(false);
+  const [phone, setPhone] = useState('');
 
   const handleRegister = async () => {
     if (!name || !email || !password || !confirmPassword || !gender || !city) {
@@ -44,6 +45,20 @@ export default function SignInPage() {
     if (!termsAccepted) {
       Alert.alert('Erro', 'Tem de aceitar os termos e condições.');
       return;
+    }
+
+    if (role !== 'VOLUNTEER') {
+      if (!phone) {
+        Alert.alert('Erro', 'Por favor preencha o número de telemóvel.');
+        return;
+      }
+      if (!/^[0-9]{9}$/.test(phone)) {
+        Alert.alert(
+          'Erro',
+          'O número de telemóvel deve ter exatamente 9 dígitos.',
+        );
+        return;
+      }
     }
 
     if (password !== confirmPassword) {
@@ -96,6 +111,11 @@ export default function SignInPage() {
         gender: genderEnum,
         local: city,
       };
+
+      if (role !== 'VOLUNTEER') {
+        updateData.phone = phone;
+      }
+
       if (role === 'SENIOR') {
         updateData.address = address;
         updateData.zip_code = postalCode;
@@ -218,6 +238,18 @@ export default function SignInPage() {
                 onChangeText={setCity}
               />
 
+              {(role === 'SENIOR' || role === 'CARETAKER') && (
+                <TextInput
+                  className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
+                  placeholder="Número de Telemóvel (9 dígitos)"
+                  placeholderTextColor="#fbfbfb"
+                  keyboardType="number-pad"
+                  maxLength={9}
+                  value={phone}
+                  onChangeText={(t) => setPhone(t.replace(/[^0-9]/g, ''))}
+                />
+              )}
+
               {role === 'SENIOR' && (
                 <>
                   <TextInput
@@ -242,22 +274,20 @@ export default function SignInPage() {
               </Text>
               <View className="mb-2 w-full flex-row justify-between">
                 <TouchableOpacity
-                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${
-                    gender === 'Masculino'
+                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${gender === 'Masculino'
                       ? 'bg-[#325439]'
                       : 'bg-neutralLight/40'
-                  }`}
+                    }`}
                   onPress={() => setGender('Masculino')}
                 >
                   <Text className="font-bold text-white">Masculino</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${
-                    gender === 'Feminino'
+                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${gender === 'Feminino'
                       ? 'bg-[#325439]'
                       : 'bg-neutralLight/40'
-                  }`}
+                    }`}
                   onPress={() => setGender('Feminino')}
                 >
                   <Text className="font-bold text-white">Feminino</Text>
