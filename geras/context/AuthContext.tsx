@@ -18,6 +18,7 @@ export interface UserProfile {
   zip_code?: string;
   local?: string;
   profile_picture?: any;
+  phone?: string;
 }
 
 interface AuthContextType {

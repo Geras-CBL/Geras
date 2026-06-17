@@ -4,7 +4,8 @@ import Container from '@/components/shared/Container';
 import EvaluationTask from '@/components/shared/EvaluationTask';
 import { InfoPill } from '@/components/shared/InfoPill';
 import SectionTitle from '@/components/shared/SectionTitle';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { MaterialIcons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import {
   Image,
@@ -13,7 +14,10 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
+import Button from '@/components/shared/Button';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const requestConfig: Record<
@@ -48,6 +52,7 @@ const requestConfig: Record<
 };
 
 export default function RequestDetails() {
+  const router = useRouter();
   const { type, requestId } = useLocalSearchParams<{
     type?: string;
     requestId?: string;
@@ -93,6 +98,32 @@ export default function RequestDetails() {
     fetchDetails();
   }, [requestId]);
 
+  const handleComplete = () => {
+    Alert.alert('Concluir Tarefa', 'Tem a certeza que concluiu esta tarefa?', [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Concluir',
+        style: 'default',
+        onPress: async () => {
+          try {
+            if (!requestId) return;
+            const { error } = await supabase
+              .from('requests')
+              .update({ state: 'COMPLETED' })
+              .eq('id', requestId);
+
+            if (error) throw error;
+            Alert.alert('Sucesso', 'Tarefa marcada como concluída!');
+            router.back();
+          } catch (err) {
+            console.error('Error completing request:', err);
+            Alert.alert('Erro', 'Não foi possível concluir a tarefa.');
+          }
+        },
+      },
+    ]);
+  };
+
   if (loading) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
@@ -108,7 +139,7 @@ export default function RequestDetails() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
       >
-        <View className="w-full px-6 pb-6">
+        <View className="w-full px-6 pb-6 pt-4">
           <Image
             source={image}
             resizeMode="cover"
@@ -130,7 +161,11 @@ export default function RequestDetails() {
               <ThemedText type="title">{title}</ThemedText>
               <InfoPill
                 text={
-                  requestData?.state === 'PENDING' ? 'Pendente' : 'Completa'
+                  requestData?.state === 'PENDING'
+                    ? 'Pendente'
+                    : requestData?.state === 'ACCEPTED'
+                      ? 'Em progresso'
+                      : 'Concluído'
                 }
                 variant={
                   requestData?.state === 'PENDING' ? 'secondary' : 'success'
@@ -181,6 +216,16 @@ export default function RequestDetails() {
             )}
           </View>
         </ScrollView>
+        {requestData?.state === 'ACCEPTED' && (
+          <View className="absolute bottom-0 w-full border-t border-gray-100 bg-white px-6 pb-8 pt-4 shadow-xl">
+            <Button
+              title="Concluir Tarefa"
+              variant="default"
+              className="bg-primary"
+              onPress={handleComplete}
+            />
+          </View>
+        )}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

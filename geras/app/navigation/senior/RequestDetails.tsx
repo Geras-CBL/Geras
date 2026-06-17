@@ -72,9 +72,9 @@ export default function RequestDetails() {
 
   const { title, image, alt } = requestConfig[requestType];
 
-  const [taskStatus, setTaskStatus] = useState<'inProgress' | 'complete'>(
-    'inProgress',
-  );
+  const [taskStatus, setTaskStatus] = useState<
+    'PENDING' | 'ACCEPTED' | 'COMPLETED'
+  >('PENDING');
 
   const [selectedVariant, setSelectedVariant] =
     useState<EvaluationTaskVariant | null>(null);
@@ -107,8 +107,8 @@ export default function RequestDetails() {
           if (data.description) {
             setDbDescription(data.description);
           }
-          if (data.state !== 'PENDING') {
-            setTaskStatus('complete');
+          if (data.state) {
+            setTaskStatus(data.state);
           }
           if (data.caretaker) {
             setCaretaker({
@@ -189,16 +189,22 @@ export default function RequestDetails() {
               <View
                 accessible={true}
                 accessibilityLabel={`Estado da tarefa: ${
-                  taskStatus === 'inProgress' ? 'Em progresso' : 'Completa'
+                  taskStatus === 'PENDING'
+                    ? 'A Aguardar Resposta'
+                    : taskStatus === 'ACCEPTED'
+                      ? 'Em progresso'
+                      : 'Concluído'
                 }`}
               >
                 <InfoPill
                   text={
-                    taskStatus === 'inProgress' ? 'Em progresso' : 'Completa'
+                    taskStatus === 'PENDING'
+                      ? 'A Aguardar Resposta'
+                      : taskStatus === 'ACCEPTED'
+                        ? 'Em progresso'
+                        : 'Concluído'
                   }
-                  variant={
-                    taskStatus === 'inProgress' ? 'secondary' : 'success'
-                  }
+                  variant={taskStatus === 'PENDING' ? 'secondary' : 'success'}
                 />
               </View>
             </View>
@@ -212,27 +218,30 @@ export default function RequestDetails() {
               {dbDescription ? ` ${dbDescription}` : ''}
             </ThemedText>
 
-            <SectionTitle title="Cuidador" />
-
-            {caretaker ? (
-              <View
-                accessible={true}
-                accessibilityRole="text"
-                accessibilityLabel={`Cuidador atribuído: ${caretaker.name}`}
-              >
-                <ContainerVoluntario
-                  name={caretaker.name}
-                  role={caretaker.role}
-                  avatarUri={caretaker.profile_picture}
-                />
-              </View>
-            ) : (
-              <ThemedText type="bodySmall" className="text-gray-400">
-                A aguardar atribuição...
-              </ThemedText>
+            {taskData?.id_caretaker && (
+              <>
+                <SectionTitle title="Cuidador" />
+                {caretaker ? (
+                  <View
+                    accessible={true}
+                    accessibilityRole="text"
+                    accessibilityLabel={`Cuidador atribuído: ${caretaker.name}`}
+                  >
+                    <ContainerVoluntario
+                      name={caretaker.name}
+                      role={caretaker.role}
+                      avatarUri={caretaker.profile_picture}
+                    />
+                  </View>
+                ) : (
+                  <ThemedText type="bodySmall" className="text-gray-400">
+                    A aguardar atribuição...
+                  </ThemedText>
+                )}
+              </>
             )}
 
-            {taskStatus === 'complete' && (
+            {taskStatus === 'COMPLETED' && (
               <>
                 <ThemedText type="title">Como Correu A Tarefa</ThemedText>
 

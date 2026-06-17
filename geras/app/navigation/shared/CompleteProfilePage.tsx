@@ -91,6 +91,7 @@ export default function CompleteProfilePage() {
         role: role,
         gender: genderEnum,
         local: city,
+        auth_provider: user.app_metadata.provider || 'email',
       };
 
       if (role === 'SENIOR') {

@@ -121,13 +121,16 @@ const AnimatedStepText = ({
 
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
+import { useNotifications } from '@/context/NotificationsContext';
 
 export default function RequestLoading() {
-  const { type, description } = useLocalSearchParams<{
+  const { type, description, isPublic } = useLocalSearchParams<{
     type?: string;
     description?: string;
+    isPublic?: string;
   }>();
   const { profile } = useAuth();
+  const { sendLocalNotification, saveNotificationToDB } = useNotifications();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [requestId, setRequestId] = useState<string | null>(null);
 
@@ -165,19 +168,34 @@ export default function RequestLoading() {
             category: categoryLabel,
             description: description || '',
             state: 'PENDING',
+            is_public: isPublic === 'true',
           })
           .select()
           .single();
 
         if (insertError) throw insertError;
-        if (data) setRequestId(data.id.toString());
+        if (data) {
+          setRequestId(data.id.toString());
+
+          // Notificação para o cuidador
+          const categoryLabel = data.category || 'Pedido';
+          const notifDescription = `O sénior fez um novo pedido: ${categoryLabel}`;
+
+          // 1. Guardar na tabela notifications do Supabase
+          await saveNotificationToDB({
+            type: 'alert',
+            description: notifDescription,
+            id_senior: profile.id,
+            id_caretaker: caretakerId,
+          });
+        }
       } catch (err) {
         console.error('Error creating request:', err);
       }
     }
 
     createRequest();
-  }, [profile?.id, type, description]);
+  }, [profile?.id, type, description, isPublic]);
 
   useEffect(() => {
     const duration = currentStepIndex === 2 ? 2000 : 3000;

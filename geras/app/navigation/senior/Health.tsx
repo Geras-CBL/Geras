@@ -17,6 +17,7 @@ import { useAuth } from '@/context/AuthContext';
 import { ScrollView, View, ActivityIndicator } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ThemedText } from '@/components/ThemedText';
 
 // =========================
 // TYPES
@@ -193,10 +194,10 @@ export default function Health() {
           const prev = previousMetrics[item.metric_type];
           const previousRecord = prev
             ? {
-                value_primary: prev.value_primary,
-                value_secondary: prev.value_secondary,
-                measured_at: prev.measured_at,
-              }
+              value_primary: prev.value_primary,
+              value_secondary: prev.value_secondary,
+              measured_at: prev.measured_at,
+            }
             : undefined;
           return {
             id: item.id,
@@ -416,19 +417,47 @@ export default function Health() {
         showsVerticalScrollIndicator={false}
       >
         {/* NOTIFICATIONS */}
-        <SectionTitle title={'Notificações'}>
+        <SectionTitle title={'Eventos Recentes'}>
           {loading ? (
             <ActivityIndicator size="large" color="#2F5C3E" />
+          ) : notifications.length === 0 ? (
+            <View className="items-center py-4">
+              <ThemedText type="bodyInfo" className="text-neutral">
+                Não tens eventos de saúde recentes.
+              </ThemedText>
+            </View>
           ) : (
-            notifications.map((notification) => (
-              <NotificationCard
-                key={notification.id}
-                variant="medication"
-                title="Aviso"
-                iconName="medication"
-                description={notification.description}
-              />
-            ))
+            notifications.map((notification) => {
+              let title = 'Aviso';
+              let icon = 'info';
+              if (notification.type === 'medication') {
+                title = 'Medicação';
+                icon = 'medication';
+              }
+              if (notification.type === 'health') {
+                title = 'Saúde';
+                icon = 'health-and-safety';
+              }
+              if (notification.type === 'motion') {
+                title = 'Movimento';
+                icon = 'directions-walk';
+              }
+              if (notification.type === 'alert') {
+                title = 'Alerta';
+                icon = 'report';
+              }
+
+              return (
+                <NotificationCard
+                  key={notification.id}
+                  variant={(notification.type as any) || 'medication'}
+                  title={title}
+                  iconName={icon as any}
+                  description={notification.description}
+                  onDismiss={() => handleDismiss(notification.id)}
+                />
+              );
+            })
           )}
         </SectionTitle>
 
@@ -466,14 +495,33 @@ export default function Health() {
         </SectionTitle>
 
         {/* MEDICINE SCHEDULE */}
-        <MedicationSchedule medicines={medicines} />
-        <Button
-          title="Fazer pedido farmácia"
-          icon={<MaterialCommunityIcons name="pill" size={24} color="#ffff" />}
-          onPress={() => {
-            router.push('../../navigation/senior/Requests?type=pharmacy');
-          }}
-        />
+        <SectionTitle title={'Horário da Medicação'}>
+          <MedicationSchedule medicines={medicines} />
+          <View className="mt-4 w-full gap-4">
+            <Button
+              title="Adicionar Medicação"
+              variant="outlined"
+              icon={
+                <MaterialCommunityIcons name="plus" size={24} color="#205a2d" />
+              }
+              onPress={() => {
+                router.push({
+                  pathname: '../shared/AddMedication',
+                  params: { id_senior: profile?.id },
+                });
+              }}
+            />
+            <Button
+              title="Fazer pedido farmácia"
+              icon={
+                <MaterialCommunityIcons name="pill" size={24} color="#ffff" />
+              }
+              onPress={() => {
+                router.push('./PharmacyShopping');
+              }}
+            />
+          </View>
+        </SectionTitle>
       </ScrollView>
       <BottomActions />
     </SafeAreaView>

@@ -14,18 +14,32 @@ import { ThemedText } from '@/components/ThemedText';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { useProfile } from '@/context/ProfileContext';
+import { useAuth } from '@/context/AuthContext';
 import React from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 
 const NOTIFICATION_CONFIG: Record<
   string,
   {
-    variant: 'alert' | 'medication' | 'info' | 'pantry' | 'reminder';
+    variant:
+    | 'alert'
+    | 'request'
+    | 'health'
+    | 'medication'
+    | 'info'
+    | 'pantry'
+    | 'reminder';
     icon: any;
     label: string;
   }
 > = {
   alert: { variant: 'alert', icon: 'warning', label: 'Aviso' },
+  request: { variant: 'request', icon: 'people', label: 'Pedido de Ajuda' },
+  accepted_request: {
+    variant: 'info',
+    icon: 'check-circle',
+    label: 'Pedido Aceite',
+  },
   medication: { variant: 'medication', icon: 'medication', label: 'Medicação' },
   pantry: { variant: 'pantry', icon: 'shopping-basket', label: 'Despensa' },
   reminder: { variant: 'reminder', icon: 'alarm', label: 'Lembrete' },
@@ -34,25 +48,30 @@ const NOTIFICATION_CONFIG: Record<
 
 export default function Notifications() {
   const router = useRouter();
+  const { profile } = useAuth();
   const { selectedProfile } = useProfile();
   const [notifications, setNotifications] = React.useState<any[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
   const fetchNotifications = React.useCallback(async () => {
-    if (!selectedProfile?.id) {
+    if (!selectedProfile?.id || !profile?.role) {
       setIsLoading(false);
       return;
     }
     setIsLoading(true);
     try {
-      const nowIso = new Date().toISOString();
-      const { data, error } = await supabase
+      let query = supabase
         .from('notifications')
         .select('*')
         .eq('id_senior', selectedProfile.id)
         .is('dismissed_at', null)
-        .or(`expires_at.is.null,expires_at.gt.${nowIso}`)
         .order('created_at', { ascending: false });
+
+      if (profile.role === 'SENIOR') {
+        query = query.is('id_caretaker', null).is('id_volunteer', null);
+      }
+
+      const { data, error } = await query;
 
       if (!error && data) {
         setNotifications(data);
@@ -62,7 +81,20 @@ export default function Notifications() {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedProfile?.id]);
+  }, [selectedProfile?.id, profile?.role, profile?.id]);
+
+  const handleDismiss = React.useCallback(async (notificationId: number) => {
+    setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
+
+    const { error } = await supabase
+      .from('notifications')
+      .update({ dismissed_at: new Date().toISOString() })
+      .eq('id', notificationId);
+
+    if (error) {
+      console.error('Erro ao dispensar notificação:', error.message);
+    }
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -122,6 +154,7 @@ export default function Notifications() {
                   title={config.label}
                   iconName={config.icon}
                   description={notif.description}
+                  onDismiss={() => handleDismiss(notif.id)}
                   rightContent={
                     isAlert ? (
                       <>

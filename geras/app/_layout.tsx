@@ -1,6 +1,6 @@
 import { Rubik_400Regular, Rubik_700Bold } from '@expo-google-fonts/rubik';
 import { useFonts } from 'expo-font';
-import { Stack, router } from 'expo-router';
+import { Stack, useRouter, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
@@ -14,6 +14,7 @@ import { ProfileProvider } from '@/context/ProfileContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { NotificationsProvider } from '@/context/NotificationsContext';
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ export default function RootLayout() {
     'Rubik-Bold': Rubik_700Bold,
     MonoTrustDisplay: require('../assets/fonts/MomoTrustDisplay-Regular.ttf'),
   });
+  const pathname = usePathname();
 
   useEffect(() => {
     if (loaded) {
@@ -87,9 +89,9 @@ export default function RootLayout() {
                           rightIconName="settings"
                           leftIconLabel="Ir para a página inicial"
                           rightIconLabel="Abrir definições"
-                          onLeftPress={() => {}}
+                          onLeftPress={() => { }}
                           onRightPress={() =>
-                            router.push('/navigation/shared/Settings')
+                            router.push('/navigation/senior/Settings')
                           }
                           onLogoutPress={handleLogout}
                         />
@@ -109,9 +111,9 @@ export default function RootLayout() {
                           rightIconName="settings"
                           leftIconLabel="Ir para a página inicial"
                           rightIconLabel="Abrir definições"
-                          onLeftPress={() => {}}
+                          onLeftPress={() => { }}
                           onRightPress={() =>
-                            router.push('/navigation/shared/Settings')
+                            router.push('/navigation/senior/Settings')
                           }
                           isWhite={false}
                           onLogoutPress={handleLogout}
@@ -135,7 +137,7 @@ export default function RootLayout() {
                             router.push('/navigation/senior/HomePage')
                           }
                           onRightPress={() =>
-                            router.push('/navigation/shared/Settings')
+                            router.push('/navigation/senior/Settings')
                           }
                           onLogoutPress={handleLogout}
                         />
@@ -143,7 +145,7 @@ export default function RootLayout() {
                     }}
                   />
                   <Stack.Screen
-                    name="navigation/shared/Settings"
+                    name="navigation/senior/Settings"
                     options={{
                       headerShown: true,
                       headerTransparent: true,
@@ -157,7 +159,7 @@ export default function RootLayout() {
                           onLeftPress={() =>
                             router.push('/navigation/senior/HomePage')
                           }
-                          onRightPress={() => {}}
+                          onRightPress={() => { }}
                           onLogoutPress={handleLogout}
                         />
                       ),
@@ -179,7 +181,7 @@ export default function RootLayout() {
                             router.push('/navigation/senior/HomePage')
                           }
                           onRightPress={() =>
-                            router.push('/navigation/shared/Settings')
+                            router.push('/navigation/senior/Settings')
                           }
                           onLogoutPress={handleLogout}
                         />
@@ -202,7 +204,7 @@ export default function RootLayout() {
                             router.push('/navigation/senior/HomePage')
                           }
                           onRightPress={() =>
-                            router.push('/navigation/shared/Settings')
+                            router.push('/navigation/senior/Settings')
                           }
                           onLogoutPress={handleLogout}
                         />
@@ -225,7 +227,7 @@ export default function RootLayout() {
                             router.push('/navigation/senior/HomePage')
                           }
                           onRightPress={() =>
-                            router.push('/navigation/shared/Settings')
+                            router.push('/navigation/senior/Settings')
                           }
                           onLogoutPress={handleLogout}
                         />
@@ -248,7 +250,7 @@ export default function RootLayout() {
                             router.push('/navigation/senior/HomePage')
                           }
                           onRightPress={() =>
-                            router.push('/navigation/shared/Settings')
+                            router.push('/navigation/senior/Settings')
                           }
                           onLogoutPress={handleLogout}
                         />
@@ -271,7 +273,7 @@ export default function RootLayout() {
                             router.push('/navigation/senior/HomePage')
                           }
                           onRightPress={() =>
-                            router.push('/navigation/shared/Settings')
+                            router.push('/navigation/senior/Settings')
                           }
                           onLogoutPress={handleLogout}
                         />
@@ -294,7 +296,7 @@ export default function RootLayout() {
                             router.push('/navigation/senior/HomePage')
                           }
                           onRightPress={() =>
-                            router.push('/navigation/shared/Settings')
+                            router.push('/navigation/senior/Settings')
                           }
                           onLogoutPress={handleLogout}
                         />
@@ -317,7 +319,7 @@ export default function RootLayout() {
                             router.push('/navigation/senior/HomePage')
                           }
                           onRightPress={() =>
-                            router.push('/navigation/shared/Settings')
+                            router.push('/navigation/senior/Settings')
                           }
                           onLogoutPress={handleLogout}
                         />
@@ -340,7 +342,7 @@ export default function RootLayout() {
                             router.push('/navigation/senior/HomePage')
                           }
                           onRightPress={() =>
-                            router.push('/navigation/shared/Settings')
+                            router.push('/navigation/senior/Settings')
                           }
                           onLogoutPress={handleLogout}
                         />
@@ -453,7 +455,7 @@ export default function RootLayout() {
                             router.push('/navigation/senior/HomePage')
                           }
                           onRightPress={() =>
-                            router.push('/navigation/shared/Settings')
+                            router.push('/navigation/senior/Settings')
                           }
                           onLogoutPress={handleLogout}
                         />
