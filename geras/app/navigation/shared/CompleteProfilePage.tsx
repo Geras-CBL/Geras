@@ -17,6 +17,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { Svg, G, Path, Defs, ClipPath } from 'react-native-svg';
 import { Checkbox } from '@futurejj/react-native-checkbox';
+import { geocodeAddress } from '@/services/locationHelperService';
 
 export default function CompleteProfilePage() {
   const router = useRouter();
@@ -81,9 +82,17 @@ export default function CompleteProfilePage() {
       }
 
       let genderEnum = gender.toUpperCase();
+      let locationPoint: string | null = null;
       if (genderEnum === 'MASCULINO') genderEnum = 'MALE';
       if (genderEnum === 'FEMININO') genderEnum = 'FEMALE';
 
+      if (role === 'SENIOR') {
+        const coords = await geocodeAddress(address, postalCode, city);
+        if (coords) {
+          // Nota: Longitude vem primeiro no POINT do PostGIS
+          locationPoint = `POINT(${coords.longitude} ${coords.latitude})`;
+        }
+      }
       const profileData: any = {
         auth_user_id: user.id,
         email: user.email,
@@ -93,10 +102,12 @@ export default function CompleteProfilePage() {
         local: city,
         auth_provider: user.app_metadata.provider || 'email',
       };
-
       if (role === 'SENIOR') {
         profileData.address = address;
         profileData.zip_code = postalCode;
+        if (locationPoint) {
+          profileData.location = locationPoint;
+        }
       } else if (role === 'VOLUNTEER') {
         profileData.action_radius = Number(actionRadius);
       }

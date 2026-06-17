@@ -8,6 +8,12 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { VoucherData } from '@/data/vouchersData';
 
+import { syncVolunteerVouchers } from '@/services/vouchersVolunteerService';
+import {
+  getDistanceInKm,
+  getVoucherCoordinate,
+} from '@/services/locationHelperService';
+
 export default function UsedVouchers() {
   const { profile } = useAuth();
   const [vouchers, setVouchers] = useState<VoucherData[]>([]);

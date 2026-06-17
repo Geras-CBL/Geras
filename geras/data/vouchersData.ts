@@ -6,4 +6,8 @@ export interface VoucherData {
   currentTasks: number;
   totalTasks: number;
   status: string;
+  distance?: string;
+  distanceVal?: number;
+  latitude: number;
+  longitude: number;
 }

@@ -10,6 +10,11 @@ import * as Device from 'expo-device';
 import { Platform } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
+import {
+  getDistanceInKm,
+  parsePostGISPoint,
+} from '@/services/locationHelperService';
+import * as Location from 'expo-location';
 
 // Configuração de como as notificações aparecem enquanto a app está aberta (foreground)
 Notifications.setNotificationHandler({
@@ -213,10 +218,53 @@ export function NotificationsProvider({
               newNotif.id_volunteer === profile.id ||
               (newNotif.type === 'request' && !newNotif.id_volunteer);
             if (isForMe) {
-              await sendLocalNotification(
-                '🤝 Novo Pedido de Ajuda',
-                newNotif.description || 'Há um pedido de ajuda na tua área!',
-              );
+              if (newNotif.type === 'request' && !newNotif.id_volunteer) {
+                // Procurar a localização do sénior na base de dados
+                const { data: senior, error } = await supabase
+                  .from('users')
+                  .select('location')
+                  .eq('id', newNotif.id_senior)
+                  .single();
+                if (!error && senior?.location) {
+                  const seniorCoords = parsePostGISPoint(senior.location);
+                  if (seniorCoords) {
+                    try {
+                      const { status } =
+                        await Location.requestForegroundPermissionsAsync();
+                      if (status === 'granted') {
+                        const position = await Location.getCurrentPositionAsync(
+                          {},
+                        );
+                        const dist = getDistanceInKm(
+                          position.coords.latitude,
+                          position.coords.longitude,
+                          seniorCoords.latitude,
+                          seniorCoords.longitude,
+                        );
+                        const maxRadius = profile?.action_radius || 5;
+                        if (dist <= maxRadius) {
+                          await sendLocalNotification(
+                            '🤝 Novo Pedido de Ajuda',
+                            newNotif.description ||
+                              'Há um pedido de ajuda na tua área!',
+                          );
+                        }
+                      }
+                    } catch (err) {
+                      console.log(
+                        'Erro ao obter localização no listener:',
+                        err,
+                      );
+                    }
+                  }
+                }
+              } else {
+                // Notificação dirigida especificamente a este voluntário
+                await sendLocalNotification(
+                  '🤝 Novo Pedido de Ajuda',
+                  newNotif.description || 'Há um pedido de ajuda na tua área!',
+                );
+              }
             }
           },
         )

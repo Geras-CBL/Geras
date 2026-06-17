@@ -8,6 +8,12 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { VoucherData } from '@/data/vouchersData';
 
+import { syncVolunteerVouchers } from '@/services/vouchersVolunteerService';
+import {
+  getDistanceInKm,
+  getVoucherCoordinate,
+} from '@/services/locationHelperService';
+
 export default function ActiveVouchers() {
   const { profile } = useAuth();
   const [vouchers, setVouchers] = useState<VoucherData[]>([]);
@@ -26,6 +32,7 @@ export default function ActiveVouchers() {
     }
     setLoading(true);
     try {
+      await syncVolunteerVouchers(profile.id);
       const { data, error } = await supabase
         .from('vouchers_volunteer')
         .select(
@@ -46,16 +53,71 @@ export default function ActiveVouchers() {
       if (error) throw error;
 
       if (data) {
-        const mapped: VoucherData[] = data.map((item: any) => ({
-          id: item.vouchers.id.toString(),
-          name_store: item.vouchers.store_name,
-          address: item.vouchers.address || '',
-          value: `${item.vouchers.value}%`,
-          currentTasks: item.current_tasks || 0,
-          totalTasks: item.vouchers.needed_tasks || 5,
-          status: item.status,
-        }));
-        setVouchers(mapped);
+        // Tentar obter a localização atual do voluntário
+        if (global.navigator && global.navigator.geolocation) {
+          global.navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const uLat = position.coords.latitude;
+              const uLng = position.coords.longitude;
+              const mapped = data.map((item: any, index: number) => {
+                const storeCoord = getVoucherCoordinate(
+                  item.vouchers.id.toString(),
+                  item.vouchers.store_name,
+                  index,
+                );
+                const dist = getDistanceInKm(
+                  uLat,
+                  uLng,
+                  storeCoord.latitude,
+                  storeCoord.longitude,
+                );
+                return {
+                  id: item.vouchers.id.toString(),
+                  name_store: item.vouchers.store_name,
+                  address: item.vouchers.address || '',
+                  value: `${item.vouchers.value}%`,
+                  currentTasks: item.current_tasks || 0,
+                  totalTasks: item.vouchers.needed_tasks || 5,
+                  status: item.status,
+                  distance: `${dist.toFixed(1)} Km`,
+                  distanceVal: dist,
+                };
+              });
+              // Ordenar por proximidade geográfica (menor distância primeiro)
+              mapped.sort((a: any, b: any) => a.distanceVal - b.distanceVal);
+              setVouchers(mapped);
+            },
+            (err) => {
+              // Fallback se a geolocalização falhar
+              console.log(
+                'Erro ao obter geolocalização, a carregar sem ordenar por proximidade:',
+                err,
+              );
+              const mapped = data.map((item: any) => ({
+                id: item.vouchers.id.toString(),
+                name_store: item.vouchers.store_name,
+                address: item.vouchers.address || '',
+                value: `${item.vouchers.value}%`,
+                currentTasks: item.current_tasks || 0,
+                totalTasks: item.vouchers.needed_tasks || 5,
+                status: item.status,
+              }));
+              setVouchers(mapped);
+            },
+          );
+        } else {
+          // Sem suporte de localização
+          const mapped = data.map((item: any) => ({
+            id: item.vouchers.id.toString(),
+            name_store: item.vouchers.store_name,
+            address: item.vouchers.address || '',
+            value: `${item.vouchers.value}%`,
+            currentTasks: item.current_tasks || 0,
+            totalTasks: item.vouchers.needed_tasks || 5,
+            status: item.status,
+          }));
+          setVouchers(mapped);
+        }
       }
     } catch (err) {
       console.error('Erro ao carregar vouchers:', err);
@@ -100,6 +162,7 @@ export default function ActiveVouchers() {
               value={item.value}
               currentTasks={item.currentTasks}
               totalTasks={item.totalTasks}
+              distance={item.distance}
               isCompleted={
                 item.status === 'AVAILABLE' &&
                 item.currentTasks >= item.totalTasks

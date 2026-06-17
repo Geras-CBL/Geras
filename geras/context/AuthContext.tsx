@@ -19,6 +19,7 @@ export interface UserProfile {
   local?: string;
   profile_picture?: any;
   phone?: string;
+  action_radius?: number | null;
 }
 
 interface AuthContextType {

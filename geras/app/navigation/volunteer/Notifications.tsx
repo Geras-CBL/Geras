@@ -85,7 +85,7 @@ export default function Notifications() {
         .is('dismissed_at', null)
         .or(`expires_at.is.null,expires_at.gt.${now}`)
         .or(
-          `id_volunteer.eq.${profile.id},and(id_volunteer.is.null,id_caretaker.is.null)`,
+          `id_volunteer.eq.${profile.id},and(id_volunteer.is.null,id_caretaker.is.null,type.eq.request)`,
         )
         .order('created_at', { ascending: false });
 
@@ -124,7 +124,7 @@ export default function Notifications() {
             // Só reagir se for para este voluntário ou broadcast
             if (
               n.id_volunteer === profile.id ||
-              (!n.id_volunteer && !n.id_caretaker)
+              (!n.id_volunteer && !n.id_caretaker && n.type === 'request')
             ) {
               fetchNotifications();
             }
