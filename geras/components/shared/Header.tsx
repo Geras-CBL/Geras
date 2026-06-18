@@ -17,6 +17,10 @@ interface HeaderProps {
   onLogoutPress?: () => void;
   isWhite?: boolean;
   showLeftIcon?: boolean;
+  showProfileOnLeft?: boolean;
+  showProfileOnRight?: boolean;
+  showNotificationsOnLeft?: boolean;
+  onProfilePress?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -31,6 +35,10 @@ const Header: React.FC<HeaderProps> = ({
   onLogoutPress,
   isWhite = true,
   showLeftIcon = true,
+  showProfileOnLeft = false,
+  showProfileOnRight = false,
+  showNotificationsOnLeft = false,
+  onProfilePress,
 }) => {
   const router = useRouter();
   const segments = useSegments();
@@ -51,7 +59,7 @@ const Header: React.FC<HeaderProps> = ({
           direita = notificações + logout */}
       <View className="h-16 flex-row items-center px-5">
         {/* ESQUERDA */}
-        <View className="flex-1 items-start">
+        <View className="flex-1 flex-row items-center justify-start gap-1">
           {finalShowLeftIcon ? (
             <TouchableOpacity
               onPress={finalOnLeftPress}
@@ -67,6 +75,34 @@ const Header: React.FC<HeaderProps> = ({
               />
             </TouchableOpacity>
           ) : null}
+
+          {showNotificationsOnLeft && !onNotificationsRoute && onRightPress && (
+            <TouchableOpacity
+              onPress={onRightPress}
+              className="items-center justify-center p-2"
+              accessibilityLabel={rightIconLabel}
+            >
+              <MaterialIcons
+                name={rightIconName}
+                size={34}
+                color={isWhite ? 'black' : 'white'}
+              />
+            </TouchableOpacity>
+          )}
+
+          {showProfileOnLeft && onProfilePress && (
+            <TouchableOpacity
+              onPress={onProfilePress}
+              className="items-center justify-center p-2"
+              accessibilityLabel="Perfil"
+            >
+              <MaterialIcons
+                name="person"
+                size={34}
+                color={isWhite ? 'black' : 'white'}
+              />
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* CENTRO */}
@@ -99,8 +135,8 @@ const Header: React.FC<HeaderProps> = ({
 
         {/* DIREITA */}
         <View className="flex-1 flex-row items-center justify-end">
-          {/* Notificações */}
-          {finalShowRightIcon && (
+          {/* Notificações na direita (apenas se não estiverem na esquerda) */}
+          {finalShowRightIcon && !showNotificationsOnLeft && (
             <TouchableOpacity
               onPress={onRightPress}
               className="items-center justify-center p-2"
@@ -111,6 +147,21 @@ const Header: React.FC<HeaderProps> = ({
             >
               <MaterialIcons
                 name={rightIconName}
+                size={34}
+                color={isWhite ? 'black' : 'white'}
+              />
+            </TouchableOpacity>
+          )}
+
+          {/* Perfil na direita */}
+          {showProfileOnRight && onProfilePress && (
+            <TouchableOpacity
+              onPress={onProfilePress}
+              className="items-center justify-center p-2"
+              accessibilityLabel="Perfil"
+            >
+              <MaterialIcons
+                name="person"
                 size={34}
                 color={isWhite ? 'black' : 'white'}
               />

@@ -373,6 +373,11 @@ export default function RootLayout() {
                             onLeftPress={() => {
                               router.back();
                             }}
+                            showNotificationsOnLeft={true}
+                            showProfileOnRight={true}
+                            onProfilePress={() => {
+                              router.push('/navigation/shared/Profile');
+                            }}
                             onRightPress={() =>
                               router.push('/navigation/volunteer/Notifications')
                             }
@@ -381,6 +386,7 @@ export default function RootLayout() {
                         ),
                       }}
                     />
+
                     {/* caretaker */}
                     <Stack.Screen
                       name="navigation/caretaker"
@@ -436,6 +442,29 @@ export default function RootLayout() {
                             }}
                             onRightPress={() =>
                               router.push('../caretaker/Notifications')
+                            }
+                            onLogoutPress={handleLogout}
+                          />
+                        ),
+                      }}
+                    />
+                    <Stack.Screen
+                      name="navigation/shared/Profile"
+                      options={{
+                        headerShown: true,
+                        headerTransparent: true,
+                        contentStyle: { backgroundColor: 'transparent' },
+                        header: () => (
+                          <Header
+                            leftIconName="arrow-back"
+                            rightIconName="notifications"
+                            leftIconLabel="Voltar"
+                            rightIconLabel="Notificações"
+                            onLeftPress={() => {
+                              router.back();
+                            }}
+                            onRightPress={() =>
+                              router.push('/navigation/volunteer/Notifications')
                             }
                             onLogoutPress={handleLogout}
                           />

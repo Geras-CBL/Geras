@@ -1,0 +1,103 @@
+import React from 'react';
+import { TouchableOpacity, View } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useFontScale } from '@/components/FontContext';
+import SectionTitle from '@/components/shared/SectionTitle';
+import { ThemedText } from '@/components/ThemedText';
+
+export default function AccessibilitySection() {
+  const { scale, setScale } = useFontScale();
+
+  const fontOptions = [
+    { value: 1.0, label: 'Normal' },
+    { value: 1.2, label: 'Grande' },
+    { value: 1.5, label: 'Extra' },
+  ];
+
+  return (
+    <View className="gap-4">
+      <SectionTitle title="Acessibilidade" />
+      <View className="gap-2">
+        <ThemedText
+          type="subtitle"
+          className="text-neutral-800"
+          accessibilityRole="header"
+        >
+          Tamanho do Texto
+        </ThemedText>
+        <ThemedText type="body" className="text-gray-500">
+          Ajuste o tamanho do texto para facilitar a leitura em toda a
+          aplicação.
+        </ThemedText>
+      </View>
+
+      <View className="flex-row gap-3">
+        {fontOptions.map((option) => {
+          const isSelected = scale === option.value;
+
+          return (
+            <TouchableOpacity
+              key={option.value}
+              onPress={() => setScale(option.value)}
+              activeOpacity={0.7}
+              className={`flex-1 items-center justify-center rounded-2xl border py-4 shadow-sm ${
+                isSelected
+                  ? 'border-transparent bg-primary'
+                  : 'border-gray-200 bg-white'
+              }`}
+              accessible={true}
+              accessibilityRole="radio"
+              accessibilityState={{ checked: isSelected }}
+              accessibilityLabel={`Tamanho ${option.label}`}
+              accessibilityHint={`Toca duas vezes para alterar a escala do texto para ${option.value} vezes`}
+            >
+              {isSelected && (
+                <View className="mb-1" importantForAccessibility="no">
+                  <MaterialIcons name="check-circle" size={20} color="white" />
+                </View>
+              )}
+
+              <ThemedText
+                type="bodyBold"
+                style={{
+                  color: isSelected ? 'white' : '#4b5563',
+                }}
+              >
+                {option.label}
+              </ThemedText>
+
+              <ThemedText
+                style={{
+                  fontSize: 12,
+                  color: isSelected ? 'rgba(255,255,255,0.8)' : '#9ca3af',
+                }}
+              >
+                {option.value}x
+              </ThemedText>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+
+      <View className="mt-4 gap-3">
+        <ThemedText type="subtitle" accessibilityRole="header">
+          Pré-visualização
+        </ThemedText>
+
+        <View className="rounded-3xl border border-gray-200 bg-gray-100 p-6">
+          <View className="mb-4 flex-row items-center gap-3">
+            <View className="h-10 w-10 items-center justify-center rounded-full bg-secondary">
+              <MaterialIcons name="text-fields" size={24} color="white" />
+            </View>
+            <ThemedText type="bodyBold">Exemplo de Título</ThemedText>
+          </View>
+
+          <ThemedText type="body" className="leading-relaxed text-gray-600">
+            Este é um exemplo de como o texto do corpo ficará. Ao alterar as
+            definições acima, este texto mudará de tamanho instantaneamente.
+          </ThemedText>
+        </View>
+      </View>
+    </View>
+  );
+}
