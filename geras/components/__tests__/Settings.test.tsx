@@ -81,12 +81,7 @@ jest.mock('@/context/AuthContext', () => ({
   }),
 }));
 
-jest.mock('@/components/shared/HealthConnectSection', () => {
-  const React = require('react');
-  return function MockHealthConnectSection() {
-    return null;
-  };
-});
+jest.mock('@/components/shared/HealthConnectSection', () => () => null);
 
 describe('Ecrã Settings - Teste Funcional', () => {
   it('deve selecionar o tamanho Extra (1.5x) quando o utilizador clica no botão', () => {
