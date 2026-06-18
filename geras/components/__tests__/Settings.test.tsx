@@ -1,11 +1,37 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import Settings from '../../app/navigation/senior/Settings';
+import Settings from '@/app/navigation/senior/Settings';
 import { FontProvider } from '@/components/FontContext';
 import { StyleSheet } from 'react-native';
 
 // 1. Mocks Essenciais
 // O Jest não tem ecrã, por isso temos de "fingir" as bibliotecas visuais e de navegação
+jest.mock('@/lib/supabase', () => ({
+  supabase: {
+    auth: { signOut: jest.fn(), getSession: jest.fn() },
+    from: jest.fn(() => ({ select: jest.fn(), insert: jest.fn() })),
+  },
+}));
+
+jest.mock('@react-native-google-signin/google-signin', () => ({
+  GoogleSignin: {
+    configure: jest.fn(),
+    signIn: jest.fn(),
+    signOut: jest.fn(),
+    isSignedIn: jest.fn(() => false),
+    getTokens: jest.fn(),
+  },
+}));
+
+jest.mock('@/context/AuthContext', () => ({
+  useAuth: () => ({
+    session: null,
+    user: null,
+    signOut: jest.fn(),
+    loading: false,
+  }),
+}));
+
 jest.mock('@expo/vector-icons', () => ({
   MaterialIcons: 'MaterialIcons',
 }));
@@ -35,6 +61,27 @@ jest.mock('react-native-safe-area-context', () => ({
   SafeAreaView: ({ children }: any) => children,
   useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
 }));
+
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
+);
+
+jest.mock('react-native-health-connect', () => ({
+  initialize: jest.fn().mockResolvedValue(true),
+  getSdkStatus: jest.fn().mockResolvedValue(1),
+  getGrantedPermissions: jest.fn().mockResolvedValue([]),
+  requestPermission: jest.fn().mockResolvedValue([]),
+}));
+
+jest.mock('@/context/AuthContext', () => ({
+  useAuth: () => ({
+    profile: { role: 'SENIOR' },
+    refreshProfile: jest.fn(),
+    signOut: jest.fn(),
+  }),
+}));
+
+jest.mock('@/components/shared/HealthConnectSection', () => () => null);
 
 describe('Ecrã Settings - Teste Funcional', () => {
   it('deve selecionar o tamanho Extra (1.5x) quando o utilizador clica no botão', () => {

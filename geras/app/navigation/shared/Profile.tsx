@@ -8,6 +8,7 @@ import { Card } from '@/components/shared/ProfileCard';
 import Button from '@/components/shared/Button';
 import { ThemedText } from '@/components/ThemedText';
 import { useAuth } from '@/context/AuthContext';
+import AccessibilitySection from '@/components/shared/AccessibilitySection';
 
 const ROLE_LABELS: Record<string, string> = {
   CARETAKER: 'Cuidador(a)',
@@ -48,7 +49,7 @@ export default function Profile() {
     <SafeAreaView edges={['top']} className="flex-1 pt-16">
       <ScrollView
         className="flex-1"
-        contentContainerClassName="px-6 gap-12 pb-10"
+        contentContainerClassName="px-6 gap-12 pb-40"
         showsVerticalScrollIndicator={false}
       >
         <View className="pt-8">
@@ -64,6 +65,8 @@ export default function Profile() {
             </View>
           </SectionTitle>
         </View>
+
+        <AccessibilitySection />
 
         <View className="mt-2 gap-4">
           <Button title="Termos e condições" onPress={openTerms} />

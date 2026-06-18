@@ -18,6 +18,7 @@ interface VoucherData {
   currentTasks: number;
   totalTasks: number;
   status: string;
+  distance?: string;
 }
 
 interface VoucherBottomSheetProps {
@@ -110,7 +111,9 @@ const VoucherBottomSheet = forwardRef<
             <Image
               className="h-[142px] w-[142px]"
               source={{
-                uri: 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example',
+                uri: `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
+                  `voucher:${voucher.id}:volunteer:${profile?.id}:code:${voucher.id}-${profile?.id}-${voucher.currentTasks}`,
+                )}`,
               }}
               resizeMode="cover"
             />
@@ -118,6 +121,12 @@ const VoucherBottomSheet = forwardRef<
             <ThemedText className="text-center text-base capitalize text-neutral">
               <ThemedText type="bodyBold">Localização: </ThemedText>
               <ThemedText className="font-rubik">{voucher.address}</ThemedText>
+              {voucher.distance && (
+                <ThemedText className="font-bold text-primary">
+                  {' '}
+                  ({voucher.distance})
+                </ThemedText>
+              )}
             </ThemedText>
 
             <Pressable
@@ -190,7 +199,8 @@ const VoucherBottomSheet = forwardRef<
             </View>
 
             <ThemedText type="bodyBold" className="text-neutral">
-              {voucher.currentTasks} / {voucher.totalTasks} Tarefas
+              {voucher.currentTasks} / {voucher.totalTasks} Tarefas (
+              {voucher.totalTasks - voucher.currentTasks} em falta)
             </ThemedText>
           </View>
         )}

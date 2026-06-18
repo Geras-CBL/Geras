@@ -16,6 +16,7 @@ import { Stack, useRouter } from 'expo-router';
 import { Svg, G, Path, Defs, ClipPath } from 'react-native-svg';
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { geocodeAddress } from '@/services/locationHelperService';
 
 export default function SignInPage() {
   const router = useRouter();
@@ -33,6 +34,7 @@ export default function SignInPage() {
     'SENIOR',
   );
   const [loading, setLoading] = useState(false);
+  const [phone, setPhone] = useState('');
 
   const handleRegister = async () => {
     if (!name || !email || !password || !confirmPassword || !gender || !city) {
@@ -43,6 +45,20 @@ export default function SignInPage() {
     if (!termsAccepted) {
       Alert.alert('Erro', 'Tem de aceitar os termos e condições.');
       return;
+    }
+
+    if (role !== 'VOLUNTEER') {
+      if (!phone) {
+        Alert.alert('Erro', 'Por favor preencha o número de telemóvel.');
+        return;
+      }
+      if (!/^[0-9]{9}$/.test(phone)) {
+        Alert.alert(
+          'Erro',
+          'O número de telemóvel deve ter exatamente 9 dígitos.',
+        );
+        return;
+      }
     }
 
     if (password !== confirmPassword) {
@@ -79,20 +95,33 @@ export default function SignInPage() {
     });
 
     if (data?.user) {
-      // O trigger da base de dados pode não estar a copiar estes campos novos,
-      // por isso fazemos um update explícito à tabela 'users'
       let genderEnum = gender.toUpperCase();
+      let locationPoint: string | null = null;
       if (genderEnum === 'MASCULINO') genderEnum = 'MALE';
       if (genderEnum === 'FEMININO') genderEnum = 'FEMALE';
+
+      if (role === 'SENIOR') {
+        const coords = await geocodeAddress(address, postalCode, city);
+        if (coords) {
+          locationPoint = `POINT(${coords.longitude} ${coords.latitude})`;
+        }
+      }
 
       const updateData: any = {
         gender: genderEnum,
         local: city,
       };
 
+      if (role !== 'VOLUNTEER') {
+        updateData.phone = phone;
+      }
+
       if (role === 'SENIOR') {
         updateData.address = address;
         updateData.zip_code = postalCode;
+        if (locationPoint) {
+          updateData.location = locationPoint;
+        }
       } else if (role === 'VOLUNTEER') {
         updateData.action_radius = actionRadius;
       }
@@ -208,6 +237,18 @@ export default function SignInPage() {
                 value={city}
                 onChangeText={setCity}
               />
+
+              {(role === 'SENIOR' || role === 'CARETAKER') && (
+                <TextInput
+                  className="h-12 w-full rounded-2xl bg-neutralLight/40 px-4 text-base text-neutralLight"
+                  placeholder="Número de Telemóvel (9 dígitos)"
+                  placeholderTextColor="#fbfbfb"
+                  keyboardType="number-pad"
+                  maxLength={9}
+                  value={phone}
+                  onChangeText={(t) => setPhone(t.replace(/[^0-9]/g, ''))}
+                />
+              )}
 
               {role === 'SENIOR' && (
                 <>

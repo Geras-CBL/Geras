@@ -4,7 +4,7 @@ import {
   Rubik_700Bold,
 } from '@expo-google-fonts/rubik';
 import { useFonts } from 'expo-font';
-import { Stack, useRouter, usePathname } from 'expo-router';
+import { Stack, router, useRouter, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
@@ -25,7 +25,6 @@ const queryClient = new QueryClient();
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const router = useRouter();
   const [loaded] = useFonts({
     Rubik: Rubik_400Regular,
     Rubik_500Medium: Rubik_500Medium,
@@ -383,6 +382,11 @@ export default function RootLayout() {
                             onLeftPress={() => {
                               router.back();
                             }}
+                            showNotificationsOnLeft={true}
+                            showProfileOnRight={true}
+                            onProfilePress={() => {
+                              router.push('/navigation/shared/Profile');
+                            }}
                             onRightPress={() =>
                               router.push('/navigation/volunteer/Notifications')
                             }
@@ -391,6 +395,7 @@ export default function RootLayout() {
                         ),
                       }}
                     />
+
                     {/* caretaker */}
                     <Stack.Screen
                       name="navigation/caretaker"
@@ -452,6 +457,29 @@ export default function RootLayout() {
                         ),
                       }}
                     />
+                    <Stack.Screen
+                      name="navigation/shared/Profile"
+                      options={{
+                        headerShown: true,
+                        headerTransparent: true,
+                        contentStyle: { backgroundColor: 'transparent' },
+                        header: () => (
+                          <Header
+                            leftIconName="arrow-back"
+                            rightIconName="notifications"
+                            leftIconLabel="Voltar"
+                            rightIconLabel="Notificações"
+                            onLeftPress={() => {
+                              router.back();
+                            }}
+                            onRightPress={() =>
+                              router.push('/navigation/volunteer/Notifications')
+                            }
+                            onLogoutPress={handleLogout}
+                          />
+                        ),
+                      }}
+                    />
                     {/* Shared */}
                     <Stack.Screen
                       name="navigation/shared/AddHealthMetric"
@@ -475,6 +503,11 @@ export default function RootLayout() {
                           />
                         ),
                       }}
+                    />
+
+                    <Stack.Screen
+                      name="navigation/shared/CompleteProfilePage"
+                      options={{ headerShown: false }}
                     />
                   </Stack>
                 </BottomSheetModalProvider>

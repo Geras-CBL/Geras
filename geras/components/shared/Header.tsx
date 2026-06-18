@@ -5,6 +5,8 @@ import { useSegments, useRouter } from 'expo-router';
 import { Colors } from '@/constants/theme';
 import { Svg, G, Path, Defs, ClipPath, Rect } from 'react-native-svg';
 
+import { useAuth } from '@/context/AuthContext';
+
 interface HeaderProps {
   leftIconName?: keyof typeof MaterialIcons.glyphMap;
   rightIconName?: keyof typeof MaterialIcons.glyphMap;
@@ -17,6 +19,10 @@ interface HeaderProps {
   onLogoutPress?: () => void;
   isWhite?: boolean;
   showLeftIcon?: boolean;
+  showProfileOnLeft?: boolean;
+  showProfileOnRight?: boolean;
+  showNotificationsOnLeft?: boolean;
+  onProfilePress?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -31,10 +37,37 @@ const Header: React.FC<HeaderProps> = ({
   onLogoutPress,
   isWhite = true,
   showLeftIcon = true,
+  showProfileOnLeft = false,
+  showProfileOnRight = false,
+  showNotificationsOnLeft = false,
+  onProfilePress,
 }) => {
   const router = useRouter();
   const segments = useSegments();
+  const { profile } = useAuth();
+
+  const role = profile?.role;
+  const isVolunteer = role === 'VOLUNTEER';
+
   const onNotificationsRoute = (segments as string[]).includes('Notifications');
+  const onProfileRoute = (segments as string[]).includes('Profile');
+
+  // Ajustar automaticamente a lógica de acessibilidade e usabilidade para voluntário
+  const actualShowNotificationsOnLeft = isVolunteer
+    ? true
+    : showNotificationsOnLeft;
+  const actualShowProfileOnRight = isVolunteer
+    ? !onProfileRoute
+    : showProfileOnRight;
+  const actualShowProfileOnLeft = isVolunteer ? false : showProfileOnLeft;
+
+  const finalOnRightPress = isVolunteer
+    ? () => router.push('/navigation/volunteer/Notifications')
+    : onRightPress;
+
+  const finalOnProfilePress = isVolunteer
+    ? () => router.push('/navigation/shared/Profile')
+    : onProfilePress;
 
   const finalShowLeftIcon = onNotificationsRoute ? true : showLeftIcon;
   const finalLeftIconName = onNotificationsRoute ? 'arrow-back' : leftIconName;
@@ -51,7 +84,7 @@ const Header: React.FC<HeaderProps> = ({
           direita = notificações + logout */}
       <View className="h-16 flex-row items-center px-5">
         {/* ESQUERDA */}
-        <View className="flex-1 items-start">
+        <View className="flex-1 flex-row items-center justify-start gap-1">
           {finalShowLeftIcon ? (
             <TouchableOpacity
               onPress={finalOnLeftPress}
@@ -67,6 +100,36 @@ const Header: React.FC<HeaderProps> = ({
               />
             </TouchableOpacity>
           ) : null}
+
+          {actualShowNotificationsOnLeft &&
+            !onNotificationsRoute &&
+            finalOnRightPress && (
+              <TouchableOpacity
+                onPress={finalOnRightPress}
+                className="items-center justify-center p-2"
+                accessibilityLabel={rightIconLabel}
+              >
+                <MaterialIcons
+                  name={rightIconName}
+                  size={34}
+                  color={isWhite ? 'black' : 'white'}
+                />
+              </TouchableOpacity>
+            )}
+
+          {actualShowProfileOnLeft && finalOnProfilePress && (
+            <TouchableOpacity
+              onPress={finalOnProfilePress}
+              className="items-center justify-center p-2"
+              accessibilityLabel="Perfil"
+            >
+              <MaterialIcons
+                name="person"
+                size={34}
+                color={isWhite ? 'black' : 'white'}
+              />
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* CENTRO */}
@@ -99,10 +162,10 @@ const Header: React.FC<HeaderProps> = ({
 
         {/* DIREITA */}
         <View className="flex-1 flex-row items-center justify-end">
-          {/* Notificações */}
-          {finalShowRightIcon && (
+          {/* Notificações na direita (apenas se não estiverem na esquerda) */}
+          {finalShowRightIcon && !actualShowNotificationsOnLeft && (
             <TouchableOpacity
-              onPress={onRightPress}
+              onPress={finalOnRightPress}
               className="items-center justify-center p-2"
               testID="header-right-button"
               accessible
@@ -111,6 +174,21 @@ const Header: React.FC<HeaderProps> = ({
             >
               <MaterialIcons
                 name={rightIconName}
+                size={34}
+                color={isWhite ? 'black' : 'white'}
+              />
+            </TouchableOpacity>
+          )}
+
+          {/* Perfil na direita */}
+          {actualShowProfileOnRight && finalOnProfilePress && (
+            <TouchableOpacity
+              onPress={finalOnProfilePress}
+              className="items-center justify-center p-2"
+              accessibilityLabel="Perfil"
+            >
+              <MaterialIcons
+                name="person"
                 size={34}
                 color={isWhite ? 'black' : 'white'}
               />

@@ -188,6 +188,14 @@ export default function RequestLoading() {
             id_senior: profile.id,
             id_caretaker: caretakerId,
           });
+
+          if (isPublic === 'true') {
+            await saveNotificationToDB({
+              type: 'request',
+              description: `Novo pedido de ajuda disponível: ${categoryLabel}`,
+              id_senior: profile.id,
+            });
+          }
         }
       } catch (err) {
         console.error('Error creating request:', err);

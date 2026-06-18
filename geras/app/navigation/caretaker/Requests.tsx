@@ -31,7 +31,10 @@ export default function Requests() {
   const { selectedProfile, handleSelectProfile } = useProfile();
 
   const fetchRequests = useCallback(async () => {
-    if (!selectedProfile?.id || !profile?.id) return;
+    if (!selectedProfile?.id || !profile?.id) {
+      setIsLoading(false);
+      return;
+    }
     setIsLoading(true);
 
     try {

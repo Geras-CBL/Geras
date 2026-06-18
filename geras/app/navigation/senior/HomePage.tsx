@@ -6,12 +6,19 @@ import {
 } from '@/components/shared/Notification';
 import SectionTitle from '@/components/shared/SectionTitle';
 import { ThemedText } from '@/components/ThemedText';
-import { Linking, View, ActivityIndicator, ScrollView } from 'react-native';
+import {
+  Linking,
+  View,
+  ActivityIndicator,
+  ScrollView,
+  Alert,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState, useCallback } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
+import { syncHealthData } from '@/services/healthService';
 
 // ── Tipos de notificação ──────────────────────────────────────────────────────
 // Mapeamento: valor do campo `type` no Supabase → configuração visual
@@ -115,6 +122,7 @@ export default function Home() {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [caretakerName, setCaretakerName] = useState<string>('');
+  const [caretakerPhone, setCaretakerPhone] = useState<string | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -146,17 +154,23 @@ export default function Home() {
 
           const { data: assoc } = await supabase
             .from('senior_caretaker')
-            .select('caretaker:users!id_caretaker(name)')
+            .select('caretaker:users!id_caretaker(name, phone)')
             .eq('id_senior', profile.id)
             .limit(1)
             .maybeSingle();
 
           if (assoc?.caretaker) {
-            const name = Array.isArray(assoc.caretaker)
-              ? assoc.caretaker[0]?.name
-              : (assoc.caretaker as any).name;
-            if (name) setCaretakerName(name.split(' ')[0]);
+            const caretaker = Array.isArray(assoc.caretaker)
+              ? assoc.caretaker[0]
+              : (assoc.caretaker as any);
+            if (caretaker?.name) setCaretakerName(caretaker.name.split(' ')[0]);
+            if (caretaker?.phone) setCaretakerPhone(caretaker.phone);
           }
+
+          // Executar a sincronização de saúde em background de forma assíncrona
+          syncHealthData(profile.id).catch((err) =>
+            console.error('Erro ao sincronizar saúde na HomePage:', err),
+          );
         } catch (err) {
           console.error('Error fetching homepage data:', err);
         } finally {
@@ -254,7 +268,14 @@ export default function Home() {
                 iconName={'phone'}
                 label={caretakerName ? `Ligar a ${caretakerName}` : 'Ligar'}
                 onPress={() => {
-                  Linking.openURL(`tel:${963744454}`);
+                  if (caretakerPhone) {
+                    Linking.openURL(`tel:${caretakerPhone}`);
+                  } else {
+                    Alert.alert(
+                      'Sem contacto',
+                      'O cuidador ainda não tem número de telemóvel registado.',
+                    );
+                  }
                 }}
               />
             </View>

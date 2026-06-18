@@ -1,0 +1,11 @@
+appId: com.falcao2.x2.geras
+---
+- launchApp
+- tapOn: "E-mail"
+- inputText: "helio@email.com"
+- tapOn: "Palavra-Passe"
+- inputText: "12345voluntario"
+- tapOn: "return"
+- tapOn: "Log In"
+- tapOn: "Not Now"
+- assertVisible: "Pedidos"

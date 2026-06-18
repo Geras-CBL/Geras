@@ -21,6 +21,8 @@ import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { locations } from '@/data/locations';
 
+import { geocodeAddress } from '@/services/locationHelperService';
+
 export default function EditProfile() {
   const { profile, refreshProfile, isLoading } = useAuth();
   const router = useRouter();
@@ -32,6 +34,7 @@ export default function EditProfile() {
   const [local, setLocal] = useState('');
   const [district, setDistrict] = useState('');
   const [image, setImage] = useState<string | null>(null);
+  const [phone, setPhone] = useState('');
 
   const [showDistrictPicker, setShowDistrictPicker] = useState(false);
   const [showMunicipalityPicker, setShowMunicipalityPicker] = useState(false);
@@ -45,6 +48,7 @@ export default function EditProfile() {
       setZipCode(profile.zip_code || '');
       setLocal(profile.local || '');
       setImage(profile.profile_picture?.uri || null);
+      setPhone(profile.phone || '');
 
       if (profile.local) {
         const foundDistrict = locations.find((d) =>
@@ -80,19 +84,40 @@ export default function EditProfile() {
   const handleSave = async () => {
     if (!profile?.id) return;
 
+    if (phone && !/^[0-9]{9}$/.test(phone)) {
+      Alert.alert(
+        'Erro',
+        'O número de telemóvel deve ter exatamente 9 dígitos.',
+      );
+      return;
+    }
+
     setIsSaving(true);
     try {
+      let locationPoint: string | null = null;
+      // Se for sénior, geocodificamos a nova morada
+      if (profile.role === 'SENIOR') {
+        const coords = await geocodeAddress(address, zipCode, local);
+        if (coords) {
+          locationPoint = `POINT(${coords.longitude} ${coords.latitude})`;
+        }
+      }
+      const updateData: any = {
+        name,
+        email,
+        address,
+        zip_code: zipCode,
+        local,
+        phone,
+        profile_picture: image ? { uri: image } : null,
+        updated_at: new Date().toISOString(),
+      };
+      if (locationPoint) {
+        updateData.location = locationPoint;
+      }
       const { error } = await supabase
         .from('users')
-        .update({
-          name,
-          email,
-          address,
-          zip_code: zipCode,
-          local,
-          profile_picture: image ? { uri: image } : null,
-          updated_at: new Date().toISOString(),
-        })
+        .update(updateData)
         .eq('id', profile.id);
 
       if (error) throw error;
@@ -192,6 +217,16 @@ export default function EditProfile() {
           value={zipCode}
           onChangeText={setZipCode}
           keyboardType="numeric"
+        />
+
+        <SectionTitle title="Telemóvel" />
+        <FormField
+          className="-mt-6"
+          placeholder="Número de Telemóvel (9 dígitos)"
+          value={phone}
+          onChangeText={(t) => setPhone(t.replace(/[^0-9]/g, ''))}
+          keyboardType="number-pad"
+          maxLength={9}
         />
 
         <SectionTitle title="Distrito" />
