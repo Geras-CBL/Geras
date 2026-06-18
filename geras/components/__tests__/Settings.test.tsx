@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import Settings from '../../app/navigation/shared/Settings';
+import Settings from '@/app/navigation/senior/Settings';
 import { FontProvider } from '@/components/FontContext';
 import { StyleSheet } from 'react-native';
 
@@ -80,6 +80,8 @@ jest.mock('@/context/AuthContext', () => ({
     signOut: jest.fn(),
   }),
 }));
+
+jest.mock('@/components/shared/HealthConnectSection', () => () => null);
 
 describe('Ecrã Settings - Teste Funcional', () => {
   it('deve selecionar o tamanho Extra (1.5x) quando o utilizador clica no botão', () => {

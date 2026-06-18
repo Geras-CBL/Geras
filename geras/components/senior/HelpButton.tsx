@@ -24,7 +24,7 @@ const genAI = new GoogleGenerativeAI(API_KEY);
 const SENIOR_SCREENS = {
   home: '/navigation/senior/HomePage',
   saude: '/navigation/senior/Health',
-  definicoes: '/navigation/shared/Settings',
+  definicoes: '/navigation/senior/Settings',
   pedir_ajuda: '/navigation/senior/RequestHelp',
   detalhes_pedido: '/navigation/senior/RequestDetails',
   meus_pedidos: '/navigation/senior/Requests',

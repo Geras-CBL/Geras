@@ -205,7 +205,7 @@ export default function AddHealthMetric() {
                   rightIconLabel="Abrir definições"
                   onLeftPress={() => router.push('/navigation/senior/HomePage')}
                   onRightPress={() =>
-                    router.push('/navigation/shared/Settings')
+                    router.push('/navigation/senior/Settings')
                   }
                 />
               );
