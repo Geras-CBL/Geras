@@ -515,7 +515,7 @@ export default function Health() {
                 <MaterialCommunityIcons name="pill" size={24} color="#ffff" />
               }
               onPress={() => {
-                router.push('./PharmacyShopping');
+                router.push('../senior/Requests?type=pharmacy');
               }}
             />
           </View>
