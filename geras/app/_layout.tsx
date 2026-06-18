@@ -59,8 +59,8 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthProvider>
-        <NotificationsProvider>
-          <ProfileProvider>
+        <ProfileProvider>
+          <NotificationsProvider>
             <ImageBackground
               source={require('../assets/images/background.png')}
               style={{ flex: 1 }}
@@ -504,8 +504,8 @@ export default function RootLayout() {
                 </BottomSheetModalProvider>
               </FontProvider>
             </ImageBackground>
-          </ProfileProvider>
-        </NotificationsProvider>
+          </NotificationsProvider>
+        </ProfileProvider>
       </AuthProvider>
     </GestureHandlerRootView>
   );

@@ -61,9 +61,8 @@ export default function ActiveVouchers() {
               const uLng = position.coords.longitude;
               const mapped = data.map((item: any, index: number) => {
                 const storeCoord = getVoucherCoordinate(
+                  undefined,
                   item.vouchers.id.toString(),
-                  item.vouchers.store_name,
-                  index,
                 );
                 const dist = getDistanceInKm(
                   uLat,

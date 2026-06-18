@@ -45,6 +45,14 @@ const NOTIFICATION_CONFIG: Record<
     ttlHours: undefined,
     dismissable: true, // o cuidador pode fechar alertas
   },
+  community_request: {
+    variant: 'info',
+    icon: 'public',
+    title: 'Pedido na Comunidade',
+    priority: 1,
+    ttlHours: 48,
+    dismissable: true,
+  },
   request: {
     variant: 'request',
     icon: 'people',
@@ -147,12 +155,25 @@ export default function HomePage() {
         .order('created_at', { ascending: false });
 
       if (!notifError && notifs) {
-        const sorted = [...notifs].sort((a, b) => {
+        // Filtrar para não mostrar o pedido público em si ('request' sem id_caretaker), apenas avisos de comunidade
+        const filteredNotifs = notifs.filter(
+          (n) => !(n.type === 'request' && !n.id_caretaker),
+        );
+
+        const sorted = [...filteredNotifs].sort((a, b) => {
           const typeA = (a.type || 'info').toLowerCase();
           const typeB = (b.type || 'info').toLowerCase();
           const prioA = NOTIFICATION_CONFIG[typeA]?.priority ?? 99;
           const prioB = NOTIFICATION_CONFIG[typeB]?.priority ?? 99;
-          return prioA - prioB;
+
+          if (prioA !== prioB) {
+            return prioA - prioB;
+          }
+
+          // Se a prioridade for igual, mostrar a mais recente primeiro
+          const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+          const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+          return timeB - timeA;
         });
         setNotifications(sorted);
       }

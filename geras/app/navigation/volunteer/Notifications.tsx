@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import {
   View,
   ScrollView,
@@ -12,6 +12,7 @@ import { useAuth } from '@/context/AuthContext';
 import { ThemedText } from '@/components/ThemedText';
 import { NotificationCard } from '@/components/shared/Notification';
 import SectionTitle from '@/components/shared/SectionTitle';
+import { useNotifications } from '@/context/NotificationsContext';
 
 // Config visual por tipo de notificação
 const NOTIFICATION_CONFIG: Record<
@@ -64,43 +65,9 @@ function isActive(n: any): boolean {
 
 export default function Notifications() {
   const { profile } = useAuth();
-  const [notifications, setNotifications] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchNotifications = useCallback(async () => {
-    if (!profile?.id) {
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
-    try {
-      const now = new Date().toISOString();
-
-      // Buscar notificações:
-      // 1. Destinadas especificamente a este voluntário (id_volunteer = profile.id)
-      // 2. Broadcast para todos os voluntários (id_volunteer IS NULL, sem cuidador associado)
-      const { data, error } = await supabase
-        .from('notifications')
-        .select('*')
-        .is('dismissed_at', null)
-        .or(`expires_at.is.null,expires_at.gt.${now}`)
-        .or(
-          `id_volunteer.eq.${profile.id},and(id_volunteer.is.null,id_caretaker.is.null,type.eq.request)`,
-        )
-        .order('created_at', { ascending: false });
-
-      if (!error && data) {
-        setNotifications(data);
-      }
-    } catch (err) {
-      console.error('Erro ao carregar notificações do voluntário:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [profile?.id]);
+  const { notifications, loading, refreshNotifications } = useNotifications();
 
   const handleDismiss = useCallback(async (notificationId: number) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
     await supabase
       .from('notifications')
       .update({ dismissed_at: new Date().toISOString() })
@@ -109,33 +76,8 @@ export default function Notifications() {
 
   useFocusEffect(
     useCallback(() => {
-      fetchNotifications();
-
-      if (!profile?.id) return;
-
-      // Realtime: atualizar quando chegam novas notificações
-      const channel = supabase
-        .channel('volunteer_notifs_page')
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'notifications' },
-          (payload) => {
-            const n = payload.new as any;
-            // Só reagir se for para este voluntário ou broadcast
-            if (
-              n.id_volunteer === profile.id ||
-              (!n.id_volunteer && !n.id_caretaker && n.type === 'request')
-            ) {
-              fetchNotifications();
-            }
-          },
-        )
-        .subscribe();
-
-      return () => {
-        supabase.removeChannel(channel);
-      };
-    }, [fetchNotifications, profile?.id]),
+      refreshNotifications();
+    }, [refreshNotifications]),
   );
 
   const active = notifications.filter(isActive);

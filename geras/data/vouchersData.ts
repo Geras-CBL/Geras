@@ -8,6 +8,6 @@ export interface VoucherData {
   status: string;
   distance?: string;
   distanceVal?: number;
-  latitude: number;
-  longitude: number;
+  latitude?: number;
+  longitude?: number;
 }

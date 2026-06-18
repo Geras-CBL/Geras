@@ -17,6 +17,7 @@ import { useProfile } from '@/context/ProfileContext';
 import { useAuth } from '@/context/AuthContext';
 import React from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useNotifications } from '@/context/NotificationsContext';
 
 const NOTIFICATION_CONFIG: Record<
   string,
@@ -50,42 +51,13 @@ export default function Notifications() {
   const router = useRouter();
   const { profile } = useAuth();
   const { selectedProfile } = useProfile();
-  const [notifications, setNotifications] = React.useState<any[]>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
-
-  const fetchNotifications = React.useCallback(async () => {
-    if (!selectedProfile?.id || !profile?.role) {
-      setIsLoading(false);
-      return;
-    }
-    setIsLoading(true);
-    try {
-      let query = supabase
-        .from('notifications')
-        .select('*')
-        .eq('id_senior', selectedProfile.id)
-        .is('dismissed_at', null)
-        .order('created_at', { ascending: false });
-
-      if (profile.role === 'SENIOR') {
-        query = query.is('id_caretaker', null).is('id_volunteer', null);
-      }
-
-      const { data, error } = await query;
-
-      if (!error && data) {
-        setNotifications(data);
-      }
-    } catch (err) {
-      console.error('Erro ao carregar notificações:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [selectedProfile?.id, profile?.role, profile?.id]);
+  const {
+    notifications,
+    loading: isLoading,
+    refreshNotifications,
+  } = useNotifications();
 
   const handleDismiss = React.useCallback(async (notificationId: number) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
-
     const { error } = await supabase
       .from('notifications')
       .update({ dismissed_at: new Date().toISOString() })
@@ -98,29 +70,8 @@ export default function Notifications() {
 
   useFocusEffect(
     React.useCallback(() => {
-      fetchNotifications();
-
-      if (!selectedProfile?.id) return;
-
-      // Subscrição realtime
-      const channel = supabase
-        .channel('notifications_page')
-        .on(
-          'postgres_changes',
-          {
-            event: '*',
-            schema: 'public',
-            table: 'notifications',
-            filter: `id_senior=eq.${selectedProfile.id}`,
-          },
-          () => fetchNotifications(),
-        )
-        .subscribe();
-
-      return () => {
-        supabase.removeChannel(channel);
-      };
-    }, [fetchNotifications, selectedProfile?.id]),
+      refreshNotifications();
+    }, [refreshNotifications]),
   );
 
   return (

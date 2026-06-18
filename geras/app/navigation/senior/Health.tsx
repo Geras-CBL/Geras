@@ -23,7 +23,7 @@ import { ThemedText } from '@/components/ThemedText';
 // =========================
 
 interface NotificationItem {
-  id: string;
+  id: number;
   description: string;
   type?: string;
 }
@@ -143,9 +143,28 @@ export default function Health() {
           .order('created_at', { ascending: false });
 
       if (!notificationsError && notificationsData) {
+        // Filtrar apenas para eventos relacionados com saúde/medicação
+        const healthNotifications = notificationsData.filter((item) => {
+          if (
+            item.type === 'request' ||
+            item.type === 'community_request' ||
+            item.type === 'accepted_request' ||
+            item.type === 'completed_request'
+          ) {
+            return false;
+          }
+          if (
+            item.type === 'alert' &&
+            item.description?.includes('fez um novo pedido')
+          ) {
+            return false;
+          }
+          return true;
+        });
+
         setNotifications(
-          notificationsData.map((item) => ({
-            id: item.id.toString(),
+          healthNotifications.map((item) => ({
+            id: item.id,
             description: item.description,
             type: item.type,
           })),
@@ -235,6 +254,19 @@ export default function Health() {
       setLoading(false);
     }
   }, [profile?.id]);
+
+  const handleDismiss = useCallback(async (notificationId: number) => {
+    setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
+
+    const { error } = await supabase
+      .from('notifications')
+      .update({ dismissed_at: new Date().toISOString() })
+      .eq('id', notificationId);
+
+    if (error) {
+      console.error('Erro ao dispensar notificação em Health:', error.message);
+    }
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -446,13 +478,19 @@ export default function Health() {
                 icon = 'report';
               }
 
+              let cardVariant = notification.type || 'medication';
+              if (cardVariant === 'accepted_request') {
+                cardVariant = 'info';
+              }
+
               return (
                 <NotificationCard
                   key={notification.id}
-                  variant={(notification.type as any) || 'medication'}
+                  variant={cardVariant as any}
                   title={title}
                   iconName={icon as any}
                   description={notification.description}
+                  onDismiss={() => handleDismiss(notification.id)}
                 />
               );
             })

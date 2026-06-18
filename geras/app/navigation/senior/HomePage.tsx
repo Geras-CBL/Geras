@@ -19,6 +19,8 @@ import { useFocusEffect } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { syncHealthData } from '@/services/healthService';
+import { useNotifications } from '@/context/NotificationsContext';
+import React from 'react';
 
 // ── Tipos de notificação ──────────────────────────────────────────────────────
 // Mapeamento: valor do campo `type` no Supabase → configuração visual
@@ -119,39 +121,32 @@ function isActive(notification: any): boolean {
 
 export default function Home() {
   const { profile } = useAuth();
-  const [notifications, setNotifications] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { notifications, loading, refreshNotifications } = useNotifications();
   const [caretakerName, setCaretakerName] = useState<string>('');
   const [caretakerPhone, setCaretakerPhone] = useState<string | null>(null);
+
+  const sortedNotifications = React.useMemo(() => {
+    return [...notifications].sort((a, b) => {
+      const typeA = (a.type || 'info').toLowerCase();
+      const typeB = (b.type || 'info').toLowerCase();
+      const prioA = NOTIFICATION_CONFIG[typeA]?.priority ?? 99;
+      const prioB = NOTIFICATION_CONFIG[typeB]?.priority ?? 99;
+      return prioA - prioB;
+    });
+  }, [notifications]);
+
+  const activeNotifications = React.useMemo(() => {
+    return sortedNotifications.filter(isActive);
+  }, [sortedNotifications]);
 
   useFocusEffect(
     useCallback(() => {
       async function fetchData() {
         if (!profile?.id) return;
-        setLoading(true);
+
+        refreshNotifications();
+
         try {
-          const now = new Date().toISOString();
-          const { data: notifs } = await supabase
-            .from('notifications')
-            .select('*')
-            .eq('id_senior', profile.id)
-            .is('id_caretaker', null)
-            .is('id_volunteer', null)
-            .is('dismissed_at', null)
-            .or(`expires_at.is.null,expires_at.gt.${now}`)
-            .order('created_at', { ascending: false });
-
-          if (notifs) {
-            const sorted = [...notifs].sort((a, b) => {
-              const typeA = (a.type || 'info').toLowerCase();
-              const typeB = (b.type || 'info').toLowerCase();
-              const prioA = NOTIFICATION_CONFIG[typeA]?.priority ?? 99;
-              const prioB = NOTIFICATION_CONFIG[typeB]?.priority ?? 99;
-              return prioA - prioB;
-            });
-            setNotifications(sorted);
-          }
-
           const { data: assoc } = await supabase
             .from('senior_caretaker')
             .select('caretaker:users!id_caretaker(name, phone)')
@@ -173,17 +168,13 @@ export default function Home() {
           );
         } catch (err) {
           console.error('Error fetching homepage data:', err);
-        } finally {
-          setLoading(false);
         }
       }
       fetchData();
-    }, [profile?.id]),
+    }, [profile?.id, refreshNotifications]),
   );
 
   const handleDismiss = useCallback(async (notificationId: number) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
-
     const { error } = await supabase
       .from('notifications')
       .update({ dismissed_at: new Date().toISOString() })
@@ -203,11 +194,17 @@ export default function Home() {
           className="flex-1"
         >
           <View>
-            <SectionTitle title={'Notificações'}>
+            <SectionTitle
+              title={
+                activeNotifications.length > 0
+                  ? `Notificações (${activeNotifications.length})`
+                  : 'Notificações'
+              }
+            >
               {loading ? (
                 <ActivityIndicator size="large" color="#2F5C3E" />
-              ) : notifications.length > 0 ? (
-                notifications.filter(isActive).map((notification) => {
+              ) : activeNotifications.length > 0 ? (
+                activeNotifications.map((notification) => {
                   const typeKey = (notification.type || 'info').toLowerCase();
                   const config =
                     NOTIFICATION_CONFIG[typeKey] || NOTIFICATION_CONFIG.info;
