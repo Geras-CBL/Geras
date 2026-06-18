@@ -12,6 +12,23 @@ jest.mock('expo-router', () => ({
   useSegments: () => [],
 }));
 
+jest.mock('@/context/AuthContext', () => ({
+  useAuth: () => ({
+    profile: { role: 'SENIOR' },
+  }),
+}));
+
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
+);
+
+jest.mock('@/lib/supabase', () => ({
+  supabase: {
+    auth: { signOut: jest.fn(), getSession: jest.fn() },
+    from: jest.fn(() => ({ select: jest.fn(), insert: jest.fn() })),
+  },
+}));
+
 describe('Header component', () => {
   it('renderiza os ícones padrão', () => {
     const { getByText } = render(<Header />);

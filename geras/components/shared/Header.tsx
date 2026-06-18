@@ -5,6 +5,8 @@ import { useSegments, useRouter } from 'expo-router';
 import { Colors } from '@/constants/theme';
 import { Svg, G, Path, Defs, ClipPath, Rect } from 'react-native-svg';
 
+import { useAuth } from '@/context/AuthContext';
+
 interface HeaderProps {
   leftIconName?: keyof typeof MaterialIcons.glyphMap;
   rightIconName?: keyof typeof MaterialIcons.glyphMap;
@@ -42,7 +44,30 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const router = useRouter();
   const segments = useSegments();
+  const { profile } = useAuth();
+
+  const role = profile?.role;
+  const isVolunteer = role === 'VOLUNTEER';
+
   const onNotificationsRoute = (segments as string[]).includes('Notifications');
+  const onProfileRoute = (segments as string[]).includes('Profile');
+
+  // Ajustar automaticamente a lógica de acessibilidade e usabilidade para voluntário
+  const actualShowNotificationsOnLeft = isVolunteer
+    ? true
+    : showNotificationsOnLeft;
+  const actualShowProfileOnRight = isVolunteer
+    ? !onProfileRoute
+    : showProfileOnRight;
+  const actualShowProfileOnLeft = isVolunteer ? false : showProfileOnLeft;
+
+  const finalOnRightPress = isVolunteer
+    ? () => router.push('/navigation/volunteer/Notifications')
+    : onRightPress;
+
+  const finalOnProfilePress = isVolunteer
+    ? () => router.push('/navigation/shared/Profile')
+    : onProfilePress;
 
   const finalShowLeftIcon = onNotificationsRoute ? true : showLeftIcon;
   const finalLeftIconName = onNotificationsRoute ? 'arrow-back' : leftIconName;
@@ -76,23 +101,25 @@ const Header: React.FC<HeaderProps> = ({
             </TouchableOpacity>
           ) : null}
 
-          {showNotificationsOnLeft && !onNotificationsRoute && onRightPress && (
-            <TouchableOpacity
-              onPress={onRightPress}
-              className="items-center justify-center p-2"
-              accessibilityLabel={rightIconLabel}
-            >
-              <MaterialIcons
-                name={rightIconName}
-                size={34}
-                color={isWhite ? 'black' : 'white'}
-              />
-            </TouchableOpacity>
-          )}
+          {actualShowNotificationsOnLeft &&
+            !onNotificationsRoute &&
+            finalOnRightPress && (
+              <TouchableOpacity
+                onPress={finalOnRightPress}
+                className="items-center justify-center p-2"
+                accessibilityLabel={rightIconLabel}
+              >
+                <MaterialIcons
+                  name={rightIconName}
+                  size={34}
+                  color={isWhite ? 'black' : 'white'}
+                />
+              </TouchableOpacity>
+            )}
 
-          {showProfileOnLeft && onProfilePress && (
+          {actualShowProfileOnLeft && finalOnProfilePress && (
             <TouchableOpacity
-              onPress={onProfilePress}
+              onPress={finalOnProfilePress}
               className="items-center justify-center p-2"
               accessibilityLabel="Perfil"
             >
@@ -136,9 +163,9 @@ const Header: React.FC<HeaderProps> = ({
         {/* DIREITA */}
         <View className="flex-1 flex-row items-center justify-end">
           {/* Notificações na direita (apenas se não estiverem na esquerda) */}
-          {finalShowRightIcon && !showNotificationsOnLeft && (
+          {finalShowRightIcon && !actualShowNotificationsOnLeft && (
             <TouchableOpacity
-              onPress={onRightPress}
+              onPress={finalOnRightPress}
               className="items-center justify-center p-2"
               testID="header-right-button"
               accessible
@@ -154,9 +181,9 @@ const Header: React.FC<HeaderProps> = ({
           )}
 
           {/* Perfil na direita */}
-          {showProfileOnRight && onProfilePress && (
+          {actualShowProfileOnRight && finalOnProfilePress && (
             <TouchableOpacity
-              onPress={onProfilePress}
+              onPress={finalOnProfilePress}
               className="items-center justify-center p-2"
               accessibilityLabel="Perfil"
             >
