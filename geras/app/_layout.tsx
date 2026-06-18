@@ -1,4 +1,8 @@
-import { Rubik_400Regular, Rubik_700Bold } from '@expo-google-fonts/rubik';
+import {
+  Rubik_400Regular,
+  Rubik_500Medium,
+  Rubik_700Bold,
+} from '@expo-google-fonts/rubik';
 import { useFonts } from 'expo-font';
 import { Stack, router, useRouter, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -23,6 +27,8 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [loaded] = useFonts({
     Rubik: Rubik_400Regular,
+    Rubik_500Medium: Rubik_500Medium,
+    'Rubik-Medium': Rubik_500Medium,
     'Rubik-Bold': Rubik_700Bold,
     MonoTrustDisplay: require('../assets/fonts/MomoTrustDisplay-Regular.ttf'),
   });
@@ -394,18 +400,31 @@ export default function RootLayout() {
                         headerShown: true,
                         headerTransparent: true,
                         contentStyle: { backgroundColor: 'transparent' },
-                        header: () => (
-                          <Header
-                            showLeftIcon={false}
-                            rightIconName="notifications"
-                            rightIconLabel="Notificações"
-                            onRightPress={() =>
-                              router.push('/navigation/caretaker/Notifications')
-                            }
-                            onLogoutPress={handleLogout}
-                          />
-                        ),
+                        header: () => {
+                          if (
+                            pathname === '/navigation/caretaker/OnboardingPage'
+                          ) {
+                            return null;
+                          }
+                          return (
+                            <Header
+                              showLeftIcon={false}
+                              rightIconName="notifications"
+                              rightIconLabel="Notificações"
+                              onRightPress={() =>
+                                router.push(
+                                  '/navigation/caretaker/Notifications',
+                                )
+                              }
+                              onLogoutPress={handleLogout}
+                            />
+                          );
+                        },
                       }}
+                    />
+                    <Stack.Screen
+                      name="navigation/caretaker/OnboardingPage"
+                      options={{ headerShown: false }}
                     />
                     {/* caretaker Notifications */}
                     <Stack.Screen

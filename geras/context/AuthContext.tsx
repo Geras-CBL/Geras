@@ -20,6 +20,7 @@ export interface UserProfile {
   profile_picture?: any;
   phone?: string;
   action_radius?: number | null;
+  onboarding_completed?: boolean;
 }
 
 interface AuthContextType {
