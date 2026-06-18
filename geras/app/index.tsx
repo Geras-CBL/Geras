@@ -26,7 +26,11 @@ export default function Index() {
   // Redirecionamento consoante a Role do utilizador
   switch (profile.role) {
     case 'SENIOR':
-      return <Redirect href="/navigation/senior/HomePage" />;
+      return profile.onboarding_completed ? (
+        <Redirect href="/navigation/senior/HomePage" />
+      ) : (
+        <Redirect href={'/navigation/senior/OnboardingPage' as any} />
+      );
     case 'CARETAKER':
       return <Redirect href="/navigation/caretaker/HomePage" />;
     case 'VOLUNTEER':
