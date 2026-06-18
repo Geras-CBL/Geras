@@ -37,6 +37,7 @@ const BigButton = ({
         className="h-full w-full items-center justify-center gap-4 rounded-2xl bg-primary"
         {...focusRing.bindFocusHandlers()}
         accessible={true}
+        accessibilityLabel={label}
         focusable={true}
         importantForAccessibility="yes"
         onPress={() => {
