@@ -111,8 +111,8 @@ export default function TermosCondicoes() {
           6. Propriedade Intelectual
         </ThemedText>
         <ThemedText type="body">
-          O nome &quot;Geras&quot;, o logótipo e o código da aplicação pertencem à nossa
-          equipa. Não podem ser copiados sem autorização.{'\n\n'}
+          O nome &quot;Geras&quot;, o logótipo e o código da aplicação pertencem
+          à nossa equipa. Não podem ser copiados sem autorização.{'\n\n'}
           Todos os conteúdos, marcas, designs e tecnologias associados ao
           ecossistema Geras são propriedade exclusiva da entidade gestora ou dos
           seus licenciadores. O utilizador recebe apenas uma licença limitada
