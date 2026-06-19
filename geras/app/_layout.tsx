@@ -1,4 +1,8 @@
-import { Rubik_400Regular, Rubik_700Bold } from '@expo-google-fonts/rubik';
+import {
+  Rubik_400Regular,
+  Rubik_500Medium,
+  Rubik_700Bold,
+} from '@expo-google-fonts/rubik';
 import { useFonts } from 'expo-font';
 import { Stack, router, useRouter, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -23,6 +27,7 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [loaded] = useFonts({
     Rubik: Rubik_400Regular,
+    Rubik_500Medium: Rubik_500Medium,
     'Rubik-Bold': Rubik_700Bold,
     MonoTrustDisplay: require('../assets/fonts/MomoTrustDisplay-Regular.ttf'),
   });
@@ -81,6 +86,10 @@ export default function RootLayout() {
                       options={{ headerShown: false }}
                     />
                     {/* senior */}
+                    <Stack.Screen
+                      name="navigation/senior/OnboardingPage"
+                      options={{ headerShown: false }}
+                    />
                     <Stack.Screen
                       name="navigation/senior/HomePage"
                       options={{
