@@ -29,6 +29,8 @@ export default function Index() {
       return <Redirect href="/navigation/senior/OnboardingPage" />;
     } else if (profile.role === 'CARETAKER') {
       return <Redirect href="/navigation/caretaker/OnboardingPage" />;
+    } else if (profile.role === 'VOLUNTEER') {
+      return <Redirect href={'/navigation/volunteer/OnboardingPage' as any} />;
     }
   }
 

@@ -367,33 +367,42 @@ export default function RootLayout() {
                       name="navigation/senior/ErrorPage"
                       options={{ headerShown: false }}
                     />
-                    {/* volunteer */}
+
                     <Stack.Screen
                       name="navigation/volunteer"
                       options={{
                         headerShown: true,
                         headerTransparent: true,
                         contentStyle: { backgroundColor: 'transparent' },
-                        header: () => (
-                          <Header
-                            leftIconName="arrow-back"
-                            rightIconName="notifications"
-                            leftIconLabel="Voltar"
-                            rightIconLabel="Notificações"
-                            onLeftPress={() => {
-                              router.back();
-                            }}
-                            showNotificationsOnLeft={true}
-                            showProfileOnRight={true}
-                            onProfilePress={() => {
-                              router.push('/navigation/shared/Profile');
-                            }}
-                            onRightPress={() =>
-                              router.push('/navigation/volunteer/Notifications')
-                            }
-                            onLogoutPress={handleLogout}
-                          />
-                        ),
+                        header: () => {
+                          if (
+                            pathname === '/navigation/volunteer/OnboardingPage'
+                          ) {
+                            return null;
+                          }
+                          return (
+                            <Header
+                              leftIconName="arrow-back"
+                              rightIconName="notifications"
+                              leftIconLabel="Voltar"
+                              rightIconLabel="Notificações"
+                              onLeftPress={() => {
+                                router.back();
+                              }}
+                              showNotificationsOnLeft={true}
+                              showProfileOnRight={true}
+                              onProfilePress={() => {
+                                router.push('/navigation/shared/Profile');
+                              }}
+                              onRightPress={() =>
+                                router.push(
+                                  '/navigation/volunteer/Notifications',
+                                )
+                              }
+                              onLogoutPress={handleLogout}
+                            />
+                          );
+                        },
                       }}
                     />
 
@@ -426,10 +435,17 @@ export default function RootLayout() {
                         },
                       }}
                     />
+
+                    <Stack.Screen
+                      name="onboarding/volunteer/OnboardingPage"
+                      options={{ headerShown: false }}
+                    />
+
                     <Stack.Screen
                       name="navigation/caretaker/OnboardingPage"
                       options={{ headerShown: false }}
                     />
+
                     {/* caretaker Notifications */}
                     <Stack.Screen
                       name="navigation/caretaker/Notifications"
