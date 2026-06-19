@@ -18,10 +18,7 @@ export default function TermosCondicoes() {
       <Stack.Screen options={{ headerShown: false }} />
       {isFromRegister ? (
         <SafeAreaView edges={['top']}>
-          <TouchableOpacity
-            className="p-6 pb-0"
-            onPress={() => router.back()}
-          >
+          <TouchableOpacity className="p-6 pb-0" onPress={() => router.back()}>
             <Ionicons name="arrow-back" size={28} color="#000" />
           </TouchableOpacity>
         </SafeAreaView>

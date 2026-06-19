@@ -42,7 +42,7 @@ export default function Settings() {
           <Button title="Política de privacidade" onPress={openPrivacy} />
           <Button title="Diretiva ePrivacy" onPress={openEPrivacy} />
 
-          <View className="mt-8 items-center mb-20">
+          <View className="mb-20 mt-8 items-center">
             <ThemedText type="bodyBold" className="text-tertiary">
               Eliminar Conta
             </ThemedText>
