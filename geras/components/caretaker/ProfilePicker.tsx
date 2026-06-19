@@ -22,6 +22,7 @@ const ProfilePicker: React.FC<ProfilePickerProps> = ({ onPress, profile }) => {
   return (
     <Pressable
       onPress={onPress}
+      accessibilityLabel="profile-picker"
       className="w-full flex-1 flex-row items-center gap-2"
       style={({ pressed }) => ({
         opacity: pressed ? 0.7 : 1,

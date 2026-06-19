@@ -1,0 +1,38 @@
+appId: com.falcao2.x2.geras
+---
+- launchApp
+- tapOn: "E-mail"
+- inputText: "antonio@email.com"
+- tapOn: "Palavra-Passe"
+- inputText: "12345senior"
+- tapOn: "return"
+- tapOn: "Log In"
+- tapOn: "Not Now"
+- assertVisible: "Notificações"
+- tapOn: "Pedir ajuda"
+- assertVisible: "Pedir Ajuda"
+- tapOn: "Pedir ajuda com Compras Farmácia"
+- assertVisible: "Selecione os produtos"
+- tapOn:
+    point: 16%,57%
+- tapOn: "Fazer Pedido"
+- assertVisible: "Quem prefere que resolva o pedido?"
+- tapOn: "Confirmar"
+- assertVisible: "Pedido de Farmácia"
+- tapOn:
+    id: "header-logout-button"
+- tapOn:
+    text: "Sair"
+    index: 1
+
+- launchApp
+- tapOn: "E-mail"
+- inputText: "tomas@gmail.com"
+- tapOn: "Palavra-Passe"
+- inputText: "12345cuidador"
+- tapOn: "return"
+- tapOn: "Log In"
+- tapOn: "Not Now"
+- assertVisible: "Sensores"
+- tapOn: "Pedidos"
+- assertVisible: ".*MEDICAMENTOS - benuron.*"
