@@ -1,4 +1,8 @@
-import { Rubik_400Regular, Rubik_700Bold } from '@expo-google-fonts/rubik';
+import {
+  Rubik_400Regular,
+  Rubik_500Medium,
+  Rubik_700Bold,
+} from '@expo-google-fonts/rubik';
 import { useFonts } from 'expo-font';
 import { Stack, router, useRouter, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -23,6 +27,8 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [loaded] = useFonts({
     Rubik: Rubik_400Regular,
+    Rubik_500Medium: Rubik_500Medium,
+    'Rubik-Medium': Rubik_500Medium,
     'Rubik-Bold': Rubik_700Bold,
     MonoTrustDisplay: require('../assets/fonts/MomoTrustDisplay-Regular.ttf'),
   });
@@ -357,33 +363,42 @@ export default function RootLayout() {
                       name="navigation/senior/ErrorPage"
                       options={{ headerShown: false }}
                     />
-                    {/* volunteer */}
+
                     <Stack.Screen
                       name="navigation/volunteer"
                       options={{
                         headerShown: true,
                         headerTransparent: true,
                         contentStyle: { backgroundColor: 'transparent' },
-                        header: () => (
-                          <Header
-                            leftIconName="arrow-back"
-                            rightIconName="notifications"
-                            leftIconLabel="Voltar"
-                            rightIconLabel="Notificações"
-                            onLeftPress={() => {
-                              router.back();
-                            }}
-                            showNotificationsOnLeft={true}
-                            showProfileOnRight={true}
-                            onProfilePress={() => {
-                              router.push('/navigation/shared/Profile');
-                            }}
-                            onRightPress={() =>
-                              router.push('/navigation/volunteer/Notifications')
-                            }
-                            onLogoutPress={handleLogout}
-                          />
-                        ),
+                        header: () => {
+                          if (
+                            pathname === '/navigation/volunteer/OnboardingPage'
+                          ) {
+                            return null;
+                          }
+                          return (
+                            <Header
+                              leftIconName="arrow-back"
+                              rightIconName="notifications"
+                              leftIconLabel="Voltar"
+                              rightIconLabel="Notificações"
+                              onLeftPress={() => {
+                                router.back();
+                              }}
+                              showNotificationsOnLeft={true}
+                              showProfileOnRight={true}
+                              onProfilePress={() => {
+                                router.push('/navigation/shared/Profile');
+                              }}
+                              onRightPress={() =>
+                                router.push(
+                                  '/navigation/volunteer/Notifications',
+                                )
+                              }
+                              onLogoutPress={handleLogout}
+                            />
+                          );
+                        },
                       }}
                     />
 
@@ -407,6 +422,12 @@ export default function RootLayout() {
                         ),
                       }}
                     />
+
+                    <Stack.Screen
+                      name="onboarding/volunteer/OnboardingPage"
+                      options={{ headerShown: false }}
+                    />
+
                     {/* caretaker Notifications */}
                     <Stack.Screen
                       name="navigation/caretaker/Notifications"
