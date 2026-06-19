@@ -3,27 +3,27 @@ import Button from '@/components/shared/Button';
 import { NotificationCard } from '@/components/shared/Notification';
 import SectionTitle from '@/components/shared/SectionTitle';
 import { ThemedText } from '@/components/ThemedText';
-import { Alert } from 'react-native';
-interface GroceryItem {
-  id: string;
-  name: string;
-  checked: boolean;
-}
-import { MaterialIcons } from '@expo/vector-icons';
-import { Checkbox } from '@futurejj/react-native-checkbox';
-import { useRouter, useFocusEffect } from 'expo-router';
-import { useState, useCallback } from 'react';
-import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/context/AuthContext';
 import {
+  Alert,
   ScrollView,
   TouchableOpacity,
   View,
   ActivityIndicator,
   Modal,
 } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Checkbox } from '@futurejj/react-native-checkbox';
+import { useRouter, useFocusEffect } from 'expo-router';
+import { useState, useCallback } from 'react';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
 import * as Progress from 'react-native-progress';
 import { SafeAreaView } from 'react-native-safe-area-context';
+interface GroceryItem {
+  id: string;
+  name: string;
+  checked: boolean;
+}
 
 export default function Groceries() {
   const router = useRouter();
@@ -52,7 +52,7 @@ export default function Groceries() {
   const handleMakeRequest = async () => {
     setDestinationModalVisible(false);
     try {
-      const { data: associations, error: assocError } = await supabase
+      const { data: associations } = await supabase
         .from('senior_caretaker')
         .select('id_caretaker')
         .eq('id_senior', profile?.id);
@@ -118,7 +118,7 @@ export default function Groceries() {
       }
 
       fetchGroceries();
-    }, []),
+    }, [profile]),
   );
 
   const toggleCheckbox = (id: string) => {

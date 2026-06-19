@@ -10,13 +10,12 @@ import * as Device from 'expo-device';
 import { Platform } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
-import { useProfile } from '@/context/ProfileContext';
 import {
   getDistanceInKm,
   getUserCoordinate,
-  parsePostGISPoint,
 } from '@/services/locationHelperService';
-import * as Location from 'expo-location';
+
+import { Database } from '@/types/supabase';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -26,8 +25,6 @@ Notifications.setNotificationHandler({
     shouldShowList: true,
   }),
 });
-
-import { Database } from '@/types/supabase';
 // Exportar o tipo Notification para ser reutilizado
 export type Notification = Database['public']['Tables']['notifications']['Row'];
 
@@ -54,13 +51,39 @@ const NotificationsContext = createContext<
   NotificationsContextType | undefined
 >(undefined);
 
+const allowedTypes: Record<string, string[]> = {
+  SENIOR: ['medication', 'health', 'accepted_request', 'completed_request'],
+  CARETAKER: [
+    'medication',
+    'health',
+    'motion',
+    'request',
+    'community_request',
+    'accepted_request',
+    'completed_request',
+    'alert',
+    'info',
+  ],
+  VOLUNTEER: ['request', 'voucher'],
+};
+
+const labelByType: Record<string, string> = {
+  medication: '💊 Hora da Medicação',
+  health: '🚨 Alerta de Saúde',
+  motion: '🚶 Alerta de Movimento',
+  request: '🤝 Pedido de Ajuda',
+  community_request: '🤝 Pedido da Comunidade',
+  accepted_request: '✅ O seu pedido foi aceite!',
+  completed_request: '✅ O seu pedido foi completado!',
+  voucher: '🎫 Novo Voucher Disponível',
+};
+
 export function NotificationsProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const { profile } = useAuth();
-  const { selectedProfile } = useProfile();
   const [expoPushToken, setExpoPushToken] = React.useState<string | null>(null);
   const [notifications, setNotifications] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(true);
@@ -297,34 +320,6 @@ export function NotificationsProvider({
       setLoading(false);
     }
   }, [profile?.id, profile?.role]);
-
-  const allowedTypes: Record<string, string[]> = {
-    SENIOR: ['medication', 'health', 'accepted_request', 'completed_request'],
-    CARETAKER: [
-      'medication',
-      'health',
-      'motion',
-      'request',
-      'community_request',
-      'accepted_request',
-      'completed_request',
-      'alert',
-      'info',
-    ],
-    VOLUNTEER: ['request', 'voucher'],
-  };
-
-  const labelByType: Record<string, string> = {
-    medication: '💊 Hora da Medicação',
-    health: '🚨 Alerta de Saúde',
-    motion: '🚶 Alerta de Movimento',
-    request: '🤝 Pedido de Ajuda',
-    community_request: '🤝 Pedido da Comunidade',
-    accepted_request: '✅ O seu pedido foi aceite!',
-    completed_request: '✅ O seu pedido foi completado!',
-    voucher: '🎫 Novo Voucher Disponível',
-  };
-
   const saveNotificationToDB = useCallback(
     async (params: {
       type: string;

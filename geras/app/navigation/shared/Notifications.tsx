@@ -7,10 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/ThemedText';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { supabase } from '@/lib/supabase';
-import { useProfile } from '@/context/ProfileContext';
-import { useAuth } from '@/context/AuthContext';
 import React from 'react';
-import { MaterialIcons } from '@expo/vector-icons';
 import { useNotifications } from '@/context/NotificationsContext';
 
 const NOTIFICATION_CONFIG: Record<
@@ -43,8 +40,6 @@ const NOTIFICATION_CONFIG: Record<
 
 export default function Notifications() {
   const router = useRouter();
-  const { profile } = useAuth();
-  const { selectedProfile } = useProfile();
   const {
     notifications,
     loading: isLoading,

@@ -1,8 +1,8 @@
 import React from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, Stack, useLocalSearchParams } from 'expo-router';
-import { TouchableOpacity } from 'react-native';
+
 import { Ionicons } from '@expo/vector-icons';
 
 import Header from '@/components/shared/Header';

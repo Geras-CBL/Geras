@@ -13,7 +13,7 @@ export default function Home() {
   const [statusFilter, setStatusFilter] = useState<
     'todos' | 'disponivel' | 'decorrer'
   >('todos');
-  const [seniorFilter, setSeniorFilter] = useState<string | null>(null);
+  const seniorFilter = null;
   const [typeFilter, setTypeFilter] = useState<
     'todos' | 'cleaning' | 'food' | 'other'
   >('todos');
@@ -22,14 +22,6 @@ export default function Home() {
     if (statusFilter === 'todos') setStatusFilter('disponivel');
     else if (statusFilter === 'disponivel') setStatusFilter('decorrer');
     else setStatusFilter('todos');
-  };
-
-  const handleSeniorFilterPress = () => {
-    if (seniorFilter) {
-      setSeniorFilter(null);
-    } else {
-      setSeniorFilter('António');
-    }
   };
 
   const handleTypeFilterPress = () => {

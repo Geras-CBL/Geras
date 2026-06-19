@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Dimensions,
-  TouchableOpacity,
-  Text,
-  Alert,
-  StyleSheet,
-} from 'react-native';
+import { View, TouchableOpacity, Text, Alert, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -14,8 +7,6 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { MaterialIcons } from '@expo/vector-icons';
 import MainLogo from '@/assets/logo/Main_Logo.svg';
-
-const { width, height } = Dimensions.get('window');
 
 const SLIDES = [
   {

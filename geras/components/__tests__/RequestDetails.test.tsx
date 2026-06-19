@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import RequestDetails from '../../app/navigation/senior/RequestDetails';

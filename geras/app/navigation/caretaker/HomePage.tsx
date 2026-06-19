@@ -242,7 +242,7 @@ export default function HomePage() {
     } finally {
       setLoadingData(false);
     }
-  }, [selectedProfile?.id, profile?.id]);
+  }, [selectedProfile, profile?.id]);
 
   const handleDismiss = React.useCallback(async (notificationId: number) => {
     setNotifications((prev) => prev.filter((n) => n.id !== notificationId));

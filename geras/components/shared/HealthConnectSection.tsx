@@ -12,9 +12,6 @@ export default function HealthConnectSection() {
   const role = profile?.role;
 
   const [isSyncEnabled, setIsSyncEnabled] = useState<boolean>(false);
-  const [sdkStatus, setSdkStatus] = useState<
-    'AVAILABLE' | 'NOT_INSTALLED' | 'UNSUPPORTED'
-  >();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -23,7 +20,6 @@ export default function HealthConnectSection() {
       setIsLoading(true);
       try {
         // Bypass temporário para testes: assume que o SDK está disponível
-        setSdkStatus('AVAILABLE');
 
         const storedSync = await AsyncStorage.getItem('@health_sync_enabled');
         const isStored = storedSync === null || storedSync === 'true';
@@ -31,7 +27,6 @@ export default function HealthConnectSection() {
         setIsSyncEnabled(isStored);
       } catch (error) {
         console.error('Erro ao verificar Health Connect (Bypass):', error);
-        setSdkStatus('UNSUPPORTED');
         setIsSyncEnabled(false);
       } finally {
         setIsLoading(false);

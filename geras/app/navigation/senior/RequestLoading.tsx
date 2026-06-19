@@ -14,6 +14,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
+
 const STEPS = [
   { id: 'step1', label: 'A processar o seu pedido', icon: 'spinner' },
   { id: 'step2', label: 'A procurar voluntários', icon: 'search' },
@@ -119,10 +122,6 @@ const AnimatedStepText = ({
   );
 };
 
-import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/context/AuthContext';
-import { useNotifications } from '@/context/NotificationsContext';
-
 export default function RequestLoading() {
   const { type, description, isPublic } = useLocalSearchParams<{
     type?: string;
@@ -130,7 +129,6 @@ export default function RequestLoading() {
     isPublic?: string;
   }>();
   const { profile } = useAuth();
-  const { sendLocalNotification } = useNotifications();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [requestId, setRequestId] = useState<string | null>(null);
 

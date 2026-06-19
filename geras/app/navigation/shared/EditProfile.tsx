@@ -1,7 +1,6 @@
 import {
   ScrollView,
   View,
-  Platform,
   Modal,
   TouchableOpacity,
   Text,

@@ -20,14 +20,10 @@ import { ThemedText } from '@/components/ThemedText';
 import BottomActions from '@/components/senior/BottomActions';
 import FloatingIconCard from '@/components/senior/FloatingIconCard';
 import Button from '@/components/shared/Button';
-import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
 import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
 } from 'expo-speech-recognition';
-import { API_KEY } from '@env';
-
-const genAI = new GoogleGenerativeAI(API_KEY);
 
 const NUM_BARS = 40;
 

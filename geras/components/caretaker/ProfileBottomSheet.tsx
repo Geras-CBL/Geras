@@ -6,9 +6,6 @@ import {
   ActivityIndicator,
   TextInput,
   Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
 } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import Button from '@/components/shared/Button';
