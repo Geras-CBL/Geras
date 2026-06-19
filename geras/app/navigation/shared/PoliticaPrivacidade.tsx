@@ -171,7 +171,7 @@ export default function PoliticaPrivacidade() {
           conformidade com o RGPD e o alinhamento com as diretrizes das
           plataformas móveis (App Store Review Guidelines da Apple e Google Play
           Console Policies).{'\n'}• Controlo de consentimento: a inicialização
-          de SDKs além do limiar "Estritamente Necessário" é condicionada ao
+          de SDKs além do limiar &quot;Estritamente Necessário&quot; é condicionada ao
           consentimento explícito e prévio do utilizador, obtido através de um
           ecrã de consentimento no primeiro lançamento da aplicação (Consent
           Management Platform — CMP mobile).{'\n'}• Minimização de dados
@@ -242,8 +242,8 @@ export default function PoliticaPrivacidade() {
           Nos termos do RGPD, os utilizadores dispõem dos seguintes direitos
           relativamente aos seus dados pessoais:{'\n'}• Direito de acesso aos
           seus dados;{'\n'}• Direito de retificação de dados incorretos ou
-          incompletos;{'\n'}• Direito ao apagamento dos dados ("direito a ser
-          esquecido");{'\n'}• Direito à limitação do tratamento;{'\n'}• Direito
+          incompletos;{'\n'}• Direito ao apagamento dos dados (&quot;direito a ser
+          esquecido&quot;);{'\n'}• Direito à limitação do tratamento;{'\n'}• Direito
           de oposição ao tratamento, nos casos legalmente previstos;{'\n'}•
           Direito à portabilidade dos dados;{'\n'}• Direito de retirar, a
           qualquer momento, os consentimentos concedidos;{'\n'}• Direito de

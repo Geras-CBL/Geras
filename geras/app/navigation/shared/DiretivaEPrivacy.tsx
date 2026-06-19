@@ -41,7 +41,7 @@ export default function DiretivaEPrivacy() {
           1. O que é esta política e porque existe
         </ThemedText>
         <ThemedText type="body">
-          Quando falamos de "cookies", a maioria das pessoas pensa logo num site
+          Quando falamos de &quot;cookies&quot;, a maioria das pessoas pensa logo num site
           na internet. Mas a Geras é também uma aplicação móvel, e por isso esta
           política explica de forma simples que tipo de identificadores e
           tecnologias semelhantes a cookies usamos no telemóvel, e como pode
@@ -52,7 +52,7 @@ export default function DiretivaEPrivacy() {
         </ThemedText>
 
         <ThemedText type="bodyBold" className="mt-4">
-          2. O que conta como "cookie" numa aplicação móvel?
+          2. O que conta como &quot;cookie&quot; numa aplicação móvel?
         </ThemedText>
         <ThemedText type="body">
           No nosso site informativo, usamos cookies tradicionais de navegador.
@@ -77,7 +77,7 @@ export default function DiretivaEPrivacy() {
         <ThemedText type="body">
           Para a Geras funcionar bem e em segurança, recorremos a um número
           reduzido de ferramentas externas, escolhidas com critério. Nenhuma
-          delas foi adicionada "porque sim" — cada uma tem uma função concreta:
+          delas foi adicionada &quot;porque sim&quot; — cada uma tem uma função concreta:
           {'\n\n'}
           Ferramenta: Async Storage{'\n'}
           Para que serve: Guarda a sua sessão no telemóvel, para não ter de
