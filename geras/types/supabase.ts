@@ -39,6 +39,35 @@ export type Database = {
   };
   public: {
     Tables: {
+      connection_codes: {
+        Row: {
+          code: string;
+          created_at: string;
+          expires_at: string;
+          id_user: number;
+        };
+        Insert: {
+          code: string;
+          created_at?: string;
+          expires_at: string;
+          id_user: number;
+        };
+        Update: {
+          code?: string;
+          created_at?: string;
+          expires_at?: string;
+          id_user?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'connection_codes_id_user_fkey';
+            columns: ['id_user'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       evaluations: {
         Row: {
           description: string | null;
@@ -164,25 +193,25 @@ export type Database = {
       };
       metric_definitions: {
         Row: {
-          metric_type: Database['public']['Enums']['metric_type'];
-          unit: string;
           has_secondary: boolean;
-          secondary_label: string | null;
+          metric_type: Database['public']['Enums']['metric_type'];
           primary_label: string | null;
+          secondary_label: string | null;
+          unit: string;
         };
         Insert: {
-          metric_type: Database['public']['Enums']['metric_type'];
-          unit: string;
           has_secondary?: boolean;
-          secondary_label?: string | null;
+          metric_type: Database['public']['Enums']['metric_type'];
           primary_label?: string | null;
+          secondary_label?: string | null;
+          unit: string;
         };
         Update: {
-          metric_type?: Database['public']['Enums']['metric_type'];
-          unit?: string;
           has_secondary?: boolean;
-          secondary_label?: string | null;
+          metric_type?: Database['public']['Enums']['metric_type'];
           primary_label?: string | null;
+          secondary_label?: string | null;
+          unit?: string;
         };
         Relationships: [];
       };
@@ -242,6 +271,7 @@ export type Database = {
           expires_at: string | null;
           id: number;
           id_caretaker: number | null;
+          id_request: number | null;
           id_senior: number | null;
           id_volunteer: number | null;
           type: string | null;
@@ -253,6 +283,7 @@ export type Database = {
           expires_at?: string | null;
           id?: number;
           id_caretaker?: number | null;
+          id_request?: number | null;
           id_senior?: number | null;
           id_volunteer?: number | null;
           type?: string | null;
@@ -264,6 +295,7 @@ export type Database = {
           expires_at?: string | null;
           id?: number;
           id_caretaker?: number | null;
+          id_request?: number | null;
           id_senior?: number | null;
           id_volunteer?: number | null;
           type?: string | null;
@@ -274,6 +306,13 @@ export type Database = {
             columns: ['id_caretaker'];
             isOneToOne: false;
             referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'notifications_id_request_fkey';
+            columns: ['id_request'];
+            isOneToOne: false;
+            referencedRelation: 'requests';
             referencedColumns: ['id'];
           },
           {
@@ -339,12 +378,13 @@ export type Database = {
         Row: {
           category: string | null;
           created_at: string | null;
-          description: string | null;
+          description: string;
           distance: number | null;
           id: number;
           id_caretaker: number | null;
           id_senior: number | null;
           id_volunteer: number | null;
+          is_public: boolean | null;
           location_address: string | null;
           state: Database['public']['Enums']['req_state'] | null;
           updated_at: string | null;
@@ -352,12 +392,13 @@ export type Database = {
         Insert: {
           category?: string | null;
           created_at?: string | null;
-          description?: string | null;
+          description: string;
           distance?: number | null;
           id?: number;
           id_caretaker?: number | null;
           id_senior?: number | null;
           id_volunteer?: number | null;
+          is_public?: boolean | null;
           location_address?: string | null;
           state?: Database['public']['Enums']['req_state'] | null;
           updated_at?: string | null;
@@ -365,12 +406,13 @@ export type Database = {
         Update: {
           category?: string | null;
           created_at?: string | null;
-          description?: string | null;
+          description?: string;
           distance?: number | null;
           id?: number;
           id_caretaker?: number | null;
           id_senior?: number | null;
           id_volunteer?: number | null;
+          is_public?: boolean | null;
           location_address?: string | null;
           state?: Database['public']['Enums']['req_state'] | null;
           updated_at?: string | null;
@@ -468,19 +510,104 @@ export type Database = {
           },
         ];
       };
+      sensor_readings: {
+        Row: {
+          id: number;
+          id_sensor: number;
+          triggered_at: string;
+          type: string;
+          unit: string | null;
+          value: string | null;
+        };
+        Insert: {
+          id?: number;
+          id_sensor: number;
+          triggered_at?: string;
+          type?: string;
+          unit?: string | null;
+          value?: string | null;
+        };
+        Update: {
+          id?: number;
+          id_sensor?: number;
+          triggered_at?: string;
+          type?: string;
+          unit?: string | null;
+          value?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'sensor_readings_id_sensor_fkey';
+            columns: ['id_sensor'];
+            isOneToOne: false;
+            referencedRelation: 'sensors';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      sensors: {
+        Row: {
+          active: boolean;
+          created_at: string;
+          icon: string;
+          id: number;
+          id_caretaker: number;
+          id_senior: number;
+          name: string;
+        };
+        Insert: {
+          active?: boolean;
+          created_at?: string;
+          icon: string;
+          id?: number;
+          id_caretaker: number;
+          id_senior: number;
+          name: string;
+        };
+        Update: {
+          active?: boolean;
+          created_at?: string;
+          icon?: string;
+          id?: number;
+          id_caretaker?: number;
+          id_senior?: number;
+          name?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'sensors_id_caretaker_fkey';
+            columns: ['id_caretaker'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'sensors_id_senior_fkey';
+            columns: ['id_senior'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       users: {
         Row: {
           action_radius: number | null;
           address: string | null;
+          auth_provider: string | null;
           auth_user_id: string | null;
           created_at: string | null;
           email: string;
           gender: Database['public']['Enums']['user_gender'] | null;
           id: number;
           local: string | null;
+          location: unknown;
           name: string;
-          password_hash: string;
+          onboarding_completed: boolean;
+          password_hash: string | null;
+          phone: string | null;
           profile_picture: Json | null;
+          push_token: string | null;
           rating: number | null;
           role: Database['public']['Enums']['user_role'];
           updated_at: string | null;
@@ -489,15 +616,20 @@ export type Database = {
         Insert: {
           action_radius?: number | null;
           address?: string | null;
+          auth_provider?: string | null;
           auth_user_id?: string | null;
           created_at?: string | null;
           email: string;
           gender?: Database['public']['Enums']['user_gender'] | null;
           id?: number;
           local?: string | null;
+          location?: unknown;
           name: string;
-          password_hash: string;
+          onboarding_completed?: boolean;
+          password_hash?: string | null;
+          phone?: string | null;
           profile_picture?: Json | null;
+          push_token?: string | null;
           rating?: number | null;
           role: Database['public']['Enums']['user_role'];
           updated_at?: string | null;
@@ -506,15 +638,20 @@ export type Database = {
         Update: {
           action_radius?: number | null;
           address?: string | null;
+          auth_provider?: string | null;
           auth_user_id?: string | null;
           created_at?: string | null;
           email?: string;
           gender?: Database['public']['Enums']['user_gender'] | null;
           id?: number;
           local?: string | null;
+          location?: unknown;
           name?: string;
-          password_hash?: string;
+          onboarding_completed?: boolean;
+          password_hash?: string | null;
+          phone?: string | null;
           profile_picture?: Json | null;
+          push_token?: string | null;
           rating?: number | null;
           role?: Database['public']['Enums']['user_role'];
           updated_at?: string | null;
@@ -526,6 +663,7 @@ export type Database = {
         Row: {
           address: string | null;
           id: number;
+          location: unknown;
           needed_tasks: number | null;
           store_name: string;
           value: number;
@@ -534,6 +672,7 @@ export type Database = {
         Insert: {
           address?: string | null;
           id?: number;
+          location?: unknown;
           needed_tasks?: number | null;
           store_name: string;
           value: number;
@@ -542,6 +681,7 @@ export type Database = {
         Update: {
           address?: string | null;
           id?: number;
+          location?: unknown;
           needed_tasks?: number | null;
           store_name?: string;
           value?: number;
@@ -551,16 +691,19 @@ export type Database = {
       };
       vouchers_volunteer: {
         Row: {
+          current_tasks: number | null;
           id_volunteer: number;
           id_voucher: number;
           status: Database['public']['Enums']['vouch_status'] | null;
         };
         Insert: {
+          current_tasks?: number | null;
           id_volunteer: number;
           id_voucher: number;
           status?: Database['public']['Enums']['vouch_status'] | null;
         };
         Update: {
+          current_tasks?: number | null;
           id_volunteer?: number;
           id_voucher?: number;
           status?: Database['public']['Enums']['vouch_status'] | null;
@@ -587,7 +730,9 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      associate_with_code: { Args: { p_code: string }; Returns: boolean };
+      check_medications: { Args: never; Returns: undefined };
+      get_my_user_id: { Args: never; Returns: number };
     };
     Enums: {
       eval_rate: 'SATISFIED' | 'NEUTRAL' | 'DISSATISFIED';
@@ -603,7 +748,7 @@ export type Database = {
       type_monitoring: 'BLOOD PRESSURE' | 'HEART RATE' | 'TEMPERATURE';
       user_gender: 'FEMALE' | 'MALE' | 'NON-BINARY' | 'PREFER NOT TO SAY';
       user_role: 'SENIOR' | 'CARETAKER' | 'VOLUNTEER';
-      vouch_status: 'AVAILABLE' | 'UNAVAILABLE' | 'EXPIRED';
+      vouch_status: 'AVAILABLE' | 'UNAVAILABLE' | 'EXPIRED' | 'USED';
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -751,7 +896,7 @@ export const Constants = {
       type_monitoring: ['BLOOD PRESSURE', 'HEART RATE', 'TEMPERATURE'],
       user_gender: ['FEMALE', 'MALE', 'NON-BINARY', 'PREFER NOT TO SAY'],
       user_role: ['SENIOR', 'CARETAKER', 'VOLUNTEER'],
-      vouch_status: ['AVAILABLE', 'UNAVAILABLE', 'EXPIRED'],
+      vouch_status: ['AVAILABLE', 'UNAVAILABLE', 'EXPIRED', 'USED'],
     },
   },
 } as const;

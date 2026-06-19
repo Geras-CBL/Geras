@@ -88,6 +88,10 @@ export default function RootLayout() {
                     />
                     {/* senior */}
                     <Stack.Screen
+                      name="navigation/senior/OnboardingPage"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
                       name="navigation/senior/HomePage"
                       options={{
                         headerShown: true,
