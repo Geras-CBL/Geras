@@ -6,9 +6,9 @@ import SectionTitle from '@/components/shared/SectionTitle';
 import { supabase } from '@/lib/supabase';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Checkbox } from '@futurejj/react-native-checkbox';
-import { Alert } from 'react-native';
+import { Alert, DeviceEventEmitter } from 'react-native';
 import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   ScrollView,
   TextInput,
@@ -32,7 +32,10 @@ export default function Requests() {
   const router = useRouter();
   const { profile } = useAuth();
 
-  const { type } = useLocalSearchParams<{ type: string }>();
+  const { type, transcript } = useLocalSearchParams<{
+    type: string;
+    transcript?: string;
+  }>();
 
   const requestType = type || 'pharmacy';
 
@@ -184,6 +187,19 @@ export default function Requests() {
 
   const [description, setDescription] = useState('');
 
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      'onSpeechTranscript_request',
+      (text: string) => {
+        setDescription(text);
+      },
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   const renderGenericContent = () => (
     <View className="h-full w-full gap-4">
       <ThemedText type="bodyBold" className="mb-6 text-center text-neutral">
@@ -309,7 +325,12 @@ export default function Requests() {
             <MaterialIcons name="record-voice-over" size={24} color="#205a2d" />
           }
           className="mb-2 w-full"
-          onPress={() => router.push('./Voice')}
+          onPress={() =>
+            router.push({
+              pathname: './Voice',
+              params: { mode: 'request', type: requestType },
+            })
+          }
         />
         <Button
           title="Fazer pedido"

@@ -3,21 +3,34 @@ import BottomActions from '@/components/senior/BottomActions';
 import FloatingIconCard from '@/components/senior/FloatingIconCard';
 import Button from '@/components/shared/Button';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { Alert, TextInput, View } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { DeviceEventEmitter, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-
 import { useAuth } from '@/context/AuthContext';
 import { useProfile } from '@/context/ProfileContext';
 
 export default function VoicePage() {
   const router = useRouter();
+  const { transcript } = useLocalSearchParams<{ transcript?: string }>();
   const { profile: currentUser } = useAuth();
   const { selectedProfile } = useProfile();
   const [groceryName, setGroceryName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      'onSpeechTranscript_grocery',
+      (text: string) => {
+        setGroceryName(text);
+      },
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   const handleBack = () => {
     if (router.canGoBack()) {
@@ -109,7 +122,12 @@ export default function VoicePage() {
           icon={
             <MaterialIcons name="record-voice-over" size={24} color="#205a2d" />
           }
-          onPress={() => router.push('./Voice')}
+          onPress={() =>
+            router.push({
+              pathname: './Voice',
+              params: { mode: 'grocery' },
+            })
+          }
         />
       </View>
 
