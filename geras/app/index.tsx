@@ -23,6 +23,15 @@ export default function Index() {
     return <Redirect href={'/navigation/shared/CompleteProfilePage' as any} />;
   }
 
+  // Se o onboarding não estiver concluído, redirecionar para a respetiva página de onboarding
+  if (!profile.onboarding_completed) {
+    if (profile.role === 'SENIOR') {
+      return <Redirect href="/navigation/senior/OnboardingPage" />;
+    } else if (profile.role === 'CARETAKER') {
+      return <Redirect href="/navigation/caretaker/OnboardingPage" />;
+    }
+  }
+
   // Redirecionamento consoante a Role do utilizador
   switch (profile.role) {
     case 'SENIOR':
