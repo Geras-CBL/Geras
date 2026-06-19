@@ -88,6 +88,10 @@ export default function RootLayout() {
                     />
                     {/* senior */}
                     <Stack.Screen
+                      name="navigation/senior/OnboardingPage"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
                       name="navigation/senior/HomePage"
                       options={{
                         headerShown: true,
@@ -409,17 +413,26 @@ export default function RootLayout() {
                         headerShown: true,
                         headerTransparent: true,
                         contentStyle: { backgroundColor: 'transparent' },
-                        header: () => (
-                          <Header
-                            showLeftIcon={false}
-                            rightIconName="notifications"
-                            rightIconLabel="Notificações"
-                            onRightPress={() =>
-                              router.push('/navigation/caretaker/Notifications')
-                            }
-                            onLogoutPress={handleLogout}
-                          />
-                        ),
+                        header: () => {
+                          if (
+                            pathname === '/navigation/caretaker/OnboardingPage'
+                          ) {
+                            return null;
+                          }
+                          return (
+                            <Header
+                              showLeftIcon={false}
+                              rightIconName="notifications"
+                              rightIconLabel="Notificações"
+                              onRightPress={() =>
+                                router.push(
+                                  '/navigation/caretaker/Notifications',
+                                )
+                              }
+                              onLogoutPress={handleLogout}
+                            />
+                          );
+                        },
                       }}
                     />
 
@@ -428,6 +441,11 @@ export default function RootLayout() {
                       options={{ headerShown: false }}
                     />
 
+                    <Stack.Screen
+                      name="navigation/caretaker/OnboardingPage"
+                      options={{ headerShown: false }}
+                    />
+                    
                     {/* caretaker Notifications */}
                     <Stack.Screen
                       name="navigation/caretaker/Notifications"

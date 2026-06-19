@@ -1,0 +1,39 @@
+appId: com.falcao2.x2.geras
+---
+- launchApp
+- tapOn: "profile-picker"
+- assertVisible:
+    text: "Bottom Sheet"
+    index: 1
+- tapOn:
+    point: 76%,58%
+- tapOn: "Gestão"
+- tapOn: ", Adicionar Medicação"
+- tapOn: "Ex: Ben-U-Ron"
+- inputText: "benuron"
+- tapOn: "Ex: 1000"
+- inputText: "1000"
+- tapOn: "Ex: 2026-06-15"
+- inputText: "2026-06-15"
+- tapOn: "Ex: 2026-06-25 (Opcional)"
+- inputText: "2026-06-25"
+- tapOn: "return"
+- tapOn: "Ex: 14:30"
+- inputText: "13:30"
+- tapOn: "return"
+- tapOn: "Ex: Tomar após a refeição"
+- inputText: "Tomar após pequeno-almoço"
+- tapOn: "return"
+- tapOn: "Guardar Medicação"
+- assertVisible: "Sucesso"
+- tapOn: "OK"
+- assertVisible: "benuron - 1000mg"
+- assertVisible: "13:30"
+
+
+
+
+
+
+
+

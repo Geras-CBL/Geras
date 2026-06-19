@@ -18,8 +18,10 @@ export interface UserProfile {
   zip_code?: string;
   local?: string;
   profile_picture?: any;
+  onboarding_completed?: boolean;
   phone?: string;
   action_radius?: number | null;
+  onboarding_completed?: boolean;
 }
 
 interface AuthContextType {
