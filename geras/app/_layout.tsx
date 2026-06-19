@@ -445,7 +445,7 @@ export default function RootLayout() {
                       name="navigation/caretaker/OnboardingPage"
                       options={{ headerShown: false }}
                     />
-                    
+
                     {/* caretaker Notifications */}
                     <Stack.Screen
                       name="navigation/caretaker/Notifications"
