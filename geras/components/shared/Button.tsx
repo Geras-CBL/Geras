@@ -76,7 +76,7 @@ const Button: React.FC<ButtonProps> = ({
       <ThemedText
         allowFontScaling={false}
         style={{ fontSize: 15, lineHeight: 20 }}
-        className={`capitalize ${currentStyle.text}`}
+        className={`${currentStyle.text}`}
       >
         {title}
       </ThemedText>
