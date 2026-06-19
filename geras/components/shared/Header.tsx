@@ -1,11 +1,12 @@
 import { MaterialIcons } from '@expo/vector-icons';
-import { TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSegments, useRouter } from 'expo-router';
 import { Colors } from '@/constants/theme';
 import { Svg, G, Path, Defs, ClipPath, Rect } from 'react-native-svg';
 
 import { useAuth } from '@/context/AuthContext';
+import { useNotifications } from '@/context/NotificationsContext';
 
 interface HeaderProps {
   leftIconName?: keyof typeof MaterialIcons.glyphMap;
@@ -45,6 +46,7 @@ const Header: React.FC<HeaderProps> = ({
   const router = useRouter();
   const segments = useSegments();
   const { profile } = useAuth();
+  const { unreadCount } = useNotifications();
 
   const role = profile?.role;
   const isVolunteer = role === 'VOLUNTEER';
@@ -109,11 +111,20 @@ const Header: React.FC<HeaderProps> = ({
                 className="items-center justify-center p-2"
                 accessibilityLabel={rightIconLabel}
               >
-                <MaterialIcons
-                  name={rightIconName}
-                  size={34}
-                  color={isWhite ? 'black' : 'white'}
-                />
+                <View className="relative">
+                  <MaterialIcons
+                    name={rightIconName}
+                    size={34}
+                    color={isWhite ? 'black' : 'white'}
+                  />
+                  {rightIconName === 'notifications' && unreadCount > 0 && (
+                    <View className="absolute -right-1.5 -top-1.5 h-5 min-w-[20px] items-center justify-center rounded-full border-2 border-white bg-red-500 px-1">
+                      <Text className="text-center text-[10px] font-bold text-white">
+                        {unreadCount > 9 ? '9+' : unreadCount}
+                      </Text>
+                    </View>
+                  )}
+                </View>
               </TouchableOpacity>
             )}
 
@@ -172,11 +183,20 @@ const Header: React.FC<HeaderProps> = ({
               accessibilityRole="button"
               accessibilityLabel={rightIconLabel}
             >
-              <MaterialIcons
-                name={rightIconName}
-                size={34}
-                color={isWhite ? 'black' : 'white'}
-              />
+              <View className="relative">
+                <MaterialIcons
+                  name={rightIconName}
+                  size={34}
+                  color={isWhite ? 'black' : 'white'}
+                />
+                {rightIconName === 'notifications' && unreadCount > 0 && (
+                  <View className="absolute -right-1.5 -top-1.5 h-5 min-w-[20px] items-center justify-center rounded-full border-2 border-white bg-red-500 px-1">
+                    <Text className="text-center text-[10px] font-bold text-white">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </Text>
+                  </View>
+                )}
+              </View>
             </TouchableOpacity>
           )}
 

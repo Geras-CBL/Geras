@@ -39,11 +39,7 @@ export const syncVolunteerVouchers = async (volunteerId: number) => {
 
           // Mapear cada voucher e calcular a sua distância ao voluntário
           const mappedVouchers = allVouchers.map((v: any, index: number) => {
-            const storeCoord = getVoucherCoordinate(
-              v.id.toString(),
-              v.store_name,
-              index,
-            );
+            const storeCoord = getVoucherCoordinate(undefined, v.id.toString());
             const dist = getDistanceInKm(
               volCoord.latitude,
               volCoord.longitude,

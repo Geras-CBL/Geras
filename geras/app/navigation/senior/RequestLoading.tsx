@@ -130,7 +130,7 @@ export default function RequestLoading() {
     isPublic?: string;
   }>();
   const { profile } = useAuth();
-  const { sendLocalNotification, saveNotificationToDB } = useNotifications();
+  const { sendLocalNotification } = useNotifications();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [requestId, setRequestId] = useState<string | null>(null);
 
@@ -176,26 +176,6 @@ export default function RequestLoading() {
         if (insertError) throw insertError;
         if (data) {
           setRequestId(data.id.toString());
-
-          // Notificação para o cuidador
-          const categoryLabel = data.category || 'Pedido';
-          const notifDescription = `O sénior fez um novo pedido: ${categoryLabel}`;
-
-          // 1. Guardar na tabela notifications do Supabase
-          await saveNotificationToDB({
-            type: 'alert',
-            description: notifDescription,
-            id_senior: profile.id,
-            id_caretaker: caretakerId,
-          });
-
-          if (isPublic === 'true') {
-            await saveNotificationToDB({
-              type: 'request',
-              description: `Novo pedido de ajuda disponível: ${categoryLabel}`,
-              id_senior: profile.id,
-            });
-          }
         }
       } catch (err) {
         console.error('Error creating request:', err);

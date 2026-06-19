@@ -18,6 +18,15 @@ jest.mock('@/context/AuthContext', () => ({
   }),
 }));
 
+jest.mock('@/context/NotificationsContext', () => ({
+  useNotifications: () => ({
+    unreadCount: 0,
+    notifications: [],
+    loading: false,
+    isLoading: false,
+  }),
+}));
+
 jest.mock('@react-native-async-storage/async-storage', () =>
   require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
 );
