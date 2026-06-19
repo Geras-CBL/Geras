@@ -1,25 +1,40 @@
 import React from 'react';
 import { ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter, Stack } from 'expo-router';
+import { useRouter, Stack, useLocalSearchParams } from 'expo-router';
+import { TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import Header from '@/components/shared/Header';
 import { ThemedText } from '@/components/ThemedText';
 
 export default function DiretivaEPrivacy() {
   const router = useRouter();
+  const { from } = useLocalSearchParams();
+  const isFromRegister = from === 'register';
 
   return (
     <View className="flex-1 bg-white">
       <Stack.Screen options={{ headerShown: false }} />
-      <Header
-        leftIconName="arrow-back"
-        onLeftPress={() => router.back()}
-        showLeftIcon={true}
-        showProfileOnRight={false}
-        showNotificationsOnLeft={false}
-        showRightIcon={false}
-      />
+      {isFromRegister ? (
+        <SafeAreaView edges={['top']}>
+          <TouchableOpacity
+            className="p-6 pb-0"
+            onPress={() => router.back()}
+          >
+            <Ionicons name="arrow-back" size={28} color="#000" />
+          </TouchableOpacity>
+        </SafeAreaView>
+      ) : (
+        <Header
+          leftIconName="arrow-back"
+          onLeftPress={() => router.back()}
+          showLeftIcon={true}
+          showProfileOnRight={false}
+          showNotificationsOnLeft={false}
+          showRightIcon={false}
+        />
+      )}
       <ScrollView
         className="flex-1"
         contentContainerClassName="px-6 pb-20 gap-4"

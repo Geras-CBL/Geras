@@ -274,22 +274,20 @@ export default function SignInPage() {
               </Text>
               <View className="mb-2 w-full flex-row justify-between">
                 <TouchableOpacity
-                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${
-                    gender === 'Masculino'
-                      ? 'bg-[#325439]'
-                      : 'bg-neutralLight/40'
-                  }`}
+                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${gender === 'Masculino'
+                    ? 'bg-[#325439]'
+                    : 'bg-neutralLight/40'
+                    }`}
                   onPress={() => setGender('Masculino')}
                 >
                   <Text className="font-bold text-white">Masculino</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${
-                    gender === 'Feminino'
-                      ? 'bg-[#325439]'
-                      : 'bg-neutralLight/40'
-                  }`}
+                  className={`mx-1 flex-1 items-center rounded-full p-2.5 ${gender === 'Feminino'
+                    ? 'bg-[#325439]'
+                    : 'bg-neutralLight/40'
+                    }`}
                   onPress={() => setGender('Feminino')}
                 >
                   <Text className="font-bold text-white">Feminino</Text>
@@ -355,8 +353,21 @@ export default function SignInPage() {
                   style={{ transform: [{ scale: 1.5 }] }}
                 />
                 <Text className="ml-3 flex-shrink text-sm text-white">
-                  Concordo com a Política de Privacidade e com os Termos e
-                  Condições.
+                  Concordo com a{' '}
+                  <Text
+                    style={{ textDecorationLine: 'underline', fontWeight: 'bold' }}
+                    onPress={() => router.push('/navigation/shared/PoliticaPrivacidade?from=register')}
+                  >
+                    Política de Privacidade
+                  </Text>{' '}
+                  e com os{' '}
+                  <Text
+                    style={{ textDecorationLine: 'underline', fontWeight: 'bold' }}
+                    onPress={() => router.push('/navigation/shared/TermosCondicoes?from=register')}
+                  >
+                    Termos e Condições
+                  </Text>
+                  .
                 </Text>
               </View>
             </View>
@@ -370,7 +381,7 @@ export default function SignInPage() {
               />
             </View>
 
-            <TouchableOpacity className="mt-4" onPress={() => router.back()}>
+            <TouchableOpacity className="mt-4 mb-12" onPress={() => router.back()}>
               <Text className="text-base text-white">
                 Já tem conta? Inicie sessão
               </Text>
