@@ -355,8 +355,35 @@ export default function SignInPage() {
                   style={{ transform: [{ scale: 1.5 }] }}
                 />
                 <Text className="ml-3 flex-shrink text-sm text-white">
-                  Concordo com a Política de Privacidade e com os Termos e
-                  Condições.
+                  Concordo com a{' '}
+                  <Text
+                    style={{
+                      textDecorationLine: 'underline',
+                      fontWeight: 'bold',
+                    }}
+                    onPress={() =>
+                      router.push(
+                        '/navigation/shared/PoliticaPrivacidade?from=register',
+                      )
+                    }
+                  >
+                    Política de Privacidade
+                  </Text>{' '}
+                  e com os{' '}
+                  <Text
+                    style={{
+                      textDecorationLine: 'underline',
+                      fontWeight: 'bold',
+                    }}
+                    onPress={() =>
+                      router.push(
+                        '/navigation/shared/TermosCondicoes?from=register',
+                      )
+                    }
+                  >
+                    Termos e Condições
+                  </Text>
+                  .
                 </Text>
               </View>
             </View>
@@ -370,7 +397,10 @@ export default function SignInPage() {
               />
             </View>
 
-            <TouchableOpacity className="mt-4" onPress={() => router.back()}>
+            <TouchableOpacity
+              className="mb-12 mt-4"
+              onPress={() => router.back()}
+            >
               <Text className="text-base text-white">
                 Já tem conta? Inicie sessão
               </Text>

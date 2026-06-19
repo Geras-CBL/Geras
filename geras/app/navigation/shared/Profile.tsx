@@ -21,11 +21,15 @@ export default function Profile() {
   const { profile, isLoading } = useAuth();
 
   const openTerms = () => {
-    Linking.openURL('https://www.ua.pt/pt/termos-de-utilizacao');
+    router.push('/navigation/shared/TermosCondicoes');
   };
 
   const openPrivacy = () => {
-    Linking.openURL('https://www.ua.pt/pt/rgpd/politicas-de-privacidade');
+    router.push('/navigation/shared/PoliticaPrivacidade');
+  };
+
+  const openEPrivacy = () => {
+    router.push('/navigation/shared/DiretivaEPrivacy');
   };
 
   if (isLoading) {
@@ -69,9 +73,11 @@ export default function Profile() {
         <AccessibilitySection />
 
         <View className="mt-2 gap-4">
-          <Button title="Termos e condições" onPress={openTerms} />
+          <Button title="Termos e Condições" onPress={openTerms} />
 
           <Button title="Política de privacidade" onPress={openPrivacy} />
+
+          <Button title="Diretiva ePrivacy" onPress={openEPrivacy} />
 
           <View className="mt-12 items-center">
             <ThemedText type="bodyBold" className="text-tertiary">

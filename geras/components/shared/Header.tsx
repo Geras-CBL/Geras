@@ -23,6 +23,7 @@ interface HeaderProps {
   showProfileOnLeft?: boolean;
   showProfileOnRight?: boolean;
   showNotificationsOnLeft?: boolean;
+  showRightIcon?: boolean;
   onProfilePress?: () => void;
 }
 
@@ -41,6 +42,7 @@ const Header: React.FC<HeaderProps> = ({
   showProfileOnLeft = false,
   showProfileOnRight = false,
   showNotificationsOnLeft = false,
+  showRightIcon = true,
   onProfilePress,
 }) => {
   const router = useRouter();
@@ -76,7 +78,7 @@ const Header: React.FC<HeaderProps> = ({
   const finalOnLeftPress = onNotificationsRoute
     ? () => router.back()
     : onLeftPress;
-  const finalShowRightIcon = !onNotificationsRoute;
+  const finalShowRightIcon = !onNotificationsRoute && showRightIcon;
 
   return (
     <SafeAreaView edges={['top']} className="w-full">
