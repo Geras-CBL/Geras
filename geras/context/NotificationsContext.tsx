@@ -212,17 +212,54 @@ export function NotificationsProvider({
           .order('created_at', { ascending: false });
 
         if (!error && data) {
+          const notificationsWithRequest = data as any[];
+          const missingSeniorRequestIds = notificationsWithRequest
+            .filter((n) => !n.id_senior && n.id_request)
+            .map((n) => n.id_request);
+
+          let requestMap: Record<number, { id_senior: number; location: any }> =
+            {};
+
+          if (missingSeniorRequestIds.length > 0) {
+            const { data: requestsData } = await supabase
+              .from('requests')
+              .select('id, id_senior, senior:users!id_senior(location)')
+              .in('id', missingSeniorRequestIds);
+
+            if (requestsData) {
+              requestsData.forEach((req: any) => {
+                if (req.id_senior) {
+                  requestMap[req.id] = {
+                    id_senior: req.id_senior,
+                    location: req.senior?.location,
+                  };
+                }
+              });
+            }
+          }
+
           const volunteerCoord = getUserCoordinate(
             (profile as any).location,
             profile.id,
           );
           const radiusLimit = profile.action_radius || 10;
 
-          const filtered = (data as any[]).filter((notif) => {
+          const filtered = notificationsWithRequest.filter((notif) => {
             if (notif.type === 'voucher') return true;
             if (notif.type === 'request') {
-              const seniorLoc = notif.senior?.location;
-              const seniorCoord = getUserCoordinate(seniorLoc, notif.id_senior);
+              let seniorId = notif.id_senior;
+              let seniorLoc = notif.senior?.location;
+
+              if (
+                !seniorId &&
+                notif.id_request &&
+                requestMap[notif.id_request]
+              ) {
+                seniorId = requestMap[notif.id_request].id_senior;
+                seniorLoc = requestMap[notif.id_request].location;
+              }
+
+              const seniorCoord = getUserCoordinate(seniorLoc, seniorId);
 
               const distance = getDistanceInKm(
                 volunteerCoord.latitude,
@@ -433,24 +470,39 @@ export function NotificationsProvider({
               if (!isMounted) return;
               const newNotif = payload.new as any;
               if (newNotif.id_caretaker || newNotif.id_volunteer) return;
-              if (!newNotif.id_senior) return;
 
-              const { data: senior } = await supabase
-                .from('users')
-                .select('location')
-                .eq('id', newNotif.id_senior)
-                .single();
+              let seniorId = newNotif.id_senior;
+              let seniorLoc = null;
 
-              if (!isMounted || !senior) return;
+              if (!seniorId && newNotif.id_request) {
+                const { data: reqData } = await supabase
+                  .from('requests')
+                  .select('id_senior, senior:users!id_senior(location)')
+                  .eq('id', newNotif.id_request)
+                  .single();
+
+                if (reqData && reqData.id_senior) {
+                  seniorId = reqData.id_senior;
+                  seniorLoc = (reqData as any).senior?.location;
+                }
+              } else if (seniorId) {
+                const { data: senior } = await supabase
+                  .from('users')
+                  .select('location')
+                  .eq('id', seniorId)
+                  .single();
+                if (senior) {
+                  seniorLoc = senior.location;
+                }
+              }
+
+              if (!isMounted) return;
 
               const volunteerCoord = getUserCoordinate(
                 (profile as any).location,
                 profile.id,
               );
-              const seniorCoord = getUserCoordinate(
-                senior.location,
-                newNotif.id_senior,
-              );
+              const seniorCoord = getUserCoordinate(seniorLoc, seniorId);
 
               const distance = getDistanceInKm(
                 volunteerCoord.latitude,

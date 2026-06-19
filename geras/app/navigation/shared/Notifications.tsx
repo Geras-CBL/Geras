@@ -1,10 +1,4 @@
-import {
-  View,
-  ScrollView,
-  Linking,
-  ActivityIndicator,
-  TouchableOpacity,
-} from 'react-native';
+import { View, ScrollView, Linking, ActivityIndicator } from 'react-native';
 import {
   NotificationCard,
   ActionButton,
