@@ -18,15 +18,8 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Diagnóstico no terminal de desenvolvimento
-    console.log(
-      'DEBUG: EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID =',
-      process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
-    );
     GoogleSignin.configure({
-      iosClientId:
-        process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID ||
-        'dummy-ios-id.apps.googleusercontent.com',
+      webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
     });
   }, []);
 
