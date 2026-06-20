@@ -1,4 +1,4 @@
-# Geras 
+# Geras - Front-End
 <img src="https://github.com/user-attachments/assets/ce068f7b-a61c-43aa-99f0-d52e1d053c39" height="100">
 
 ## Sobre o Projeto
@@ -7,11 +7,12 @@ O Geras é um ecossistema digital desenvolvido em [**React Native** (Expo)](http
 
 Este projeto foi desenvolvido no âmbito do **Mestrado em Comunicação e Tecnologias Web (MCTW)**, seguindo a metodologia **CBL (Challenge Based Learning)** com a pareceria da **Altice Labs**. O desenvolvimento desta aplicação serviu como ponto de convergência para aplicar os conhecimentos adquiridos em todas as disciplinas do mestrado, resultando numa solução prática e integrada.
 
-## Nota Final
+> [!NOTE]
+> A infraestrutura e código fonte deste projeto estão divididos em dois repositórios:
+> - **Frontend (App Mobile)**: Este repositório atual.
+> - **Backend (Supabase & Base de Dados)**: Disponível em [Geras-CBL/Geras-Supabase](https://github.com/Geras-CBL/Geras-Supabase).
 
-18 valores
-
-## Vídeo Promocional
+## Vídeo Promocional (MVP)
 
 Disponível [aqui](https://www.youtube.com/watch?v=1fBb_aUl9JE).
 
@@ -28,70 +29,74 @@ Disponível [aqui](https://www.youtube.com/watch?v=1fBb_aUl9JE).
 
 ## Estrutura do Projeto
 
-A aplicação encontra-se organizada dentro da pasta `geras`. A estrutura de ficheiros segue uma lógica modular para facilitar a manutenção e escalabilidade:
+A aplicação encontra-se organizada dentro da pasta `geras`. A estrutura de ficheiros segue uma lógica modular, adaptada agora a uma arquitetura dinâmica com ligação ao backend, para facilitar a manutenção e escalabilidade:
 
-* **app/**: Contém a lógica de navegação e as páginas principais da aplicação. O projeto utiliza *file-based routing* (rotas baseadas em ficheiros) do Expo Router.
+* **app/**: Contém a lógica de navegação e as páginas principais da aplicação (Expo Router).
 * **assets/**: Armazena recursos estáticos como imagens, ícones e tipos de letra.
-* **components/**: Componentes de UI reutilizáveis em toda a aplicação (ex: botões personalizados, cartões de pedidos, cabeçalhos).
-* **constants/**: Ficheiros de configuração global, como paletas de cores, definições de layout e strings constantes.
-* **context/**: Gestão de estado global da aplicação (ex: `ProfileContext` para gerir o tipo de utilizador - Sénior, Cuidador ou Voluntário).
-* **data/**: Dados estáticos ou *mock data* utilizados para preencher a aplicação durante o desenvolvimento e testes.
-* **scripts/**: Scripts utilitários para automação ou configuração do ambiente de desenvolvimento.
+* **components/**: Componentes de interface (UI) reutilizáveis, organizados por perfil e partilhados (ex: botões, cartões, cabeçalhos).
+* **constants/**: Ficheiros de configuração global, como paletas de cores e definições de layout.
+* **context/**: Gestão de estado global da aplicação (ex: `AuthContext` para sessões, `ProfileContext` para perfis, `NotificationsContext`).
+* **lib/**: Inicialização e configuração base de bibliotecas externas, como o cliente principal do Supabase.
+* **services/**: Serviços que agrupam a comunicação com a API, chamadas à base de dados, e processamento de serviços externos (ex: saúde, localização).
+* **types/**: Definições de tipagem e interfaces TypeScript para garantir coerência de dados em toda a aplicação.
 
 ---
 
-## Como Correr o Projeto
+## Como Correr o Projeto Localmente
 
-Esta aplicação é construída com Expo e suporta iOS e Android.
+Esta aplicação é construída com [Expo](https://expo.dev/) e suporta iOS e Android. Para correr a aplicação no seu ambiente local, siga as instruções abaixo:
 
 ### Pré-requisitos
 
-Certifique-se de que tem o Node.js instalado.
+1. **Node.js**: Certifique-se de que tem o Node.js instalado (recomendada a versão 18 ou superior).
+2. **Ambiente Expo**: Instale a app **Expo Go** no seu dispositivo móvel (iOS ou Android) ou configure um emulador/simulador no seu computador (Android Studio ou Xcode).
 
-### Instalação
+### Instalação e Execução
 
-1. Clone o repositório.
-2. Aceda à pasta do projeto (passo fundamental, pois a raiz do repositório contém outras pastas):
+1. Clone o repositório para a sua máquina local:
+   ```bash
+   git clone <url-do-repositorio>
+   ```
 
-```bash
-cd geras
+2. Aceda à pasta principal da aplicação (passo fundamental, pois a raiz contém outras pastas):
+   ```bash
+   cd Geras
+   ```
+   ```bash
+   cd geras
+   ```
 
-```
+3. Instale as dependências do projeto:
+   ```bash
+   npm install
+   ```
 
-3. Instale as dependências:
+4. **Configuração de Variáveis de Ambiente**:
+   Crie um ficheiro `.env` na raiz da pasta `geras` e adicione as seguintes variáveis com as credenciais do seu projeto Supabase (local ou remoto):
+   ```env
+   EXPO_PUBLIC_SUPABASE_URL=a_sua_url_do_supabase
+   EXPO_PUBLIC_SUPABASE_ANON_KEY=a_sua_anon_key_do_supabase
+   ```
 
-```bash
-npm install
+5. Inicie o servidor de desenvolvimento:
+   ```bash
+   npm run start
+   ```
 
-```
-
-4. Inicie a aplicação:
-
-```bash
-npx expo start
-
-```
-
-No terminal, serão apresentadas opções para abrir a aplicação:
-
-* Pressionando `a` para o emulador Android.
-* Pressionando `i` para o simulador iOS.
-* Digitalizando o código QR com a app **Expo Go** no seu telemóvel físico.
-
-### Builds e Distribuição
-
-As builds de desenvolvimento e produção, bem como o estado atual do projeto na cloud, podem ser consultados no painel do Expo (requer permissão de acesso):
-
-[Ver Projeto no Expo.dev](https://expo.dev/accounts/geras-cbl/projects/geras)
+No terminal, será gerado um QR Code e apresentadas várias opções:
+* Pressione `a` para abrir no emulador Android.
+* Pressione `i` para abrir no simulador iOS (apenas macOS).
+* Digitalize o código QR com a aplicação **Expo Go** (no Android) ou com a câmara do telemóvel (no iOS) para correr diretamente no seu dispositivo físico.
 
 ---
 
-## Tecnologias
+## Tecnologias Utilizadas
 
 * **Framework:** React Native (via Expo)
 * **Linguagem:** JavaScript / TypeScript
-* **Routing:** Expo Router
-* **Estilo:** StyleSheet (React Native)
+* **Routing:** Expo Router (File-based routing)
+* **Estilo:** NativeWind (Tailwind CSS para React Native)
+* **Backend as a Service:** Supabase (Autenticação, Base de Dados, Edge Functions)
 
 ---
 
