@@ -21,6 +21,7 @@ import * as Progress from 'react-native-progress';
 import { SafeAreaView } from 'react-native-safe-area-context';
 interface GroceryItem {
   id: string;
+  groceryId?: number;
   name: string;
   checked: boolean;
 }
@@ -105,6 +106,7 @@ export default function Groceries() {
           } else if (data) {
             const formattedItems = data.map((item: any) => ({
               id: item.id.toString(),
+              groceryId: item.groceries?.id,
               name: item.groceries?.name || 'Item desconhecido',
               checked: false,
             }));
@@ -126,6 +128,61 @@ export default function Groceries() {
       currentItems.map((item) =>
         item.id === id ? { ...item, checked: !item.checked } : item,
       ),
+    );
+  };
+
+  const handleDeleteSelectedGroceries = async () => {
+    const selectedItems = items.filter((i) => i.checked);
+    if (selectedItems.length === 0) return;
+
+    Alert.alert(
+      'Eliminar Itens Selecionados',
+      `Tem a certeza que deseja remover os ${selectedItems.length} itens selecionados da sua lista de compras?`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Eliminar',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setLoading(true);
+              const groceryIds = selectedItems.map((i) => i.groceryId).filter((id): id is number => !!id);
+              const relationIds = selectedItems.map((i) => Number(i.id));
+
+              if (groceryIds.length > 0) {
+                const { error: groceryError } = await supabase
+                  .from('groceries')
+                  .delete()
+                  .in('id', groceryIds);
+
+                if (groceryError) {
+                  // Fallback: se falhar devido à RLS de groceries, apagamos apenas em senior_groceries
+                  const { error: sgError } = await supabase
+                    .from('senior_groceries')
+                    .delete()
+                    .in('id', relationIds);
+
+                  if (sgError) throw sgError;
+                }
+              } else {
+                const { error: sgError } = await supabase
+                  .from('senior_groceries')
+                  .delete()
+                  .in('id', relationIds);
+
+                if (sgError) throw sgError;
+              }
+
+              setItems((prev) => prev.filter((item) => !item.checked));
+            } catch (err) {
+              console.error('Error deleting groceries:', err);
+              Alert.alert('Erro', 'Não foi possível eliminar os itens selecionados.');
+            } finally {
+              setLoading(false);
+            }
+          },
+        },
+      ]
     );
   };
 
@@ -164,7 +221,22 @@ export default function Groceries() {
         </View>
 
         <View className="flex w-full gap-5">
-          <SectionTitle title="Lista de Compras" />
+          <View className="w-full flex-row items-center justify-between">
+            <ThemedText type="title">
+              Lista de Compras
+            </ThemedText>
+            {items.some((item) => item.checked) && (
+              <TouchableOpacity
+                onPress={handleDeleteSelectedGroceries}
+                className="flex-row items-center gap-2 rounded-2xl bg-red-50 px-4 py-2 border border-red-200"
+                accessibilityLabel="Eliminar itens selecionados"
+                accessibilityHint="Toca duas vezes para remover todos os itens selecionados da sua lista permanentemente"
+              >
+                <MaterialIcons name="delete-outline" size={24} color="#dc2626" />
+                <ThemedText className='bodyInfo text-red-600'>Eliminar</ThemedText>
+              </TouchableOpacity>
+            )}
+          </View>
 
           <View className="w-full">
             {loading ? (
@@ -187,7 +259,7 @@ export default function Groceries() {
                     color={item.checked ? '#205a2d' : '#969696'}
                     style={{ transform: [{ scale: 1.4 }] }}
                   />
-                  <ThemedText className={`ml-2 text-base text-neutral`}>
+                  <ThemedText className="ml-2 text-base text-neutral">
                     {item.name}
                   </ThemedText>
                 </TouchableOpacity>

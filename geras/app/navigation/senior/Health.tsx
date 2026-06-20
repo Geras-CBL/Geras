@@ -49,6 +49,7 @@ interface MedicineItem {
   scheduled_time?: string;
   start_date?: string;
   end_date?: string;
+  description?: string;
 }
 
 // =========================
@@ -239,12 +240,13 @@ export default function Health() {
       if (!medicineError && medicineData) {
         setMedicines(
           medicineData.map((item) => ({
-            id: item.id,
+            id: item.id.toString(),
             name: item.name,
-            dosage: item.dosage,
-            scheduled_time: item.scheduled_time,
-            start_date: item.start_date,
-            end_date: item.end_date,
+            dosage: item.dosage || undefined,
+            scheduled_time: item.scheduled_time || undefined,
+            start_date: item.start_date || undefined,
+            end_date: item.end_date || undefined,
+            description: item.description || undefined,
           })),
         );
       }
@@ -440,6 +442,20 @@ export default function Health() {
     fetchHealthData();
   };
 
+  const handleDeleteMedicine = async (id: string) => {
+    const { error } = await supabase
+      .from('medicine')
+      .delete()
+      .eq('id', Number(id));
+
+    if (error) {
+      console.error('Erro ao eliminar medicamento:', error);
+      throw error;
+    }
+
+    fetchHealthData();
+  };
+
   return (
     <SafeAreaView edges={['top']} className="flex-1 pt-24">
       <ScrollView
@@ -532,7 +548,7 @@ export default function Health() {
 
         {/* MEDICINE SCHEDULE */}
         <SectionTitle title={'Horário da Medicação'}>
-          <MedicationSchedule medicines={medicines} />
+          <MedicationSchedule medicines={medicines} onDelete={handleDeleteMedicine} />
           <View className="mt-4 w-full gap-4">
             <Button
               title="Adicionar Medicação"
