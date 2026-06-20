@@ -60,6 +60,9 @@ Esta aplicação é construída com [Expo](https://expo.dev/) e suporta iOS e An
 
 2. Aceda à pasta principal da aplicação (passo fundamental, pois a raiz contém outras pastas):
    ```bash
+   cd Geras
+   ```
+   ```bash
    cd geras
    ```
 
