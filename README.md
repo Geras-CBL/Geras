@@ -1,4 +1,4 @@
-# Geras 
+# Geras - Front-End
 <img src="https://github.com/user-attachments/assets/ce068f7b-a61c-43aa-99f0-d52e1d053c39" height="100">
 
 ## Sobre o Projeto
