@@ -39,7 +39,7 @@ const NOTIFICATION_CONFIG: Record<
 > = {
   alert: {
     variant: 'alert',
-    icon: 'report',
+    icon: 'warning',
     title: 'Urgente',
     priority: 0,
     ttlHours: undefined,
@@ -157,7 +157,13 @@ export default function HomePage() {
       if (!notifError && notifs) {
         // Filtrar para não mostrar o pedido público em si ('request' sem id_caretaker), apenas avisos de comunidade
         const filteredNotifs = notifs.filter(
-          (n) => !(n.type === 'request' && !n.id_caretaker),
+          (n) =>
+            !(n.type === 'request' && !n.id_caretaker) &&
+            !(
+              (n.type === 'accepted_request' ||
+                n.type === 'completed_request') &&
+              n.id_volunteer === null
+            ),
         );
 
         const sorted = [...filteredNotifs].sort((a, b) => {

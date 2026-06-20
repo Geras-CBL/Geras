@@ -26,7 +26,7 @@ const NOTIFICATION_CONFIG: Record<
   },
   alert: {
     variant: 'alert',
-    icon: 'report',
+    icon: 'warning',
     title: 'Urgente',
     dismissable: true,
   },

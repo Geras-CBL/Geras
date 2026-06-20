@@ -43,7 +43,7 @@ const NOTIFICATION_CONFIG: Record<
 > = {
   alert: {
     variant: 'alert',
-    icon: 'report',
+    icon: 'warning',
     title: 'Urgente',
     priority: 0,
     ttlHours: undefined, // só o cuidador pode fechar

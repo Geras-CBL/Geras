@@ -475,7 +475,7 @@ export default function Health() {
               }
               if (notification.type === 'alert') {
                 title = 'Alerta';
-                icon = 'report';
+                icon = 'warning';
               }
 
               let cardVariant = notification.type || 'medication';

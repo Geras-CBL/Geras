@@ -211,7 +211,17 @@ export function NotificationsProvider({
 
         results.forEach((res) => {
           if (res.data) {
-            merged = [...merged, ...res.data];
+            const filtered = res.data.filter((n) => {
+              if (
+                (n.type === 'accepted_request' ||
+                  n.type === 'completed_request') &&
+                n.id_volunteer === null
+              ) {
+                return false;
+              }
+              return true;
+            });
+            merged = [...merged, ...filtered];
           }
         });
 
@@ -385,6 +395,15 @@ export function NotificationsProvider({
           const roleAllowedTypes = allowedTypes[profile.role] || [];
 
           if (!roleAllowedTypes.includes(newNotif.type || '')) return;
+
+          if (
+            profile.role === 'CARETAKER' &&
+            (newNotif.type === 'accepted_request' ||
+              newNotif.type === 'completed_request') &&
+            newNotif.id_volunteer === null
+          ) {
+            return;
+          }
 
           // Adicionar ao estado local se não existir
           setNotifications((prev) => {
