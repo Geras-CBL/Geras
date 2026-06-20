@@ -146,7 +146,9 @@ export default function Groceries() {
           onPress: async () => {
             try {
               setLoading(true);
-              const groceryIds = selectedItems.map((i) => i.groceryId).filter((id): id is number => !!id);
+              const groceryIds = selectedItems
+                .map((i) => i.groceryId)
+                .filter((id): id is number => !!id);
               const relationIds = selectedItems.map((i) => Number(i.id));
 
               if (groceryIds.length > 0) {
@@ -176,13 +178,16 @@ export default function Groceries() {
               setItems((prev) => prev.filter((item) => !item.checked));
             } catch (err) {
               console.error('Error deleting groceries:', err);
-              Alert.alert('Erro', 'Não foi possível eliminar os itens selecionados.');
+              Alert.alert(
+                'Erro',
+                'Não foi possível eliminar os itens selecionados.',
+              );
             } finally {
               setLoading(false);
             }
           },
         },
-      ]
+      ],
     );
   };
 
@@ -222,18 +227,22 @@ export default function Groceries() {
 
         <View className="flex w-full gap-5">
           <View className="w-full flex-row items-center justify-between">
-            <ThemedText type="title">
-              Lista de Compras
-            </ThemedText>
+            <ThemedText type="title">Lista de Compras</ThemedText>
             {items.some((item) => item.checked) && (
               <TouchableOpacity
                 onPress={handleDeleteSelectedGroceries}
-                className="flex-row items-center gap-2 rounded-2xl bg-red-50 px-4 py-2 border border-red-200"
+                className="flex-row items-center gap-2 rounded-2xl border border-red-200 bg-red-50 px-4 py-2"
                 accessibilityLabel="Eliminar itens selecionados"
                 accessibilityHint="Toca duas vezes para remover todos os itens selecionados da sua lista permanentemente"
               >
-                <MaterialIcons name="delete-outline" size={24} color="#dc2626" />
-                <ThemedText className='bodyInfo text-red-600'>Eliminar</ThemedText>
+                <MaterialIcons
+                  name="delete-outline"
+                  size={24}
+                  color="#dc2626"
+                />
+                <ThemedText className="bodyInfo text-red-600">
+                  Eliminar
+                </ThemedText>
               </TouchableOpacity>
             )}
           </View>

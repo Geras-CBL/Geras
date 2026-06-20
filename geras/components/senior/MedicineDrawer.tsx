@@ -43,7 +43,7 @@ export function MedicationSchedule({
             }
           },
         },
-      ]
+      ],
     );
   };
 
@@ -99,8 +99,9 @@ export function MedicationSchedule({
             <TouchableOpacity
               key={index}
               onPress={() => setSelectedDayIndex(index)}
-              className={`${isSelected ? 'rounded-full bg-primary px-7 py-1.5' : 'px-2'
-                }`}
+              className={`${
+                isSelected ? 'rounded-full bg-primary px-7 py-1.5' : 'px-2'
+              }`}
             >
               <ThemedText
                 className={`${isSelected ? 'font-semibold text-white' : 'text-neutral'}`}
@@ -127,11 +128,14 @@ export function MedicationSchedule({
                 <View className="rounded-full bg-primary px-4 py-1">
                   <ThemedText type="bodyBold" className="text-white">
                     {med.scheduled_time
-                      ? new Date(med.scheduled_time).toLocaleTimeString('pt-PT', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: false,
-                      })
+                      ? new Date(med.scheduled_time).toLocaleTimeString(
+                          'pt-PT',
+                          {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: false,
+                          },
+                        )
                       : 'Sem hora'}
                   </ThemedText>
                 </View>
@@ -148,35 +152,44 @@ export function MedicationSchedule({
               </View>
 
               {isExpanded && (
-                <View className="mt-4 border-t border-gray-100 pt-4 gap-3">
+                <View className="mt-4 gap-3 border-t border-gray-100 pt-4">
                   {med.description ? (
                     <View className="gap-1">
-                      <ThemedText type="bodyBold" className="text-gray-500 text-xs uppercase">
+                      <ThemedText
+                        type="bodyBold"
+                        className="text-xs uppercase text-gray-500"
+                      >
                         Instruções
                       </ThemedText>
-                      <ThemedText className="text-neutral text-sm">
+                      <ThemedText className="text-sm text-neutral">
                         {med.description}
                       </ThemedText>
                     </View>
                   ) : null}
 
-                  <View className="flex-row justify-between gap-4 mt-1">
+                  <View className="mt-1 flex-row justify-between gap-4">
                     {med.start_date && (
                       <View className="flex-1">
-                        <ThemedText type="bodyBold" className="text-gray-500 text-xs uppercase">
+                        <ThemedText
+                          type="bodyBold"
+                          className="text-xs uppercase text-gray-500"
+                        >
                           Início
                         </ThemedText>
-                        <ThemedText className="text-neutral text-sm">
+                        <ThemedText className="text-sm text-neutral">
                           {new Date(med.start_date).toLocaleDateString('pt-PT')}
                         </ThemedText>
                       </View>
                     )}
                     {med.end_date && (
                       <View className="flex-1">
-                        <ThemedText type="bodyBold" className="text-gray-500 text-xs uppercase">
+                        <ThemedText
+                          type="bodyBold"
+                          className="text-xs uppercase text-gray-500"
+                        >
                           Fim
                         </ThemedText>
-                        <ThemedText className="text-neutral text-sm">
+                        <ThemedText className="text-sm text-neutral">
                           {new Date(med.end_date).toLocaleDateString('pt-PT')}
                         </ThemedText>
                       </View>
@@ -186,11 +199,17 @@ export function MedicationSchedule({
                   {onDelete && (
                     <View className="mt-3 flex-row justify-end">
                       <TouchableOpacity
-                        className="flex-row items-center gap-2 rounded-xl bg-red-50 px-4 py-2 border border-red-200"
+                        className="flex-row items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2"
                         onPress={() => handleDeletePress(med.id, med.name)}
                       >
-                        <MaterialCommunityIcons name="delete-outline" size={20} color="#dc2626" />
-                        <ThemedText className="font-semibold text-red-600">Eliminar</ThemedText>
+                        <MaterialCommunityIcons
+                          name="delete-outline"
+                          size={20}
+                          color="#dc2626"
+                        />
+                        <ThemedText className="font-semibold text-red-600">
+                          Eliminar
+                        </ThemedText>
                       </TouchableOpacity>
                     </View>
                   )}

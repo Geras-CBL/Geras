@@ -548,7 +548,10 @@ export default function Health() {
 
         {/* MEDICINE SCHEDULE */}
         <SectionTitle title={'Horário da Medicação'}>
-          <MedicationSchedule medicines={medicines} onDelete={handleDeleteMedicine} />
+          <MedicationSchedule
+            medicines={medicines}
+            onDelete={handleDeleteMedicine}
+          />
           <View className="mt-4 w-full gap-4">
             <Button
               title="Adicionar Medicação"
