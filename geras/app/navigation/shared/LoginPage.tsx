@@ -8,7 +8,6 @@ import { Svg, G, Path, Defs, ClipPath } from 'react-native-svg';
 import { useEffect, useState } from 'react';
 import { FontAwesome } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/context/AuthContext';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { signInWithGoogleToken } from '@/services/authService';
 
@@ -58,7 +57,7 @@ export default function LoginPage() {
 
       try {
         await GoogleSignin.signOut();
-      } catch (e) {
+      } catch {
         // Ignora se não houver utilizador logado no Google
       }
 

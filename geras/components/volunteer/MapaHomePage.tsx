@@ -1,7 +1,7 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
-import { View, Pressable } from 'react-native';
+import { View } from 'react-native';
 import MapView, { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
-import { REQUESTS_DATA, RequestData } from '@/data/requestVolunteerData';
+import { RequestData } from '@/data/requestVolunteerData';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import RequestDetailsBottomSheet from '@/components/volunteer/RequestsBottomSheet';
 import VoucherBottomSheet from '@/components/volunteer/VoucherBottomSheet';

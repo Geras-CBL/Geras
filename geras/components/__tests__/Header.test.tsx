@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 // components/__tests__/Header.test.tsx
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';

@@ -6,10 +6,9 @@ import SectionTitle from '@/components/shared/SectionTitle';
 import { supabase } from '@/lib/supabase';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Checkbox } from '@futurejj/react-native-checkbox';
-import { Alert, DeviceEventEmitter } from 'react-native';
-import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
-import { useState, useCallback, useEffect } from 'react';
 import {
+  Alert,
+  DeviceEventEmitter,
   ScrollView,
   TextInput,
   TouchableOpacity,
@@ -17,6 +16,9 @@ import {
   ActivityIndicator,
   Modal,
 } from 'react-native';
+import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
+import { useState, useCallback, useEffect } from 'react';
+
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@/context/AuthContext';
 
@@ -32,9 +34,8 @@ export default function Requests() {
   const router = useRouter();
   const { profile } = useAuth();
 
-  const { type, transcript } = useLocalSearchParams<{
+  const { type } = useLocalSearchParams<{
     type: string;
-    transcript?: string;
   }>();
 
   const requestType = type || 'pharmacy';
@@ -78,7 +79,7 @@ export default function Requests() {
       }
 
       fetchMedicines();
-    }, [requestType]),
+    }, [requestType, profile?.id]),
   );
 
   const toggleCheckbox = (id: string) => {
@@ -258,7 +259,7 @@ export default function Requests() {
     }
 
     try {
-      const { data: associations, error: assocError } = await supabase
+      const { data: associations } = await supabase
         .from('senior_caretaker')
         .select('id_caretaker')
         .eq('id_senior', profile?.id);

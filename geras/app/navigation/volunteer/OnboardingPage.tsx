@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Dimensions,
-  TouchableOpacity,
-  Text,
-  Alert,
-  StyleSheet,
-} from 'react-native';
+import { View, TouchableOpacity, Text, Alert, StyleSheet } from 'react-native';
 import LocalConvenienceStoreIcon from '@/assets/icons/local_convenience_store_24dp_205A2D_FILL0_wght400_GRAD0_opsz24.svg';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,8 +8,6 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { MaterialIcons } from '@expo/vector-icons';
 import MainLogo from '@/assets/logo/Main_Logo.svg';
-
-const { width, height } = Dimensions.get('window');
 
 const SLIDES = [
   {

@@ -2,8 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { TouchableOpacity, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSegments, useRouter } from 'expo-router';
-import { Colors } from '@/constants/theme';
-import { Svg, G, Path, Defs, ClipPath, Rect } from 'react-native-svg';
+import { Svg, Path } from 'react-native-svg';
 
 import { useAuth } from '@/context/AuthContext';
 import { useNotifications } from '@/context/NotificationsContext';

@@ -1,9 +1,6 @@
 import BigButton from '@/components/senior/BigButton';
 import HelpButton from '@/components/senior/HelpButton';
-import {
-  ActionButton,
-  NotificationCard,
-} from '@/components/shared/Notification';
+import { NotificationCard } from '@/components/shared/Notification';
 import SectionTitle from '@/components/shared/SectionTitle';
 import { ThemedText } from '@/components/ThemedText';
 import {
@@ -14,13 +11,12 @@ import {
   Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { syncHealthData } from '@/services/healthService';
 import { useNotifications } from '@/context/NotificationsContext';
-import React from 'react';
 
 // ── Tipos de notificação ──────────────────────────────────────────────────────
 // Mapeamento: valor do campo `type` no Supabase → configuração visual

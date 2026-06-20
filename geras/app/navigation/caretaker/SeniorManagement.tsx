@@ -1,9 +1,7 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import {
   View,
   ScrollView,
-  Alert,
-  Linking,
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
@@ -17,8 +15,6 @@ import MedicationCard, {
   AddMedicationCard,
 } from '@/components/shared/MedicationCard';
 import Button from '@/components/shared/Button';
-import { NotificationCard } from '@/components/shared/Notification';
-import ClockPill from '@/components/shared/InfoPill';
 import { ThemedText } from '@/components/ThemedText';
 import ProfilePicker from '@/components/caretaker/ProfilePicker';
 import ProfileBottomSheet from '@/components/caretaker/ProfileBottomSheet';
@@ -48,13 +44,6 @@ interface MonitoringItem {
   };
 }
 
-interface MedicationAlert {
-  id: string;
-  name: string;
-  time: string;
-  description: string;
-}
-
 export default function SeniorManagement() {
   const router = useRouter();
   const sheetRef = useRef<any>(null);
@@ -65,8 +54,6 @@ export default function SeniorManagement() {
   const [monitoring, setMonitoring] = useState<MonitoringItem[]>([]);
   const [medicines, setMedicines] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [medicationAlert, setMedicationAlert] =
-    useState<MedicationAlert | null>(null);
 
   const fetchSeniorData = useCallback(async () => {
     if (!selectedProfile?.id) {
@@ -83,11 +70,16 @@ export default function SeniorManagement() {
         .order('measured_at', { ascending: false });
 
       if (monitoringData) {
-        // Agrupar por tipo para reter apenas o mais recente
+        // Agrupar por tipo para reter apenas o mais recente e o anterior
         const latestMetrics: Record<string, (typeof monitoringData)[0]> = {};
+        const previousMetrics: Record<string, (typeof monitoringData)[0]> = {};
         for (const item of monitoringData) {
-          if (item.metric_type && !latestMetrics[item.metric_type]) {
-            latestMetrics[item.metric_type] = item;
+          if (item.metric_type) {
+            if (!latestMetrics[item.metric_type]) {
+              latestMetrics[item.metric_type] = item;
+            } else if (!previousMetrics[item.metric_type]) {
+              previousMetrics[item.metric_type] = item;
+            }
           }
         }
 
@@ -111,66 +103,27 @@ export default function SeniorManagement() {
             item.value_secondary,
           );
 
-          return { title, value, unit, status };
+          const prev = previousMetrics[item.metric_type];
+          const previousRecord = prev
+            ? {
+                value_primary: prev.value_primary,
+                value_secondary: prev.value_secondary,
+                measured_at: prev.measured_at,
+              }
+            : undefined;
+
+          return {
+            id: item.id,
+            metricType: item.metric_type,
+            title,
+            value,
+            unit,
+            status,
+            previousRecord,
+          };
         });
 
-        if (monitoringData) {
-          // Agrupar por tipo para reter apenas o mais recente e o anterior
-          const latestMetrics: Record<string, (typeof monitoringData)[0]> = {};
-          const previousMetrics: Record<string, (typeof monitoringData)[0]> =
-            {};
-          for (const item of monitoringData) {
-            if (item.metric_type) {
-              if (!latestMetrics[item.metric_type]) {
-                latestMetrics[item.metric_type] = item;
-              } else if (!previousMetrics[item.metric_type]) {
-                previousMetrics[item.metric_type] = item;
-              }
-            }
-          }
-
-          const mapped = Object.values(latestMetrics).map((item) => {
-            const def = (item as any).metric_definitions;
-            const title =
-              METRIC_LABELS[item.metric_type] || item.metric_type || 'Métrica';
-            const unit = def?.unit || '';
-
-            let value: number | string = item.value_primary;
-            if (
-              item.metric_type === 'BLOOD PRESSURE' &&
-              item.value_secondary !== null
-            ) {
-              value = `${Math.round(item.value_primary)}/${Math.round(item.value_secondary)}`;
-            }
-
-            let status = getMetricStatus(
-              item.metric_type,
-              item.value_primary,
-              item.value_secondary,
-            );
-
-            const prev = previousMetrics[item.metric_type];
-            const previousRecord = prev
-              ? {
-                  value_primary: prev.value_primary,
-                  value_secondary: prev.value_secondary,
-                  measured_at: prev.measured_at,
-                }
-              : undefined;
-
-            return {
-              id: item.id,
-              metricType: item.metric_type,
-              title,
-              value,
-              unit,
-              status,
-              previousRecord,
-            };
-          });
-
-          setMonitoring(mapped);
-        }
+        setMonitoring(mapped);
       }
 
       const { data: groceriesData } = await supabase
@@ -231,36 +184,6 @@ export default function SeniorManagement() {
   const handleOpenSheet = () => {
     sheetRef.current?.present();
   };
-
-  const handleIgnore = async () => {
-    if (medicationAlert?.id) {
-      const { error } = await supabase
-        .from('notifications')
-        .update({ dismissed_at: new Date().toISOString() })
-        .eq('id', parseInt(medicationAlert.id));
-      if (error) {
-        console.error('Erro ao ignorar notificação:', error);
-      }
-    }
-    Alert.alert('Notificação ignorada');
-    setMedicationAlert(null);
-  };
-
-  const handleWarn = async () => {
-    if (medicationAlert?.id) {
-      const { error } = await supabase
-        .from('notifications')
-        .update({ dismissed_at: new Date().toISOString() })
-        .eq('id', parseInt(medicationAlert.id));
-      if (error) {
-        console.error('Erro ao avisar/descartar notificação:', error);
-      }
-    }
-    Alert.alert(`${selectedProfile?.name || 'Sénior'} avisado`);
-    setMedicationAlert(null);
-  };
-  const handleCall = () => Linking.openURL(`tel:${963744454}`);
-
   const handleEditMetric = async (
     id: number,
     valuePrimary: number,

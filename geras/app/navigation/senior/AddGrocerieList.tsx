@@ -3,7 +3,7 @@ import BottomActions from '@/components/senior/BottomActions';
 import FloatingIconCard from '@/components/senior/FloatingIconCard';
 import Button from '@/components/shared/Button';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { DeviceEventEmitter, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState, useEffect } from 'react';
@@ -13,7 +13,6 @@ import { useProfile } from '@/context/ProfileContext';
 
 export default function VoicePage() {
   const router = useRouter();
-  const { transcript } = useLocalSearchParams<{ transcript?: string }>();
   const { profile: currentUser } = useAuth();
   const { selectedProfile } = useProfile();
   const [groceryName, setGroceryName] = useState('');

@@ -1,9 +1,8 @@
 import React, { useCallback } from 'react';
-import { View, ScrollView, ActivityIndicator } from 'react-native';
+import { ScrollView, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
 import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/context/AuthContext';
 import { ThemedText } from '@/components/ThemedText';
 import { NotificationCard } from '@/components/shared/Notification';
 import SectionTitle from '@/components/shared/SectionTitle';
@@ -59,7 +58,6 @@ function isActive(n: any): boolean {
 }
 
 export default function Notifications() {
-  const { profile } = useAuth();
   const { notifications, loading, refreshNotifications } = useNotifications();
 
   const handleDismiss = useCallback(async (notificationId: number) => {

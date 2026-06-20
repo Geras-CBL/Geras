@@ -18,6 +18,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
+
 type EvaluationTaskVariant =
   | 'sentiment_dissatisfied'
   | 'sentiment_neutral'
@@ -57,9 +60,6 @@ const requestConfig: Record<
     alt: 'Imagem de pedido personalizado',
   },
 };
-
-import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/context/AuthContext';
 
 export default function RequestDetails() {
   const { profile } = useAuth();

@@ -5,7 +5,7 @@ import EvaluationTask from '@/components/shared/EvaluationTask';
 import { InfoPill } from '@/components/shared/InfoPill';
 import SectionTitle from '@/components/shared/SectionTitle';
 import { useLocalSearchParams, useFocusEffect, useRouter } from 'expo-router';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   Image,
   ScrollView,
@@ -13,10 +13,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
-  TouchableOpacity,
   Alert,
 } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
@@ -105,7 +103,7 @@ export default function RequestDetails() {
     } finally {
       setLoading(false);
     }
-  }, [requestId]);
+  }, [requestId, profile?.id]);
 
   const handleEvaluationSubmit = async () => {
     if (

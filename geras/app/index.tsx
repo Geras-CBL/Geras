@@ -1,9 +1,9 @@
-import { View, ActivityIndicator, Text, TouchableOpacity } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import { Redirect } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 
 export default function Index() {
-  const { session, profile, isLoading, signOut } = useAuth();
+  const { session, profile, isLoading } = useAuth();
 
   if (isLoading) {
     return (

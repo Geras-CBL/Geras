@@ -4,7 +4,7 @@ import {
   Rubik_700Bold,
 } from '@expo-google-fonts/rubik';
 import { useFonts } from 'expo-font';
-import { Stack, router, useRouter, usePathname } from 'expo-router';
+import { Stack, router, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
@@ -17,10 +17,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ProfileProvider } from '@/context/ProfileContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { NotificationsProvider } from '@/context/NotificationsContext';
-
-const queryClient = new QueryClient();
 
 SplashScreen.preventAutoHideAsync();
 
