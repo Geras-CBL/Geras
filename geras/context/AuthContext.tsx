@@ -29,6 +29,7 @@ interface AuthContextType {
   isLoading: boolean;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  deleteAccount: () => Promise<{ error: string | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -106,9 +107,65 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const deleteAccount = async (): Promise<{ error: string | null }> => {
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
+
+      if (!accessToken) {
+        return { error: 'Sessão inválida. Por favor faça login novamente.' };
+      }
+
+      const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+      const response = await fetch(
+        `${supabaseUrl}/functions/v1/delete-account`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      if (!response.ok) {
+        const textBody = await response.text();
+        console.error('Delete Account failed:', response.status, textBody);
+        let errorMsg = 'Erro ao eliminar conta.';
+        try {
+          const body = JSON.parse(textBody);
+          if (body.error) errorMsg = body.error;
+        } catch (e) {
+          errorMsg = `Erro ${response.status}: ${textBody.substring(0, 50)}`;
+        }
+        return { error: errorMsg };
+      }
+
+      // Limpar sessão local após eliminação bem-sucedida
+      await supabase.auth.signOut();
+      try {
+        await GoogleSignin.signOut();
+      } catch (e) {
+        // Ignorar erros de logout do Google (utilizador pode não ter conta Google)
+      }
+
+      return { error: null };
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erro inesperado.';
+      return { error: message };
+    }
+  };
+
   return (
     <AuthContext.Provider
-      value={{ session, profile, isLoading, signOut, refreshProfile }}
+      value={{
+        session,
+        profile,
+        isLoading,
+        signOut,
+        refreshProfile,
+        deleteAccount,
+      }}
     >
       {children}
     </AuthContext.Provider>
