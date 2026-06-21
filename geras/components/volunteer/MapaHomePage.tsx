@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
-import { View } from 'react-native';
+import { View, Image } from 'react-native';
 import MapView, { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
 import { RequestData } from '@/data/requestVolunteerData';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
@@ -331,8 +331,14 @@ export default function MapaHomePage() {
               longitude: request.longitude,
             }}
             onPress={() => handleMarkerPress(request)}
-            image={Pin_Marker_}
-          />
+            anchor={{ x: 0.5, y: 1 }}
+          >
+            <Image
+              source={Pin_Marker_}
+              style={{ width: 25, height: 33 }}
+              resizeMode="contain"
+            />
+          </Marker>
         ))}
 
         {/* Marcadores dos Vouchers */}

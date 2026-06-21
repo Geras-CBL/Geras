@@ -377,8 +377,16 @@ export default function RootLayout() {
                           ) {
                             return null;
                           }
+
+                          const isVolunteerMainTab = [
+                            '/navigation/volunteer/HomePage',
+                            '/navigation/volunteer/Vouchers',
+                            '/navigation/volunteer/RequestsHistory',
+                          ].includes(pathname);
+
                           return (
                             <Header
+                              showLeftIcon={!isVolunteerMainTab}
                               leftIconName="arrow-back"
                               rightIconName="notifications"
                               leftIconLabel="Voltar"
