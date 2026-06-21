@@ -16,5 +16,15 @@ module.exports = (() => {
     sourceExts: [...resolver.sourceExts, 'svg'],
   };
 
+  config.resolver.resolveRequest = (context, moduleName, platform) => {
+    if (moduleName === '@opentelemetry/api') {
+      return {
+        filePath: require('path').resolve(__dirname, 'metro-empty.js'),
+        type: 'sourceFile',
+      };
+    }
+    return context.resolveRequest(context, moduleName, platform);
+  };
+
   return withNativeWind(config, { input: './global.css' });
 })();
