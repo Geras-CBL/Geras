@@ -351,9 +351,9 @@ export default function MapaHomePage() {
             >
               <View
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
+                  width: 30,
+                  height: 30,
+                  borderRadius: 15,
                   backgroundColor: isAvailable ? '#ffd700' : '#9ca3af',
                   borderWidth: 2,
                   borderColor: '#ffffff',
@@ -368,7 +368,7 @@ export default function MapaHomePage() {
               >
                 <MaterialIcons
                   name={isAvailable ? 'card-giftcard' : 'lock-outline'}
-                  size={20}
+                  size={16}
                   color="#ffffff"
                 />
               </View>
