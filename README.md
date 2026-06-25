@@ -18,6 +18,11 @@ Disponível [aqui](https://www.youtube.com/watch?v=1fBb_aUl9JE).
 
 ---
 
+## Site Informativo / Newsletter
+Disponível em https://geras-app.pt/
+
+---
+
 ### Funcionalidades Principais
 
 * **Casa Inteligente e Segura:** Integração com sensores (IoT) para monitorização de rotinas (toma de medicação, gestão de despensa) e deteção de quedas.
